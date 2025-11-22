@@ -3,6 +3,12 @@
 ### # word 문서 
 https://view.officeapps.live.com/op/view.aspx?src=https://username.github.io/repo/docs/guide.docx
 
+https://lawncom93.github.io/SlickX/slickx_20251121.html
+
+https://lawncom93.github.io/SlickX/non.md
+
+https://lawncom93.github.io/SlickX/view/aaa.html
+
 
 <img width="1285" height="832" alt="image" src="https://github.com/user-attachments/assets/68a1c64a-d98a-4b26-b531-dbe2c8017e23" />
 
