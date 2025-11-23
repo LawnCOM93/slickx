@@ -10,10 +10,10 @@
     
     <style>
         :root {
-            --primary: #2563eb;
+            --primary: #2563eb;       /* 신뢰감 주는 블루 */
             --primary-hover: #1d4ed8;
-            --bg-body: #f3f4f6;
-            --bg-panel: #ffffff;
+            --bg-body: #f3f4f6;       /* 밝은 회색 배경 */
+            --bg-panel: #ffffff;      /* 흰색 패널 */
             --text-main: #111827;
             --text-sub: #6b7280;
             --border: #e5e7eb;
@@ -82,6 +82,7 @@
             text-align: right;
             outline: none;
             transition: 0.2s;
+            font-weight: 500;
         }
         input[type="number"]:focus { border-color: var(--primary); }
         .unit { font-size: 14px; color: var(--text-sub); width: 30px;}
@@ -98,12 +99,12 @@
             font-weight: 700;
             cursor: pointer;
             margin-top: 10px;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.1s;
             box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
         }
 
         #btn-run:hover { background: var(--primary-hover); }
-        #btn-run:active { transform: translateY(1px); }
+        #btn-run:active { transform: translateY(2px); }
 
         .summary {
             padding: 24px;
@@ -116,15 +117,28 @@
             font-weight: 800;
             color: var(--text-main);
             text-align: right;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
-        .price-label { font-size: 14px; color: var(--text-sub); float: left; font-weight: 500;}
+        .price-label { font-size: 14px; color: var(--text-sub); float: left; font-weight: 500; margin-top: 8px;}
+
+        .btn-download {
+            width:100%; 
+            padding:12px; 
+            border:1px solid #d1d5db; 
+            background:white; 
+            border-radius:6px; 
+            cursor:pointer;
+            font-weight: 600;
+            color: var(--text-sub);
+            transition: all 0.2s;
+        }
+        .btn-download:hover { background: #f3f4f6; color: var(--text-main); }
 
         /* 3D 뷰어 영역 */
         .viewer {
             flex: 1;
             position: relative;
-            background: #eef2f6;
+            background: #eef2f6; /* 더 밝은 배경 */
         }
 
         #canvas-container { width: 100%; height: 100%; }
@@ -133,12 +147,14 @@
             position: absolute;
             bottom: 20px;
             right: 20px;
-            background: rgba(255,255,255,0.8);
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-size: 12px;
+            background: rgba(255,255,255,0.9);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
             color: #555;
             pointer-events: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            font-weight: 500;
         }
     </style>
 </head>
@@ -182,113 +198,97 @@
                 </div>
             </div>
 
-            <button id="btn-run" onclick="updateFurniture()">실행</button>
+            <button id="btn-run" onclick="updateFurniture()">실행하기</button>
         </div>
 
         <div class="summary">
             <div class="price-display">
-                <span class="price-label">예상 견적</span>
+                <span class="price-label">예상 견적 (VAT포함)</span>
                 <span id="price-value">0</span> 원
             </div>
-            <button style="width:100%; padding:10px; border:1px solid #ccc; background:white; border-radius:6px; cursor:pointer;" onclick="downloadImage()">이미지 저장</button>
+            <button class="btn-download" onclick="downloadImage()">이미지 저장</button>
         </div>
     </div>
 
     <div class="viewer">
         <div id="canvas-container"></div>
         <div class="guide-text">
-            좌클릭: 회전 / 우클릭: 이동 / 휠: 확대축소
+            🖱️ 좌클릭: 회전 | 우클릭: 이동 | 휠: 확대/축소
         </div>
     </div>
 
 <script>
     let scene, camera, renderer, controls;
-    let furnitureGroup; // 가구를 담을 그룹 객체
-    let dimGroup;       // 치수선을 담을 그룹 객체
+    let furnitureGroup;
+    let dimGroup;
 
-    // 초기화 함수
     function init() {
         const container = document.getElementById('canvas-container');
 
-        // 1. Scene
+        // Scene & Camera
         scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xeef2f6); // 밝은 배경색
+        scene.background = new THREE.Color(0xeef2f6); // 아주 밝은 회색
 
-        // 2. Camera
         camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 10, 50000);
-        camera.position.set(2500, 2000, 3000);
+        camera.position.set(2800, 2200, 3500); // 카메라 위치 약간 조정
 
-        // 3. Renderer
+        // Renderer
         renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.outputEncoding = THREE.sRGBEncoding; // 색상 보정
         container.appendChild(renderer.domElement);
 
-        // 4. Controls
+        // Controls
         controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.minDistance = 500;
         controls.maxDistance = 10000;
+        controls.maxPolarAngle = Math.PI / 2; // 바닥 아래로 안 내려가게
 
-        // 5. Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        // Lights (조명 강화)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
         scene.add(ambientLight);
 
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
-        dirLight.position.set(1500, 3000, 1500);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(2000, 3000, 2000);
         dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 2048;
-        dirLight.shadow.mapSize.height = 2048;
+        dirLight.shadow.mapSize.set(2048, 2048);
+        dirLight.shadow.camera.near = 0.5;
+        dirLight.shadow.camera.far = 5000;
+        const d = 3000;
+        dirLight.shadow.camera.left = -d; dirLight.shadow.camera.right = d;
+        dirLight.shadow.camera.top = d; dirLight.shadow.camera.bottom = -d;
         scene.add(dirLight);
 
-        // 6. Floor
-        const grid = new THREE.GridHelper(5000, 50, 0xccd5ae, 0xdce2e8);
+        // Floor
+        const grid = new THREE.GridHelper(6000, 60, 0xcbd5e1, 0xe2e8f0);
+        grid.material.opacity = 0.5;
+        grid.material.transparent = true;
         scene.add(grid);
 
         const plane = new THREE.Mesh(
             new THREE.PlaneGeometry(10000, 10000),
-            new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1, metalness: 0 })
+            new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.8, metalness: 0.1 })
         );
         plane.rotation.x = -Math.PI / 2;
-        plane.position.y = -1;
+        plane.position.y = -2;
         plane.receiveShadow = true;
         scene.add(plane);
 
-        // 이벤트 리스너
         window.addEventListener('resize', onWindowResize);
 
-        // 초기 생성
         updateFurniture();
-        
-        // 애니메이션 시작
         animate();
     }
 
-    // 가구 업데이트 (실행 버튼 클릭 시 호출)
     function updateFurniture() {
-        // 기존 가구가 있다면 제거 (메모리 누수 방지)
-        if (furnitureGroup) {
-            scene.remove(furnitureGroup);
-            // 내부 Geometry, Material 메모리 해제
-            furnitureGroup.traverse((child) => {
-                if (child.isMesh) {
-                    child.geometry.dispose();
-                    if (Array.isArray(child.material)) {
-                        child.material.forEach(m => m.dispose());
-                    } else {
-                        child.material.dispose();
-                    }
-                }
-            });
-        }
-        
-        if (dimGroup) {
-            scene.remove(dimGroup);
-        }
+        // 기존 객체 정리
+        if (furnitureGroup) cleanupGroup(furnitureGroup);
+        if (dimGroup) cleanupGroup(dimGroup);
 
-        // 입력값 가져오기
         const width = Number(document.getElementById('input-w').value) || 1200;
         const depth = Number(document.getElementById('input-d').value) || 600;
         const height = Number(document.getElementById('input-h').value) || 1800;
@@ -297,28 +297,32 @@
         furnitureGroup = new THREE.Group();
         dimGroup = new THREE.Group();
 
-        // ------------------ 모델링 시작 ------------------
-        const angleSize = 40; // 앵글 규격 40mm
-        const angleThick = 3; // 두께
+        // === 모델링 ===
+        const angleSize = 40;
+        const angleThick = 3;
+        
+        // 재질 개선
+        const matSteel = new THREE.MeshStandardMaterial({ 
+            color: 0x334155, // Slate 700
+            roughness: 0.5, 
+            metalness: 0.7 
+        });
+        const matWood = new THREE.MeshStandardMaterial({ 
+            color: 0xeebb99, // 따뜻한 나무색
+            roughness: 0.9,
+            metalness: 0.1,
+            side: THREE.DoubleSide
+        });
 
-        // 재질 정의
-        const matSteel = new THREE.MeshStandardMaterial({ color: 0x2f3542, roughness: 0.4, metalness: 0.6 }); // 진한 회색 (철)
-        const matWood = new THREE.MeshStandardMaterial({ color: 0xdabb94, roughness: 0.8 }); // 나무색
-
-        // 1. 기둥 (4개) - L자 형태를 흉내내기 위해 Box 2개 결합
+        // 1. 기둥 생성
         const createPost = (x, z, rotY) => {
             const post = new THREE.Group();
-            
-            // L자의 한쪽 면
             const mesh1 = new THREE.Mesh(new THREE.BoxGeometry(angleSize, height, angleThick), matSteel);
             mesh1.position.set(0, height/2, -angleSize/2 + angleThick/2);
             mesh1.castShadow = true;
-
-            // L자의 다른쪽 면
             const mesh2 = new THREE.Mesh(new THREE.BoxGeometry(angleThick, height, angleSize), matSteel);
             mesh2.position.set(-angleSize/2 + angleThick/2, height/2, 0);
             mesh2.castShadow = true;
-
             post.add(mesh1, mesh2);
             post.position.set(x, 0, z);
             post.rotation.y = rotY;
@@ -327,118 +331,177 @@
 
         const halfW = width / 2;
         const halfD = depth / 2;
-        const offset = angleSize / 2; // 기둥 두께 보정
+        const offset = angleSize / 2;
 
-        // 기둥 배치 (안쪽을 바라보도록 회전)
-        furnitureGroup.add(createPost(-halfW + offset, -halfD + offset, 0));             // 앞-왼쪽
-        furnitureGroup.add(createPost(halfW - offset, -halfD + offset, -Math.PI/2));     // 앞-오른쪽
-        furnitureGroup.add(createPost(-halfW + offset, halfD - offset, Math.PI/2));      // 뒤-왼쪽
-        furnitureGroup.add(createPost(halfW - offset, halfD - offset, Math.PI));         // 뒤-오른쪽
+        furnitureGroup.add(createPost(-halfW + offset, -halfD + offset, 0));
+        furnitureGroup.add(createPost(halfW - offset, -halfD + offset, -Math.PI/2));
+        furnitureGroup.add(createPost(-halfW + offset, halfD - offset, Math.PI/2));
+        furnitureGroup.add(createPost(halfW - offset, halfD - offset, Math.PI));
 
-        // 2. 선반 및 프레임
-        const shelfSpacing = (height - 100) / (shelves - 1); // 위아래 50mm 여유
+        // 2. 선반 및 프레임 생성
+        const shelfSpacing = (height - 100) / (shelves - 1);
+        const frameGeoW = new THREE.BoxGeometry(width, angleSize, angleThick);
+        const frameGeoD = new THREE.BoxGeometry(angleThick, angleSize, depth);
+        const boardGeo = new THREE.BoxGeometry(width - 5, 12, depth - 5);
 
         for (let i = 0; i < shelves; i++) {
             const y = 50 + (i * shelfSpacing);
 
             // 합판
-            const board = new THREE.Mesh(new THREE.BoxGeometry(width - 4, 12, depth - 4), matWood);
-            board.position.set(0, y + 6, 0); // 앵글 위에 얹음
+            const board = new THREE.Mesh(boardGeo, matWood);
+            board.position.set(0, y + 6, 0);
             board.castShadow = true;
             board.receiveShadow = true;
             furnitureGroup.add(board);
 
-            // 가로 프레임 (앞/뒤)
-            const frameW = new THREE.Mesh(new THREE.BoxGeometry(width, angleSize, angleThick), matSteel);
-            
-            const fw1 = frameW.clone();
-            fw1.position.set(0, y, halfD - angleThick/2);
-            furnitureGroup.add(fw1);
-
-            const fw2 = frameW.clone();
-            fw2.position.set(0, y, -halfD + angleThick/2);
-            furnitureGroup.add(fw2);
-
-            // 깊이 프레임 (좌/우)
-            const frameD = new THREE.Mesh(new THREE.BoxGeometry(angleThick, angleSize, depth), matSteel);
-
-            const fd1 = frameD.clone();
-            fd1.position.set(halfW - angleThick/2, y, 0);
-            furnitureGroup.add(fd1);
-
-            const fd2 = frameD.clone();
-            fd2.position.set(-halfW + angleThick/2, y, 0);
-            furnitureGroup.add(fd2);
+            // 프레임
+            const fw1 = new THREE.Mesh(frameGeoW, matSteel); fw1.position.set(0, y, halfD - angleThick/2);
+            const fw2 = new THREE.Mesh(frameGeoW, matSteel); fw2.position.set(0, y, -halfD + angleThick/2);
+            const fd1 = new THREE.Mesh(frameGeoD, matSteel); fd1.position.set(halfW - angleThick/2, y, 0);
+            const fd2 = new THREE.Mesh(frameGeoD, matSteel); fd2.position.set(-halfW + angleThick/2, y, 0);
+            furnitureGroup.add(fw1, fw2, fd1, fd2);
         }
 
-        // ------------------ 치수선 생성 ------------------
-        createDimensions(width, depth, height);
+        // === 치수선 생성 (디자인 개선됨) ===
+        createModernDimensions(width, depth, height);
 
-        // 씬에 추가
         scene.add(furnitureGroup);
         scene.add(dimGroup);
 
-        // 가격 계산
         calculateCost(width, depth, height, shelves);
     }
 
-    function createDimensions(w, d, h) {
-        const color = 0x2563eb; // 파란색
-        const offset = 150;     // 가구에서 떨어진 거리
+    // --- 개선된 치수선 함수 ---
+    function createModernDimensions(w, d, h) {
+        const dimColor = 0x2563eb; // 진한 파란색 (가시성 높음)
+        const dimWidth = 4;        // 선 두께 (실린더 반지름)
+        const offset = 200;        // 가구와의 거리
 
-        // 선 그리기 헬퍼
-        const drawLine = (p1, p2) => {
-            const geo = new THREE.BufferGeometry().setFromPoints([p1, p2]);
-            const mat = new THREE.LineBasicMaterial({ color: color });
-            return new THREE.Line(geo, mat);
+        // 1. 두꺼운 선 그리기 (실린더 활용)
+        const drawThickLine = (p1, p2) => {
+            const vec = new THREE.Vector3().subVectors(p2, p1);
+            const height = vec.length();
+            const mid = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+            
+            const geo = new THREE.CylinderGeometry(dimWidth, dimWidth, height, 8);
+            const mat = new THREE.MeshBasicMaterial({ color: dimColor });
+            const line = new THREE.Mesh(geo, mat);
+            
+            // 방향 정렬
+            line.position.copy(mid);
+            line.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vec.clone().normalize());
+            return line;
         };
 
-        // 텍스트 생성 헬퍼 (Canvas Texture 사용)
-        const createLabel = (text) => {
+        // 2. 끝점 마커 (작은 구)
+        const drawMarker = (pos) => {
+            const geo = new THREE.SphereGeometry(dimWidth * 3, 16, 16);
+            const mat = new THREE.MeshBasicMaterial({ color: dimColor });
+            const marker = new THREE.Mesh(geo, mat);
+            marker.position.copy(pos);
+            return marker;
+        }
+
+        // 3. 고해상도 라벨 스프라이트
+        const createHighResLabel = (text) => {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = 256; canvas.height = 128;
-            ctx.fillStyle = "rgba(255,255,255,0.8)";
-            ctx.fillRect(0,0,256,128);
-            ctx.font = "bold 60px Arial";
-            ctx.fillStyle = "blue";
+            // 해상도 높임
+            canvas.width = 512; 
+            canvas.height = 256;
+            
+            // 배경 박스 (둥근 사각형 + 테두리)
+            ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+            ctx.strokeStyle = "#2563eb";
+            ctx.lineWidth = 10;
+            roundRect(ctx, 20, 50, 472, 156, 40, true, true);
+
+            // 텍스트
+            ctx.font = "bold 100px 'Noto Sans KR', sans-serif";
+            ctx.fillStyle = "#1e3a8a"; // 아주 진한 파랑
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText(text, 128, 64);
+            ctx.fillText(text, 256, 128);
             
             const tex = new THREE.CanvasTexture(canvas);
-            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex }));
-            sprite.scale.set(200, 100, 1);
+            tex.minFilter = THREE.LinearFilter;
+            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true }));
+            sprite.scale.set(400, 200, 1); // 스케일 키움
             return sprite;
         };
 
-        // 가로 치수 (바닥 앞쪽)
-        const wLine = drawLine(new THREE.Vector3(-w/2, 0, d/2 + offset), new THREE.Vector3(w/2, 0, d/2 + offset));
-        const wLabel = createLabel(`W: ${w}`);
-        wLabel.position.set(0, 0, d/2 + offset + 50);
-        dimGroup.add(wLine, wLabel);
+        // 치수선 세트 생성 도우미
+        const buildDimSet = (start, end, labelText, labelOffsetVec) => {
+            const group = new THREE.Group();
+            group.add(drawThickLine(start, end));
+            group.add(drawMarker(start));
+            group.add(drawMarker(end));
+            
+            const label = createHighResLabel(labelText);
+            const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+            label.position.copy(mid).add(labelOffsetVec);
+            group.add(label);
+            return group;
+        }
 
-        // 높이 치수 (왼쪽)
-        const hLine = drawLine(new THREE.Vector3(-w/2 - offset, 0, 0), new THREE.Vector3(-w/2 - offset, h, 0));
-        const hLabel = createLabel(`H: ${h}`);
-        hLabel.position.set(-w/2 - offset - 100, h/2, 0);
-        dimGroup.add(hLine, hLabel);
+        // 가로 (Width)
+        dimGroup.add(buildDimSet(
+            new THREE.Vector3(-w/2, 0, d/2 + offset),
+            new THREE.Vector3(w/2, 0, d/2 + offset),
+            `W: ${w}`,
+            new THREE.Vector3(0, 0, 100)
+        ));
 
-        // 깊이 치수 (우측)
-        const dLine = drawLine(new THREE.Vector3(w/2 + offset, 0, -d/2), new THREE.Vector3(w/2 + offset, 0, d/2));
-        const dLabel = createLabel(`D: ${d}`);
-        dLabel.position.set(w/2 + offset + 100, 0, 0);
-        dimGroup.add(dLine, dLabel);
+        // 높이 (Height)
+        dimGroup.add(buildDimSet(
+            new THREE.Vector3(-w/2 - offset, 0, d/2),
+            new THREE.Vector3(-w/2 - offset, h, d/2),
+            `H: ${h}`,
+            new THREE.Vector3(-150, 0, 0)
+        ));
+
+        // 깊이 (Depth)
+        dimGroup.add(buildDimSet(
+            new THREE.Vector3(w/2 + offset, 0, -d/2),
+            new THREE.Vector3(w/2 + offset, 0, d/2),
+            `D: ${d}`,
+            new THREE.Vector3(150, 0, 0)
+        ));
+    }
+
+    // 캔버스 둥근 사각형 그리기 도우미
+    function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        if (fill) ctx.fill();
+        if (stroke) ctx.stroke();
+    }
+
+    function cleanupGroup(group) {
+        scene.remove(group);
+        group.traverse((child) => {
+            if (child.isMesh || child.isSprite || child.isLine) {
+                if(child.material.map) child.material.map.dispose();
+                child.geometry.dispose();
+                child.material.dispose();
+            }
+        });
     }
 
     function calculateCost(w, d, h, s) {
-        // 간단 견적 로직 (미터당 가격 예시)
         const angleMeter = (h*4 + w*2*s + d*2*s) / 1000;
         const boardArea = (w * d * s) / 1000000;
-        
-        const price = (angleMeter * 3000) + (boardArea * 25000) + (s * 2000);
-        const finalPrice = Math.floor(price / 100) * 100; // 100원 단위 절사
-        
+        const price = (angleMeter * 3500) + (boardArea * 30000) + (s * 2500);
+        const finalPrice = Math.floor(price / 100) * 100;
         document.getElementById('price-value').innerText = finalPrice.toLocaleString();
     }
 
@@ -446,7 +509,7 @@
         renderer.render(scene, camera);
         const link = document.createElement('a');
         link.download = 'angle_simulation.png';
-        link.href = renderer.domElement.toDataURL();
+        link.href = renderer.domElement.toDataURL("image/png");
         link.click();
     }
 
@@ -459,11 +522,10 @@
 
     function animate() {
         requestAnimationFrame(animate);
-        controls.update(); // OrbitControls 부드러운 감속 효과
+        controls.update();
         renderer.render(scene, camera);
     }
 
-    // 실행
     init();
 
 </script>
