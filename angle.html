@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>맞춤 앵글 제작 시뮬레이터</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -30,7 +30,7 @@
             height: 100vh;
         }
 
-        /* --- [수정] 사이드바 너비 축소 (360px -> 220px) --- */
+        /* 사이드바 스타일 (모바일 대응 강화) */
         .sidebar {
             width: 220px; 
             background: var(--bg-panel);
@@ -39,25 +39,25 @@
             flex-direction: column;
             z-index: 10;
             box-shadow: 2px 0 10px rgba(0,0,0,0.05);
-            flex-shrink: 0; /* 화면이 줄어도 사이드바 크기 고정 */
+            flex-shrink: 0;
         }
 
         .header {
-            padding: 20px 15px;
+            padding: 15px;
             border-bottom: 1px solid var(--border);
         }
 
         .header h1 {
-            font-size: 18px; /* 폰트 사이즈 조정 */
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-main);
-            line-height: 1.2;
         }
 
         .controls {
             flex: 1;
-            padding: 15px; /* 패딩 축소 */
+            padding: 15px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch; /* 아이패드 스크롤 부드럽게 */
         }
 
         .input-group { margin-bottom: 15px; }
@@ -78,15 +78,22 @@
 
         input[type="number"] {
             width: 100%;
-            padding: 8px;
+            padding: 10px; /* 터치 영역 확대 */
             border: 1px solid var(--border);
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 16px; /* iOS 자동 줌 방지용 16px */
             text-align: right;
             outline: none;
             transition: 0.2s;
             font-weight: 500;
+            -moz-appearance: textfield; /* 파이어폭스 화살표 제거 */
         }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
         input[type="number"]:focus { 
             border-color: var(--primary); 
             background: #eff6ff;
@@ -95,7 +102,7 @@
 
         #btn-run {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background: var(--primary);
             color: white;
             border: none;
@@ -104,13 +111,9 @@
             font-weight: 700;
             cursor: pointer;
             margin-top: 10px;
-            transition: background 0.2s, transform 0.1s;
+            margin-bottom: 20px; /* 하단 여백 추가 */
         }
 
-        #btn-run:hover { background: var(--primary-hover); }
-        #btn-run:active { transform: translateY(1px); }
-
-        /* --- [수정] 견적 영역 제거 및 버튼 스타일 정리 --- */
         .footer-actions {
             padding: 15px;
             background: #f8fafc;
@@ -119,7 +122,7 @@
 
         .btn-download {
             width:100%; 
-            padding: 10px; 
+            padding: 12px; 
             border:1px solid #d1d5db; 
             background:white; 
             border-radius:6px; 
@@ -127,9 +130,8 @@
             font-size: 13px;
             font-weight: 600;
             color: var(--text-sub);
-            transition: all 0.2s;
         }
-        .btn-download:hover { background: #f3f4f6; color: var(--text-main); border-color: #9ca3af;}
+        .btn-download:hover { background: #f3f4f6; color: var(--text-main); }
 
         .viewer {
             flex: 1;
@@ -144,13 +146,12 @@
             bottom: 20px;
             right: 20px;
             background: rgba(255,255,255,0.9);
-            padding: 10px 14px;
+            padding: 8px 12px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11px;
             color: #555;
             pointer-events: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
     </style>
 </head>
@@ -198,14 +199,17 @@
         </div>
 
         <div class="footer-actions">
-            <button class="btn-download" onclick="downloadImage()">이미지 저장</button>
+            <button class="btn-download" onclick="saveImage()">📷 이미지 저장</button>
+            <div style="text-align:center; font-size:10px; color:#999; margin-top:5px;">
+                아이패드는 이미지를 길게 눌러 저장하세요
+            </div>
         </div>
     </div>
 
     <div class="viewer">
         <div id="canvas-container"></div>
         <div class="guide-text">
-            좌클릭: 회전 | 우클릭: 이동 | 휠: 줌
+            회전: 드래그 | 이동: 두손가락 | 줌: 핀치
         </div>
     </div>
 
@@ -214,24 +218,24 @@
     let furnitureGroup;
     let dimGroup;
 
-    // --- [수정] 입력 필드 클릭 시 값 자동 지우기 로직 ---
+    // 입력 필드 UX 개선 (클릭 시 전체선택/지움)
     document.addEventListener("DOMContentLoaded", () => {
         const inputs = document.querySelectorAll('input[type="number"]');
         inputs.forEach(input => {
-            // 포커스(클릭) 되면 값을 비워서 입력하기 쉽게 함
             input.addEventListener('focus', function() {
-                this.dataset.prevValue = this.value; // 만약을 위해 이전 값 저장
+                this.dataset.prevValue = this.value;
                 this.value = '';
             });
-            // 입력 안하고 나갔을 때(blur) 비어있으면 이전 값 복구 (오류 방지)
             input.addEventListener('blur', function() {
                 if(this.value === '') {
                     this.value = this.dataset.prevValue || 0;
                 }
             });
-            // 엔터키 누르면 실행
             input.addEventListener('keydown', function(e) {
-                if(e.key === 'Enter') updateFurniture();
+                if(e.key === 'Enter') {
+                    this.blur(); // 키보드 내림
+                    updateFurniture();
+                }
             });
         });
         
@@ -244,8 +248,9 @@
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0xeef2f6);
 
-        camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 10, 50000);
-        camera.position.set(2800, 2200, 3500);
+        // 초기 카메라 위치 (나중에 자동조정됨)
+        camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 10, 100000);
+        camera.position.set(3000, 2500, 3000);
 
         renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
@@ -257,23 +262,26 @@
         controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
-        controls.minDistance = 500;
+        controls.minDistance = 100;
         controls.maxDistance = 10000;
-        controls.maxPolarAngle = Math.PI / 2;
+        controls.maxPolarAngle = Math.PI / 2 - 0.05; // 바닥 아래로 통과 방지
 
+        // 조명
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
         scene.add(ambientLight);
 
         const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
         dirLight.position.set(2000, 3000, 2000);
         dirLight.castShadow = true;
+        // 그림자 범위 넉넉하게
         dirLight.shadow.mapSize.set(2048, 2048);
-        const d = 3000;
+        const d = 4000;
         dirLight.shadow.camera.left = -d; dirLight.shadow.camera.right = d;
         dirLight.shadow.camera.top = d; dirLight.shadow.camera.bottom = -d;
         scene.add(dirLight);
 
-        const grid = new THREE.GridHelper(6000, 60, 0xcbd5e1, 0xe2e8f0);
+        // 바닥
+        const grid = new THREE.GridHelper(8000, 40, 0xcbd5e1, 0xe2e8f0);
         grid.material.opacity = 0.5;
         grid.material.transparent = true;
         scene.add(grid);
@@ -305,23 +313,14 @@
         furnitureGroup = new THREE.Group();
         dimGroup = new THREE.Group();
 
-        // === 모델링 ===
+        // === 가구 생성 ===
         const angleSize = 40;
         const angleThick = 3;
         
-        const matSteel = new THREE.MeshStandardMaterial({ 
-            color: 0x334155, 
-            roughness: 0.5, 
-            metalness: 0.7 
-        });
-        const matWood = new THREE.MeshStandardMaterial({ 
-            color: 0xeebb99,
-            roughness: 0.9,
-            metalness: 0.1,
-            side: THREE.DoubleSide
-        });
+        const matSteel = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.5, metalness: 0.7 });
+        const matWood = new THREE.MeshStandardMaterial({ color: 0xeebb99, roughness: 0.9, metalness: 0.1, side: THREE.DoubleSide });
 
-        // 기둥
+        // 기둥 생성 함수
         const createPost = (x, z, rotY) => {
             const post = new THREE.Group();
             const mesh1 = new THREE.Mesh(new THREE.BoxGeometry(angleSize, height, angleThick), matSteel);
@@ -345,7 +344,7 @@
         furnitureGroup.add(createPost(-halfW + offset, halfD - offset, Math.PI/2));
         furnitureGroup.add(createPost(halfW - offset, halfD - offset, Math.PI));
 
-        // 선반
+        // 선반 생성
         const shelfSpacing = (height - 100) / (shelves - 1);
         const frameGeoW = new THREE.BoxGeometry(width, angleSize, angleThick);
         const frameGeoD = new THREE.BoxGeometry(angleThick, angleSize, depth);
@@ -366,34 +365,70 @@
             furnitureGroup.add(fw1, fw2, fd1, fd2);
         }
 
+        // 치수선 생성
         createModernDimensions(width, depth, height);
 
         scene.add(furnitureGroup);
         scene.add(dimGroup);
+
+        // [중요] 카메라를 가구 사이즈에 맞춰 자동 조정
+        fitCameraToSelection(camera, controls, [furnitureGroup, dimGroup], 1.5);
+    }
+
+    // 카메라 자동 줌인/줌아웃 함수
+    function fitCameraToSelection(camera, controls, selection, fitOffset = 1.2) {
+        const box = new THREE.Box3();
+        
+        selection.forEach(object => {
+            box.expandByObject(object);
+        });
+        
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        
+        const maxSize = Math.max(size.x, size.y, size.z);
+        const fitHeightDistance = maxSize / (2 * Math.atan(Math.PI * camera.fov / 360));
+        const fitWidthDistance = fitHeightDistance / camera.aspect;
+        const distance = fitOffset * Math.max(fitHeightDistance, fitWidthDistance);
+        
+        const direction = controls.target.clone().sub(camera.position).normalize().multiplyScalar(distance);
+
+        controls.maxDistance = distance * 10;
+        controls.target.copy(center); // 시점을 가구 중심으로 변경
+        
+        // 부드러운 이동 대신 즉시 이동 (초기화 느낌)
+        camera.near = distance / 100;
+        camera.far = distance * 100;
+        camera.updateProjectionMatrix();
+
+        camera.position.copy(controls.target).sub(direction);
+        controls.update();
     }
 
     function createModernDimensions(w, d, h) {
         const dimColor = 0x2563eb;
         const dimWidth = 4;
-        const offset = 200;
+        const offset = 250; // 치수선 간격을 더 넓힘
 
         const drawThickLine = (p1, p2) => {
             const vec = new THREE.Vector3().subVectors(p2, p1);
             const height = vec.length();
             const mid = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
             const geo = new THREE.CylinderGeometry(dimWidth, dimWidth, height, 8);
-            const mat = new THREE.MeshBasicMaterial({ color: dimColor });
+            const mat = new THREE.MeshBasicMaterial({ color: dimColor, depthTest: false }); // depthTest false로 바닥 위로 강제 렌더링
             const line = new THREE.Mesh(geo, mat);
             line.position.copy(mid);
             line.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vec.clone().normalize());
+            line.renderOrder = 999;
             return line;
         };
 
         const drawMarker = (pos) => {
-            const geo = new THREE.SphereGeometry(dimWidth * 3, 16, 16);
-            const mat = new THREE.MeshBasicMaterial({ color: dimColor });
+            const geo = new THREE.SphereGeometry(dimWidth * 4, 16, 16);
+            const mat = new THREE.MeshBasicMaterial({ color: dimColor, depthTest: false });
             const marker = new THREE.Mesh(geo, mat);
             marker.position.copy(pos);
+            marker.renderOrder = 999;
             return marker;
         }
 
@@ -404,7 +439,7 @@
             
             ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
             ctx.strokeStyle = "#2563eb";
-            ctx.lineWidth = 10;
+            ctx.lineWidth = 15;
             roundRect(ctx, 20, 50, 472, 156, 40, true, true);
 
             ctx.font = "bold 100px 'Noto Sans KR', sans-serif";
@@ -415,8 +450,9 @@
             
             const tex = new THREE.CanvasTexture(canvas);
             tex.minFilter = THREE.LinearFilter;
-            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true }));
-            sprite.scale.set(400, 200, 1);
+            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+            sprite.scale.set(500, 250, 1);
+            sprite.renderOrder = 1000;
             return sprite;
         };
 
@@ -433,25 +469,28 @@
             return group;
         }
 
+        // 가로 (W)
         dimGroup.add(buildDimSet(
             new THREE.Vector3(-w/2, 0, d/2 + offset),
             new THREE.Vector3(w/2, 0, d/2 + offset),
             `W: ${w}`,
-            new THREE.Vector3(0, 0, 100)
+            new THREE.Vector3(0, 50, 100) // Y축으로 살짝 띄움
         ));
 
+        // 높이 (H)
         dimGroup.add(buildDimSet(
             new THREE.Vector3(-w/2 - offset, 0, d/2),
             new THREE.Vector3(-w/2 - offset, h, d/2),
             `H: ${h}`,
-            new THREE.Vector3(-150, 0, 0)
+            new THREE.Vector3(-180, 0, 0)
         ));
 
+        // 깊이 (D)
         dimGroup.add(buildDimSet(
             new THREE.Vector3(w/2 + offset, 0, -d/2),
             new THREE.Vector3(w/2 + offset, 0, d/2),
             `D: ${d}`,
-            new THREE.Vector3(150, 0, 0)
+            new THREE.Vector3(180, 50, 0) // Y축으로 살짝 띄움
         ));
     }
 
@@ -482,12 +521,30 @@
         });
     }
 
-    function downloadImage() {
+    // 아이패드/PC 통합 저장 함수
+    function saveImage() {
         renderer.render(scene, camera);
-        const link = document.createElement('a');
-        link.download = 'angle_simulation.png';
-        link.href = renderer.domElement.toDataURL("image/png");
-        link.click();
+        const dataURL = renderer.domElement.toDataURL("image/png");
+
+        // 모바일(iOS 등) 체크
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            // 모바일에서는 새 탭으로 이미지 열기 (길게 눌러 저장 유도)
+            const win = window.open();
+            if (win) {
+                win.document.write(`<img src="${dataURL}" style="width:100%; height:auto;" />`);
+                win.document.title = "이미지 길게 눌러 저장";
+            } else {
+                alert('팝업 차단을 해제해주세요.');
+            }
+        } else {
+            // PC에서는 바로 다운로드
+            const link = document.createElement('a');
+            link.download = `앵글견적_${new Date().getTime()}.png`;
+            link.href = dataURL;
+            link.click();
+        }
     }
 
     function onWindowResize() {
