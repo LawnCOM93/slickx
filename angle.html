@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>앵글 가구 시뮬레이터</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    :root {
+        --primary: #00ffcc;
+        --secondary: #0099ff;
+        --bg-dark: #0a0e14;
+        --bg-panel: #141921;
+        --text-primary: #e6e8eb;
+        --text-secondary: #8a9199;
+        --border: #1f2937;
+        --accent: #ff0080;
+    }
+
+    body {
+        font-family: 'Rajdhani', sans-serif;
+        background: var(--bg-dark);
+        color: var(--text-primary);
+        overflow: hidden;
+        background-image: 
+            linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+        0% { background-position: 0 0; }
+        100% { background-position: 50px 50px; }
+    }
+
+    .container {
+        display: flex;
+        height: 100vh;
+        position: relative;
+    }
+
+    .control-panel {
+        width: 380px;
+        background: var(--bg-panel);
+        border-right: 2px solid var(--border);
+        padding: 40px 30px;
+        overflow-y: auto;
+        backdrop-filter: blur(10px);
+        z-index: 10;
+    }
+
+    h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -1px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+        font-family: 'JetBrains Mono', monospace;
+        letter-spacing: 1px;
+    }
+
+    .input-group {
+        margin-bottom: 30px;
+        animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    input[type="number"] {
+        width: 100%;
+        padding: 16px 20px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        color: var(--text-primary);
+        font-size: 24px;
+        font-weight: 600;
+        font-family: 'Rajdhani', sans-serif;
+        transition: all 0.3s ease;
+    }
+
+    input[type="number"]:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    input[type="number"]:hover {
+        border-color: rgba(0, 255, 204, 0.5);
+    }
+
+    .unit {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        font-size: 16px;
+        font-weight: 500;
+        pointer-events: none;
+    }
+
+    button {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border: none;
+        border-radius: 8px;
+        color: var(--bg-dark);
+        font-size: 18px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 30px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 255, 204, 0.4);
+    }
+
+    button:active {
+        transform: translateY(0);
+    }
+
+    button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        transition: left 0.5s ease;
+    }
+
+    button:hover::before {
+        left: 100%;
+    }
+
+    .stats {
+        margin-top: 40px;
+        padding: 25px;
+        background: rgba(0, 255, 204, 0.05);
+        border: 1px solid rgba(0, 255, 204, 0.2);
+        border-radius: 8px;
+    }
+
+    .stats h3 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: var(--primary);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .stat-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .stat-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .stat-label {
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
+
+    .stat-value {
+        color: var(--text-primary);
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    #canvas-container {
+        flex: 1;
+        position: relative;
+    }
+
+    canvas {
+        display: block;
+    }
+
+    .controls-hint {
+        position: absolute;
+        bottom: 30px;
+        right: 30px;
+        background: rgba(20, 25, 33, 0.9);
+        padding: 20px 25px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        backdrop-filter: blur(10px);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .controls-hint div {
+        margin-bottom: 8px;
+    }
+
+    .controls-hint div:last-child {
+        margin-bottom: 0;
+    }
+
+    .controls-hint span {
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    .logo {
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--primary);
+        opacity: 0.3;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Scrollbar */
+    .control-panel::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .control-panel::-webkit-scrollbar-track {
+        background: var(--bg-dark);
+    }
+
+    .control-panel::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 4px;
+    }
+
+    .dimension-label {
+        position: absolute;
+        color: var(--primary);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+        font-weight: 600;
+        background: rgba(10, 14, 20, 0.8);
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: 1px solid var(--primary);
+        pointer-events: none;
+        white-space: nowrap;
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <div class="control-panel">
+            <h1>앵글 시뮬레이터</h1>
+            <div class="subtitle">ANGLE FURNITURE 3D</div>
+
+```
+        <div class="input-group" style="animation-delay: 0.1s">
+            <label>가로 (Width)</label>
+            <div class="input-wrapper">
+                <input type="number" id="width" value="1200" min="300" max="3000" step="10">
+                <span class="unit">mm</span>
+            </div>
+        </div>
+
+        <div class="input-group" style="animation-delay: 0.2s">
+            <label>세로 (Depth)</label>
+            <div class="input-wrapper">
+                <input type="number" id="depth" value="600" min="300" max="1500" step="10">
+                <span class="unit">mm</span>
+            </div>
+        </div>
+
+        <div class="input-group" style="animation-delay: 0.3s">
+            <label>높이 (Height)</label>
+            <div class="input-wrapper">
+                <input type="number" id="height" value="1800" min="500" max="3000" step="10">
+                <span class="unit">mm</span>
+            </div>
+        </div>
+
+        <div class="input-group" style="animation-delay: 0.4s">
+            <label>단수 (Shelves)</label>
+            <div class="input-wrapper">
+                <input type="number" id="shelves" value="5" min="2" max="10" step="1">
+                <span class="unit">단</span>
+            </div>
+        </div>
+
+        <button onclick="updateFurniture()">업데이트</button>
+
+        <div class="stats">
+            <h3>사양 정보</h3>
+            <div class="stat-item">
+                <span class="stat-label">총 부피</span>
+                <span class="stat-value" id="volume">0 m³</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">선반 간격</span>
+                <span class="stat-value" id="shelf-spacing">0 mm</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">총 중량 (예상)</span>
+                <span class="stat-value" id="weight">0 kg</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="canvas-container">
+        <div class="logo">∠ ANGLE</div>
+        <div class="controls-hint">
+            <div><span>좌클릭 드래그</span> — 회전</div>
+            <div><span>우클릭 드래그</span> — 이동</div>
+            <div><span>스크롤</span> — 확대/축소</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let scene, camera, renderer, furniture;
+    let controls = { mouseX: 0, mouseY: 0, isDragging: false, isPanning: false };
+    let rotation = { x: 0.3, y: 0.5 };
+    let zoom = 1;
+    let pan = { x: 0, y: 0 };
+
+    function init() {
+        // Scene setup
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0e14);
+
+        // Camera
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100000);
+        camera.position.z = 5000;
+
+        // Renderer
+        const container = document.getElementById('canvas-container');
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.shadowMap.enabled = true;
+        container.appendChild(renderer.domElement);
+
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const directionalLight1 = new THREE.DirectionalLight(0x00ffcc, 0.8);
+        directionalLight1.position.set(5, 10, 7);
+        directionalLight1.castShadow = true;
+        scene.add(directionalLight1);
+
+        const directionalLight2 = new THREE.DirectionalLight(0x0099ff, 0.5);
+        directionalLight2.position.set(-5, 5, -5);
+        scene.add(directionalLight2);
+
+        // Grid
+        const gridHelper = new THREE.GridHelper(5000, 50, 0x1f2937, 0x1f2937);
+        gridHelper.position.y = -2000;
+        scene.add(gridHelper);
+
+        // Create initial furniture
+        createFurniture();
+
+        // Mouse controls
+        setupControls();
+
+        // Window resize
+        window.addEventListener('resize', onWindowResize);
+
+        // Animation loop
+        animate();
+    }
+
+    function createFurniture() {
+        // Remove old furniture
+        if (furniture) {
+            scene.remove(furniture);
+        }
+
+        furniture = new THREE.Group();
+
+        const width = parseFloat(document.getElementById('width').value);
+        const depth = parseFloat(document.getElementById('depth').value);
+        const height = parseFloat(document.getElementById('height').value);
+        const shelves = parseInt(document.getElementById('shelves').value);
+
+        // Angle profile dimensions (40mm x 40mm)
+        const angleSize = 40;
+        const angleThickness = 5; // 5mm thickness
+        
+        // Materials
+        const angleMaterial = new THREE.MeshStandardMaterial({
+            color: 0x777777,
+            metalness: 0.8,
+            roughness: 0.3
+        });
+
+        const shelfMaterial = new THREE.MeshStandardMaterial({
+            color: 0xdddddd,
+            metalness: 0.3,
+            roughness: 0.7
+        });
+
+        // Function to create L-shaped angle profile
+        function createLAngle(length, axis = 'y') {
+            const angleGroup = new THREE.Group();
+            
+            let leg1Geometry, leg2Geometry;
+            
+            if (axis === 'y') {
+                // Vertical angle
+                leg1Geometry = new THREE.BoxGeometry(angleThickness, length, angleSize);
+                leg2Geometry = new THREE.BoxGeometry(angleSize, length, angleThickness);
+            } else if (axis === 'x') {
+                // Horizontal (width direction)
+                leg1Geometry = new THREE.BoxGeometry(length, angleThickness, angleSize);
+                leg2Geometry = new THREE.BoxGeometry(length, angleSize, angleThickness);
+            } else if (axis === 'z') {
+                // Horizontal (depth direction)
+                leg1Geometry = new THREE.BoxGeometry(angleSize, angleThickness, length);
+                leg2Geometry = new THREE.BoxGeometry(angleThickness, angleSize, length);
+            }
+            
+            const leg1 = new THREE.Mesh(leg1Geometry, angleMaterial);
+            const leg2 = new THREE.Mesh(leg2Geometry, angleMaterial);
+            
+            if (axis === 'y') {
+                leg1.position.set((angleSize - angleThickness) / 2, 0, 0);
+                leg2.position.set(0, 0, (angleSize - angleThickness) / 2);
+            } else if (axis === 'x') {
+                leg1.position.set(0, (angleSize - angleThickness) / 2, 0);
+                leg2.position.set(0, 0, (angleSize - angleThickness) / 2);
+            } else if (axis === 'z') {
+                leg1.position.set(0, (angleSize - angleThickness) / 2, 0);
+                leg2.position.set((angleSize - angleThickness) / 2, 0, 0);
+            }
+            
+            leg1.castShadow = true;
+            leg1.receiveShadow = true;
+            leg2.castShadow = true;
+            leg2.receiveShadow = true;
+            
+            angleGroup.add(leg1);
+            angleGroup.add(leg2);
+            
+            return angleGroup;
+        }
+
+        // Create vertical angles (4 corners)
+        const positions = [
+            [-width/2 + angleSize/2, 0, -depth/2 + angleSize/2],
+            [width/2 - angleSize/2, 0, -depth/2 + angleSize/2],
+            [-width/2 + angleSize/2, 0, depth/2 - angleSize/2],
+            [width/2 - angleSize/2, 0, depth/2 - angleSize/2]
+        ];
+
+        positions.forEach((pos, index) => {
+            const angle = createLAngle(height, 'y');
+            angle.position.set(pos[0], pos[1], pos[2]);
+            
+            // Rotate to face inward
+            if (index === 0) angle.rotation.y = 0; // Front-left
+            if (index === 1) angle.rotation.y = -Math.PI / 2; // Front-right
+            if (index === 2) angle.rotation.y = Math.PI / 2; // Back-left
+            if (index === 3) angle.rotation.y = Math.PI; // Back-right
+            
+            furniture.add(angle);
+        });
+
+        // Create shelves
+        const shelfHeight = 20;
+        const shelfSpacing = height / (shelves - 1);
+        
+        for (let i = 0; i < shelves; i++) {
+            const yPos = -height/2 + (i * shelfSpacing);
+            
+            // Shelf board
+            const shelfGeometry = new THREE.BoxGeometry(
+                width - angleSize,
+                shelfHeight,
+                depth - angleSize
+            );
+            const shelf = new THREE.Mesh(shelfGeometry, shelfMaterial);
+            shelf.position.y = yPos;
+            shelf.castShadow = true;
+            shelf.receiveShadow = true;
+            furniture.add(shelf);
+
+            // Horizontal angle supports (front and back)
+            const frontSupport = createLAngle(width - angleSize, 'x');
+            frontSupport.position.set(0, yPos, -depth/2 + angleSize/2);
+            furniture.add(frontSupport);
+
+            const backSupport = createLAngle(width - angleSize, 'x');
+            backSupport.position.set(0, yPos, depth/2 - angleSize/2);
+            backSupport.rotation.y = Math.PI;
+            furniture.add(backSupport);
+
+            // Side supports
+            const leftSupport = createLAngle(depth - angleSize, 'z');
+            leftSupport.position.set(-width/2 + angleSize/2, yPos, 0);
+            furniture.add(leftSupport);
+
+            const rightSupport = createLAngle(depth - angleSize, 'z');
+            rightSupport.position.set(width/2 - angleSize/2, yPos, 0);
+            rightSupport.rotation.y = -Math.PI / 2;
+            furniture.add(rightSupport);
+        }
+
+        // Add dimension lines
+        addDimensionLines(width, depth, height);
+
+        scene.add(furniture);
+        updateStats();
+    }
+
+    function createDimensionLine(start, end, color = 0x00ffcc) {
+        const points = [];
+        points.push(new THREE.Vector3(start.x, start.y, start.z));
+        points.push(new THREE.Vector3(end.x, end.y, end.z));
+        
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const material = new THREE.LineBasicMaterial({ 
+            color: color,
+            linewidth: 2
+        });
+        
+        return new THREE.Line(geometry, material);
+    }
+
+    function createDimensionArrow(position, direction, size = 60) {
+        const arrowGroup = new THREE.Group();
+        
+        // Arrow shaft
+        const points = [];
+        points.push(new THREE.Vector3(0, 0, 0));
+        points.push(new THREE.Vector3(direction.x * size, direction.y * size, direction.z * size));
+        
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const material = new THREE.LineBasicMaterial({ color: 0x00ffcc });
+        const line = new THREE.Line(geometry, material);
+        arrowGroup.add(line);
+        
+        // Arrow head
+        const coneGeometry = new THREE.ConeGeometry(15, 40, 8);
+        const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffcc });
+        const cone = new THREE.Mesh(coneGeometry, coneMaterial);
+        
+        // Position and rotate cone
+        cone.position.set(direction.x * size, direction.y * size, direction.z * size);
+        
+        // Rotate cone to point in the right direction
+        const axis = new THREE.Vector3(0, 1, 0);
+        const angle = Math.acos(axis.dot(direction));
+        const rotationAxis = new THREE.Vector3().crossVectors(axis, direction).normalize();
+        
+        if (rotationAxis.length() > 0) {
+            cone.quaternion.setFromAxisAngle(rotationAxis, angle);
+        }
+        
+        arrowGroup.add(cone);
+        arrowGroup.position.set(position.x, position.y, position.z);
+        
+        return arrowGroup;
+    }
+
+    function createTextSprite(message, parameters = {}) {
+        const fontface = parameters.fontface || 'JetBrains Mono, monospace';
+        const fontsize = parameters.fontsize || 70;
+        const backgroundColor = parameters.backgroundColor || { r: 10, g: 14, b: 20, a: 0.9 };
+        const textColor = parameters.textColor || { r: 0, g: 255, b: 204, a: 1.0 };
+        
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = 512;
+        canvas.height = 256;
+        
+        context.font = `Bold ${fontsize}px ${fontface}`;
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        
+        // Background
+        context.fillStyle = `rgba(${backgroundColor.r},${backgroundColor.g},${backgroundColor.b},${backgroundColor.a})`;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Border
+        context.strokeStyle = `rgba(${textColor.r},${textColor.g},${textColor.b},${textColor.a})`;
+        context.lineWidth = 4;
+        context.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+        
+        // Text
+        context.fillStyle = `rgba(${textColor.r},${textColor.g},${textColor.b},${textColor.a})`;
+        context.fillText(message, canvas.width / 2, canvas.height / 2);
+        
+        const texture = new THREE.Texture(canvas);
+        texture.needsUpdate = true;
+        
+        const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+        const sprite = new THREE.Sprite(spriteMaterial);
+        sprite.scale.set(400, 200, 1);
+        
+        return sprite;
+    }
+
+    function addDimensionLines(width, depth, height) {
+        const offset = 300;
+        const dimGroup = new THREE.Group();
+        
+        // WIDTH dimension (bottom, front)
+        const widthY = -height/2 - offset;
+        const widthZ = depth/2 + offset;
+        
+        // Main line
+        const widthLine = createDimensionLine(
+            { x: -width/2 - 100, y: widthY, z: widthZ },
+            { x: width/2 + 100, y: widthY, z: widthZ }
+        );
+        dimGroup.add(widthLine);
+        
+        // End markers (vertical lines)
+        const widthMarker1 = createDimensionLine(
+            { x: -width/2, y: widthY - 60, z: widthZ },
+            { x: -width/2, y: widthY + 60, z: widthZ }
+        );
+        dimGroup.add(widthMarker1);
+        
+        const widthMarker2 = createDimensionLine(
+            { x: width/2, y: widthY - 60, z: widthZ },
+            { x: width/2, y: widthY + 60, z: widthZ }
+        );
+        dimGroup.add(widthMarker2);
+        
+        // Arrows
+        const widthArrow1 = createDimensionArrow(
+            { x: -width/2 - 100, y: widthY, z: widthZ },
+            new THREE.Vector3(1, 0, 0)
+        );
+        dimGroup.add(widthArrow1);
+        
+        const widthArrow2 = createDimensionArrow(
+            { x: width/2 + 100, y: widthY, z: widthZ },
+            new THREE.Vector3(-1, 0, 0)
+        );
+        dimGroup.add(widthArrow2);
+        
+        // Label
+        const widthLabel = createTextSprite(`W: ${width.toFixed(0)}mm`);
+        widthLabel.position.set(0, widthY + 150, widthZ);
+        dimGroup.add(widthLabel);
+        
+        // HEIGHT dimension (left, front)
+        const heightX = -width/2 - offset;
+        const heightZ = depth/2 + offset;
+        
+        // Main line
+        const heightLine = createDimensionLine(
+            { x: heightX, y: -height/2 - 100, z: heightZ },
+            { x: heightX, y: height/2 + 100, z: heightZ }
+        );
+        dimGroup.add(heightLine);
+        
+        // End markers
+        const heightMarker1 = createDimensionLine(
+            { x: heightX - 60, y: -height/2, z: heightZ },
+            { x: heightX + 60, y: -height/2, z: heightZ }
+        );
+        dimGroup.add(heightMarker1);
+        
+        const heightMarker2 = createDimensionLine(
+            { x: heightX - 60, y: height/2, z: heightZ },
+            { x: heightX + 60, y: height/2, z: heightZ }
+        );
+        dimGroup.add(heightMarker2);
+        
+        // Arrows
+        const heightArrow1 = createDimensionArrow(
+            { x: heightX, y: -height/2 - 100, z: heightZ },
+            new THREE.Vector3(0, 1, 0)
+        );
+        dimGroup.add(heightArrow1);
+        
+        const heightArrow2 = createDimensionArrow(
+            { x: heightX, y: height/2 + 100, z: heightZ },
+            new THREE.Vector3(0, -1, 0)
+        );
+        dimGroup.add(heightArrow2);
+        
+        // Label
+        const heightLabel = createTextSprite(`H: ${height.toFixed(0)}mm`);
+        heightLabel.position.set(heightX - 150, 0, heightZ);
+        dimGroup.add(heightLabel);
+        
+        // DEPTH dimension (right, bottom)
+        const depthX = width/2 + offset;
+        const depthY = -height/2 - offset;
+        
+        // Main line
+        const depthLine = createDimensionLine(
+            { x: depthX, y: depthY, z: -depth/2 - 100 },
+            { x: depthX, y: depthY, z: depth/2 + 100 }
+        );
+        dimGroup.add(depthLine);
+        
+        // End markers
+        const depthMarker1 = createDimensionLine(
+            { x: depthX - 60, y: depthY, z: -depth/2 },
+            { x: depthX + 60, y: depthY, z: -depth/2 }
+        );
+        dimGroup.add(depthMarker1);
+        
+        const depthMarker2 = createDimensionLine(
+            { x: depthX - 60, y: depthY, z: depth/2 },
+            { x: depthX + 60, y: depthY, z: depth/2 }
+        );
+        dimGroup.add(depthMarker2);
+        
+        // Arrows
+        const depthArrow1 = createDimensionArrow(
+            { x: depthX, y: depthY, z: -depth/2 - 100 },
+            new THREE.Vector3(0, 0, 1)
+        );
+        dimGroup.add(depthArrow1);
+        
+        const depthArrow2 = createDimensionArrow(
+            { x: depthX, y: depthY, z: depth/2 + 100 },
+            new THREE.Vector3(0, 0, -1)
+        );
+        dimGroup.add(depthArrow2);
+        
+        // Label
+        const depthLabel = createTextSprite(`D: ${depth.toFixed(0)}mm`);
+        depthLabel.position.set(depthX + 150, depthY, 0);
+        dimGroup.add(depthLabel);
+        
+        furniture.add(dimGroup);
+    }
+
+    function updateStats() {
+        const width = parseFloat(document.getElementById('width').value);
+        const depth = parseFloat(document.getElementById('depth').value);
+        const height = parseFloat(document.getElementById('height').value);
+        const shelves = parseInt(document.getElementById('shelves').value);
+
+        // Volume in cubic meters (convert mm to m)
+        const volume = (width * depth * height) / 1000000000;
+        document.getElementById('volume').textContent = volume.toFixed(3) + ' m³';
+
+        // Shelf spacing in mm
+        const spacing = height / (shelves - 1);
+        document.getElementById('shelf-spacing').textContent = spacing.toFixed(0) + ' mm';
+
+        // Estimated weight (rough calculation)
+        const weight = volume * 50; // Assuming 50kg per cubic meter
+        document.getElementById('weight').textContent = weight.toFixed(1) + ' kg';
+    }
+
+    function setupControls() {
+        const canvas = renderer.domElement;
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (e.button === 0) { // Left click
+                controls.isDragging = true;
+            } else if (e.button === 2) { // Right click
+                controls.isPanning = true;
+            }
+            controls.mouseX = e.clientX;
+            controls.mouseY = e.clientY;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (controls.isDragging) {
+                const deltaX = e.clientX - controls.mouseX;
+                const deltaY = e.clientY - controls.mouseY;
+                rotation.y += deltaX * 0.005;
+                rotation.x += deltaY * 0.005;
+                rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, rotation.x));
+            } else if (controls.isPanning) {
+                const deltaX = e.clientX - controls.mouseX;
+                const deltaY = e.clientY - controls.mouseY;
+                pan.x += deltaX * 5;
+                pan.y -= deltaY * 5;
+            }
+            controls.mouseX = e.clientX;
+            controls.mouseY = e.clientY;
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            controls.isDragging = false;
+            controls.isPanning = false;
+        });
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            zoom += e.deltaY * -0.001;
+            zoom = Math.max(0.3, Math.min(3, zoom));
+        });
+
+        canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        if (furniture) {
+            furniture.rotation.x = rotation.x;
+            furniture.rotation.y = rotation.y;
+            furniture.position.x = pan.x;
+            furniture.position.y = pan.y;
+        }
+
+        camera.position.z = 5000 / zoom;
+
+        renderer.render(scene, camera);
+    }
+
+    function onWindowResize() {
+        const container = document.getElementById('canvas-container');
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    }
+
+    function updateFurniture() {
+        createFurniture();
+    }
+
+    // Auto-update on input change
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener('change', updateFurniture);
+    });
+
+    // Initialize
+    init();
+</script>
+```
+
+</body>
+</html>
