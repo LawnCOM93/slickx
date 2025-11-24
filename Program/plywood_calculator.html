@@ -16,6 +16,10 @@
             --paper: #f5ede1;
             --accent-blue: #2d5f7f;
             --accent-orange: #d97642;
+            --accent-green: #4CAF50;
+            --accent-light-green: #81C784;
+            --accent-gold: #FFB300;
+            --accent-light-gold: #FFC947;
             --shadow: rgba(44, 24, 16, 0.1);
             --shadow-heavy: rgba(44, 24, 16, 0.2);
         }
@@ -449,7 +453,7 @@
             font-family: 'Syne', sans-serif;
             font-size: 5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-orange), var(--accent-blue));
+            background: linear-gradient(135deg, var(--accent-light-green), var(--accent-green));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -501,9 +505,31 @@
             transition: transform 0.3s ease;
         }
         
+        .detail-item.price-highlight {
+            background: linear-gradient(135deg, #FFF9E6, #FFF3CC);
+            border: 2px solid var(--accent-light-gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .detail-item.price-highlight::before {
+            content: '💰';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 1.5rem;
+            opacity: 0.3;
+        }
+        
         @media (max-width: 768px) {
             .detail-item {
                 padding: 0.75rem;
+            }
+            
+            .detail-item.price-highlight::before {
+                font-size: 1.25rem;
+                top: 6px;
+                right: 6px;
             }
         }
 
@@ -525,6 +551,14 @@
             margin-bottom: 0.25rem;
         }
 
+        .detail-value.price-value {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-gold), #FF8F00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
         .detail-label {
             font-size: 0.75rem;
             color: var(--wood-medium);
@@ -535,6 +569,10 @@
         @media (max-width: 768px) {
             .detail-value {
                 font-size: 1.5rem;
+            }
+            
+            .detail-value.price-value {
+                font-size: 1.75rem;
             }
             
             .detail-label {
@@ -631,13 +669,13 @@
         }
 
         .cut-piece {
-            border: 1px solid rgba(44, 24, 16, 0.3);
-            background: rgba(139, 90, 60, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            background: rgba(76, 175, 80, 0.1);
             transition: background 0.2s ease;
         }
 
         .cut-piece:hover {
-            background: rgba(139, 90, 60, 0.25);
+            background: rgba(76, 175, 80, 0.3);
         }
 
         @media (max-width: 768px) {
@@ -786,7 +824,6 @@
                 </div>
 
             </div>
-        </div>
             
             <div class="card">
                 <h2 class="card-title">합판 규격</h2>
@@ -810,9 +847,17 @@
                     </div>
                 </div>
 
+                <div class="input-group">
+                    <label>합판 한 장당 가격</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="sheetPrice" value="25000" min="0" step="100" onfocus="this.select()" oninput="autoCalculate()">
+                        <span class="unit">원</span>
+                    </div>
+                </div>
+
             </div>
 
-
+        </div>
 
         <div id="resultCard" class="result-card hidden">
             <div class="result-header">
@@ -832,6 +877,10 @@
                 <div class="detail-item">
                     <div class="detail-value" id="efficiency">0%</div>
                     <div class="detail-label">합판 활용률</div>
+                </div>
+                <div class="detail-item price-highlight">
+                    <div class="detail-value price-value" id="totalPrice">0원</div>
+                    <div class="detail-label">총 구매 가격</div>
                 </div>
             </div>
 
@@ -868,6 +917,11 @@
     </div>
 
     <script>
+        // 숫자 포맷팅 함수 (천 단위 콤마)
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
         // 자동 계산 함수 (입력값 변경 시)
         function autoCalculate() {
             const sheetWidth = parseFloat(document.getElementById('sheetWidth').value);
@@ -875,6 +929,7 @@
             const cutWidth = parseFloat(document.getElementById('cutWidth').value);
             const cutHeight = parseFloat(document.getElementById('cutHeight').value);
             const quantity = parseInt(document.getElementById('quantity').value);
+            const sheetPrice = parseFloat(document.getElementById('sheetPrice').value);
 
             // 모든 값이 유효할 때만 계산
             if (sheetWidth > 0 && sheetHeight > 0 && cutWidth > 0 && cutHeight > 0 && quantity > 0) {
@@ -889,6 +944,7 @@
             const cutWidth = parseFloat(document.getElementById('cutWidth').value);
             const cutHeight = parseFloat(document.getElementById('cutHeight').value);
             const quantity = parseInt(document.getElementById('quantity').value);
+            const sheetPrice = parseFloat(document.getElementById('sheetPrice').value) || 0;
 
             // 유효성 검사
             if (sheetWidth <= 0 || sheetHeight <= 0 || cutWidth <= 0 || cutHeight <= 0 || quantity <= 0) {
@@ -920,6 +976,9 @@
             const sheetsNeeded = Math.ceil(quantity / piecesPerSheet);
             const totalPieces = sheetsNeeded * piecesPerSheet;
 
+            // 총 구매 가격 계산
+            const totalPrice = sheetsNeeded * sheetPrice;
+
             // 활용률 계산
             const cutArea = cutWidth * cutHeight;
             const sheetArea = sheetWidth * sheetHeight;
@@ -949,10 +1008,13 @@
             document.getElementById('piecesPerSheet').textContent = piecesPerSheet;
             document.getElementById('totalPieces').textContent = totalPieces;
             document.getElementById('efficiency').textContent = efficiency + '%';
+            document.getElementById('totalPrice').textContent = formatNumber(totalPrice) + '원';
+            
             document.getElementById('formulaText').innerHTML = `
                 합판 1장에서 <strong>${piecesPerSheet}개</strong> 재단 가능 (${bestOrientation})<br>
-                <strong>${cutWidth}×${cutHeight}mm 또는 ${cutHeight}×${cutWidth}mm</strong> 크기를 <strong>${quantity}장</strong> 만들려면 → 합판 <strong style="color: var(--accent-orange);">${sheetsNeeded}장</strong> 구매 필요<br>
-                (합판 ${sheetsNeeded}장으로 총 ${totalPieces}개 제작 가능, ${totalPieces - quantity}개 여유분)
+                <strong>${cutWidth}×${cutHeight}mm 또는 ${cutHeight}×${cutWidth}mm</strong> 크기를 <strong>${quantity}장</strong> 만들려면 → 합판 <strong style="color: var(--accent-green);">${sheetsNeeded}장</strong> 구매 필요<br>
+                (합판 ${sheetsNeeded}장으로 총 ${totalPieces}개 제작 가능, ${totalPieces - quantity}개 여유분)<br>
+                ${sheetPrice > 0 ? `<strong style="color: var(--accent-gold);">💰 총 구매 비용: ${formatNumber(totalPrice)}원</strong> (장당 ${formatNumber(sheetPrice)}원 × ${sheetsNeeded}장)` : ''}
             `;
 
             // 시각화 (재단선 포함)
