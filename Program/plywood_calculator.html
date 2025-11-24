@@ -754,36 +754,6 @@
         </header>
 
         <div class="main-content">
-            <div class="card">
-                <h2 class="card-title">합판 규격</h2>
-                <div class="input-group">
-                    <label>표준 합판 크기</label>
-                    <div class="input-row">
-                        <div>
-                            <div class="dimension-label">가로 (Width)</div>
-                            <div class="input-wrapper">
-                                <input type="number" id="sheetWidth" value="1220" min="1" onfocus="this.select()" oninput="autoCalculate()">
-                                <span class="unit">mm</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="dimension-label">세로 (Height)</div>
-                            <div class="input-wrapper">
-                                <input type="number" id="sheetHeight" value="2440" min="1" onfocus="this.select()" oninput="autoCalculate()">
-                                <span class="unit">mm</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="formula-info">
-                    <div class="formula-title">💡 기본 규격 안내</div>
-                    <div class="formula-text">
-                        표준 합판 크기는 1220mm × 2440mm (4×8 feet) 입니다. 
-                        다른 규격을 사용하시는 경우 위에서 수정하실 수 있습니다.
-                    </div>
-                </div>
-            </div>
 
             <div class="card">
                 <h2 class="card-title">필요한 크기</h2>
@@ -817,13 +787,42 @@
                 
                 <div class="formula-info">
                     <div class="formula-title">💡 자동 최적화</div>
-                    <div class="formula-text">
-                        가로/세로 방향을 자동으로 계산하여 가장 효율적인 배치를 찾아드립니다. 
-                        예: 900과 450을 입력하면, 가로든 세로든 최적의 방향으로 계산됩니다.
-                    </div>
                 </div>
             </div>
         </div>
+            
+            <div class="card">
+                <h2 class="card-title">합판 규격</h2>
+                <div class="input-group">
+                    <label>표준 합판 크기</label>
+                    <div class="input-row">
+                        <div>
+                            <div class="dimension-label">가로 (Width)</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="sheetWidth" value="1220" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="dimension-label">세로 (Height)</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="sheetHeight" value="2440" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formula-info">
+                    <div class="formula-title">💡 기본 규격 안내</div>
+                    <div class="formula-text">
+                        표준 합판 크기는 1220mm × 2440mm (4×8 feet) 입니다. 
+                        다른 규격을 사용하시는 경우 위에서 수정하실 수 있습니다.
+                    </div>
+                </div>
+            </div>
+
+
 
         <div id="resultCard" class="result-card hidden">
             <div class="result-header">
