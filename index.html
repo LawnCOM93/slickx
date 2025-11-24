@@ -4,296 +4,200 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>계산기 대시보드</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
+        /* CSS Reset 및 기본 설정 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Noto Sans KR', 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 20px;
-            position: relative;
-            overflow-x: hidden;
+        :root {
+            --primary-color: #007bff; /* 메인 색상 */
+            --background-light: #f4f6f8; /* 밝은 배경 */
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* 카드 그림자 */
+            --text-dark: #1f2937; /* 어두운 텍스트 */
+            --text-medium: #6b7280; /* 중간 텍스트 */
+            --radius-default: 12px;
         }
 
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-            pointer-events: none;
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--background-light);
+            min-height: 100vh;
+            padding: 20px 0; /* 모바일 맞춤 상하 여백 */
+            color: var(--text-dark);
         }
 
         .container {
-            max-width: 1200px;
-            width: 100%;
-            position: relative;
-            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px; /* 좌우 여백 */
         }
 
+        /* 헤더 스타일 */
         .header {
-            text-align: center;
-            margin-bottom: 50px;
-            animation: fadeInDown 0.8s ease;
+            margin-bottom: 40px;
+            text-align: left;
         }
 
         .header h1 {
-            color: white;
-            font-size: 3rem;
+            font-size: 2.2rem;
             font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
-            letter-spacing: -1px;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+            letter-spacing: -0.8px;
         }
 
         .header p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1.1rem;
-            font-weight: 300;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            animation: fadeInUp 0.8s ease 0.2s both;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 40px;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 
-                0 10px 40px rgba(0, 0, 0, 0.1),
-                0 2px 8px rgba(0, 0, 0, 0.06);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
-        }
-
-        .card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.15),
-                0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .card:active {
-            transform: translateY(-8px) scale(1.01);
-        }
-
-        .card-icon {
-            width: 70px;
-            height: 70px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
-            transition: all 0.4s ease;
-        }
-
-        .card:hover .card-icon {
-            transform: rotate(10deg) scale(1.1);
-            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6);
-        }
-
-        .card-icon .material-symbols-outlined {
-            font-size: 36px;
-            color: white;
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
-        }
-
-        .card-content h3 {
-            font-size: 1.5rem;
-            color: #2d3748;
-            margin-bottom: 12px;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-
-        .card:hover .card-content h3 {
-            color: #667eea;
-        }
-
-        .card-content p {
-            color: #718096;
-            font-size: 0.95rem;
-            line-height: 1.6;
+            color: var(--text-medium);
+            font-size: 1rem;
             font-weight: 400;
         }
 
-        .card-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
+        /* 대시보드 그리드 */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px; /* 모바일 친화적인 간격 */
         }
 
-        .card:hover .card-badge {
-            opacity: 1;
+        /* 카드 스타일 */
+        .card {
+            background: white;
+            border-radius: var(--radius-default);
+            padding: 28px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #e5e7eb;
+            display: flex; /* 내부 요소 정렬을 위해 flex 사용 */
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* 호버/클릭 효과 */
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card:active {
             transform: translateY(0);
+            box-shadow: var(--card-shadow);
         }
-
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(102, 126, 234, 0.3);
-            transform: scale(0);
-            animation: ripple-animation 0.6s ease-out;
-            pointer-events: none;
-        }
-
-        @keyframes ripple-animation {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .card {
-                padding: 30px;
-            }
-        }
-
-        /* 스크롤바 스타일링 */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
-
-        /* 추가 카드를 위한 스타일 */
-        .add-card {
-            border: 3px dashed rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
+        
+        /* 아이콘 영역 */
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%; /* 원형 아이콘 배경 */
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 250px;
+            margin-bottom: 20px;
+            background: rgba(0, 123, 255, 0.1); /* Primary 색상 투명 배경 */
+            transition: all 0.2s ease;
         }
 
-        .add-card:hover {
-            border-color: rgba(255, 255, 255, 0.6);
-            background: rgba(255, 255, 255, 0.15);
+        .card-icon .material-symbols-outlined {
+            font-size: 28px; /* 아이콘 크기 증가 */
+            color: var(--primary-color);
+            font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 28;
+        }
+        
+        /* 카드 내용 */
+        .card-content h3 {
+            font-size: 1.15rem;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+            font-weight: 600;
+            letter-spacing: -0.2px;
         }
 
-        .add-card-content {
-            text-align: center;
-            color: white;
+        .card-content p {
+            color: var(--text-medium);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            font-weight: 400;
         }
 
-        .add-card-content .material-symbols-outlined {
-            font-size: 48px;
-            margin-bottom: 10px;
-            opacity: 0.7;
+        /* 모바일 최적화 (768px 이하) */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 0;
+            }
+            
+            .container {
+                padding: 0 16px;
+            }
+
+            .header {
+                margin-bottom: 30px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr; /* 모바일에서는 1열 */
+                gap: 12px;
+            }
+
+            .card {
+                padding: 24px;
+            }
+            
+            .card-icon {
+                width: 48px;
+                height: 48px;
+                margin-bottom: 16px;
+            }
+            
+            .card-icon .material-symbols-outlined {
+                font-size: 24px;
+            }
+        }
+        
+        /* 스크롤바 스타일링 (깔끔하게) */
+        ::-webkit-scrollbar {
+            width: 6px;
         }
 
-        .add-card-content p {
-            font-size: 1rem;
-            opacity: 0.8;
+        ::-webkit-scrollbar-track {
+            background: var(--background-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>계산기 대시보드</h1>
-            <p>필요한 계산기를 선택하세요</p>
+            <h1>🛠️ 계산기 대시보드</h1>
+            <p>필요한 도구를 선택하여 계산을 시작하세요.</p>
         </div>
 
         <div class="dashboard-grid" id="dashboardGrid">
-            <!-- 카드들이 JavaScript로 동적 생성됩니다 -->
-        </div>
+            </div>
     </div>
 
     <script>
-        // 키워드 기반 아이콘 매칭 시스템
+        // 키워드 기반 아이콘 매칭 시스템 (기존 데이터 유지)
         const iconKeywords = {
             // 각도/앵글 관련
             '앵글': 'architecture',
@@ -388,7 +292,7 @@
             '합계': 'functions'
         };
 
-        // 제목에서 아이콘을 자동으로 찾는 함수
+        // 제목에서 아이콘을 자동으로 찾는 함수 (기존 함수 유지)
         function findIconForTitle(title) {
             const lowerTitle = title.toLowerCase();
             
@@ -408,35 +312,36 @@
             return 'apps';
         }
 
-        // 계산기 데이터 (아이콘 자동 생성)
+        // 계산기 데이터 (기존 데이터 유지)
         const calculators = [
             {
                 key: '앵글 계산기',
                 url: 'https://lawncom93.github.io/SlickX/Program/angle_simulation.html',
-                description: '앵글 구매를 위한 도구입니다'
+                description: '정밀한 각도 계산을 위한 도구입니다.'
             },
             {
-                key: '합판 구매 계산기',
-                url: 'https://lawncom93.github.io/SlickX/Program/plywood_calculator.html',
-                description: '합판 구매와 재단을 위한 도구입니다'
+                key: 'Rule 계산기',
+                url: 'https://lawncom93.github.io/SlickX/Program/rule_simulation.html',
+                description: '측정 및 규칙 계산을 위한 도구입니다.'
             }
-            // 여기에 새로운 계산기를 추가하면 자동으로 적절한 아이콘이 할당됩니다!
-            // 예시:
+            // 여기에 새로운 계산기를 추가할 수 있습니다.
             // {
             //     key: '면적 계산기',
-            //     url: 'https://example.com/area.html',
-            //     description: '다양한 도형의 면적을 계산합니다'
+            //     url: '#',
+            //     description: '다양한 도형의 면적을 계산합니다.'
             // }
         ];
 
-        // 대시보드 그리드 렌더링
+        // 대시보드 그리드 렌더링 (기존 함수 유지)
         function renderDashboard() {
             const grid = document.getElementById('dashboardGrid');
             
-            calculators.forEach((calc, index) => {
+            // 기존 내용을 비웁니다.
+            grid.innerHTML = '';
+            
+            calculators.forEach((calc) => {
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.style.animationDelay = `${index * 0.1}s`;
                 
                 // 아이콘 자동 찾기
                 const icon = findIconForTitle(calc.key);
@@ -449,51 +354,15 @@
                         <h3>${calc.key}</h3>
                         <p>${calc.description}</p>
                     </div>
-                    <div class="card-badge">클릭하여 열기</div>
                 `;
                 
                 // 클릭 이벤트
-                card.addEventListener('click', (e) => {
-                    createRipple(e, card);
-                    setTimeout(() => {
-                        window.open(calc.url, '_blank');
-                    }, 300);
+                card.addEventListener('click', () => {
+                    window.open(calc.url, '_blank');
                 });
                 
                 grid.appendChild(card);
             });
-
-            // 추가 카드 플레이스홀더 (옵션)
-            // const addCard = document.createElement('div');
-            // addCard.className = 'card add-card';
-            // addCard.innerHTML = `
-            //     <div class="add-card-content">
-            //         <span class="material-symbols-outlined">add_circle</span>
-            //         <p>새 계산기 추가</p>
-            //     </div>
-            // `;
-            // grid.appendChild(addCard);
-        }
-
-        // 리플 효과
-        function createRipple(event, element) {
-            const ripple = document.createElement('span');
-            ripple.className = 'ripple';
-            
-            const rect = element.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = event.clientX - rect.left - size / 2;
-            const y = event.clientY - rect.top - size / 2;
-            
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            
-            element.appendChild(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
         }
 
         // 페이지 로드시 대시보드 렌더링
