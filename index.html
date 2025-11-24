@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SlickX 프로그램 대시보드</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
         /* CSS Reset 및 기본 설정 */
@@ -14,27 +14,34 @@
             box-sizing: border-box;
         }
 
-        /* 💡 SlickX 다크 테마 색상 변수 적용 */
+        /* 💡 SlickX 다크 테마 색상 변수 및 폰트 적용 */
         :root {
             --primary-color: #8ac926; /* SlickX 라임 그린 */
             --secondary-color: #9d4edd; /* SlickX 마젠타 (호버 포인트용) */
-            --background-dark: #1a1a1a; /* 깊은 다크 배경 */
-            --card-bg: #2b2b2b; /* 카드 배경 (약간 밝게) */
-            --text-light: #e5e7eb; /* 밝은 텍스트 */
-            --text-medium: #9ca3af; /* 보조 텍스트 */
-            --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* 다크 테마에 맞는 깊은 그림자 */
+            --background-start: #1c1c1c; /* 배경 그라데이션 시작 */
+            --background-end: #0a0a0a;   /* 배경 그라데이션 끝 */
+            --card-bg: #2b2b2b; /* 카드 배경 */
+            --text-light: #e0e0e0; /* 밝은 텍스트 */
+            --text-medium: #a0a0a0; /* 보조 텍스트 */
+            --border-color: #383838; /* 구분선 및 카드 테두리 */
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); /* 더 깊은 그림자 */
             --radius-default: 12px;
+            --logo-text-shadow: 0 0 10px rgba(138, 201, 38, 0.5); /* 로고 텍스트 그림자 */
         }
 
         body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background: var(--background-dark); /* 다크 배경 적용 */
+            font-family: 'Noto Sans KR', 'Poppins', sans-serif; /* Poppins 추가 */
+            background: linear-gradient(to bottom right, var(--background-start), var(--background-end)); /* 그라데이션 배경 */
             min-height: 100vh;
             padding: 40px 0;
             color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 가운데 정렬 */
         }
 
         .container {
+            width: 100%;
             max-width: 1100px;
             margin: 0 auto;
             padding: 0 20px;
@@ -44,15 +51,16 @@
         .logo-area {
             text-align: center;
             margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #3d3d3d; /* 로고와 헤더 구분선 */
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color); /* 로고와 헤더 구분선 */
         }
         
-        .logo-img {
-            max-width: 250px; /* 로고 크기 조정 */
+        .logo-area img {
+            max-width: 300px; /* 로고 이미지 크기 조정 */
             height: auto;
             display: block;
-            margin: 0 auto;
+            margin: 0 auto 15px; /* 이미지 아래 여백 추가 */
+            filter: drop-shadow(0 0 15px rgba(138, 201, 38, 0.4)); /* 로고에 은은한 그림자 */
         }
 
         /* 헤더 스타일 (로고 아래) */
@@ -62,35 +70,36 @@
         }
 
         .header h1 {
-            font-size: 2.2rem;
+            font-size: 2.4rem; /* 헤더 글자 크기 증가 */
             font-weight: 700;
             color: var(--text-light);
-            margin-bottom: 4px;
-            letter-spacing: -0.8px;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
         }
 
         .header p {
             color: var(--text-medium);
-            font-size: 1rem;
+            font-size: 1.05rem; /* 설명 글자 크기 증가 */
             font-weight: 400;
+            line-height: 1.5;
         }
 
         /* 대시보드 그리드 */
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 25px; /* 간격 증가 */
         }
 
         /* 카드 스타일 */
         .card {
-            background: var(--card-bg); /* 다크 카드 배경 */
+            background: var(--card-bg);
             border-radius: var(--radius-default);
-            padding: 30px;
+            padding: 35px; /* 패딩 증가 */
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
             box-shadow: var(--card-shadow);
-            border: 1px solid #3d3d3d; /* 어두운 테두리 */
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -98,59 +107,59 @@
 
         /* 호버/클릭 효과 */
         .card:hover {
-            transform: translateY(-5px); /* 더 드라마틱한 리프트 */
-            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.6);
-            border-color: var(--primary-color); /* 호버 시 강조 색상 */
+            transform: translateY(-8px); /* 더 드라마틱한 리프트 */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7); /* 더 깊은 호버 그림자 */
+            border-color: var(--primary-color);
         }
         
         /* 아이콘 영역 */
         .card-icon {
-            width: 56px;
-            height: 56px;
+            width: 60px; /* 아이콘 배경 크기 증가 */
+            height: 60px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
-            background: rgba(138, 201, 38, 0.2); /* Primary 색상 투명 배경 */
+            margin-bottom: 25px; /* 여백 증가 */
+            background: rgba(138, 201, 38, 0.2);
             transition: all 0.2s ease;
         }
 
         .card-icon .material-symbols-outlined {
-            font-size: 30px;
-            color: var(--primary-color); /* 라임 그린 아이콘 */
-            font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 30;
+            font-size: 32px; /* 아이콘 크기 증가 */
+            color: var(--primary-color);
+            font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 32;
         }
         
         .card-content h3 {
-            font-size: 1.2rem;
+            font-size: 1.3rem; /* 제목 글자 크기 증가 */
             color: var(--text-light);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 700;
-            letter-spacing: -0.3px;
+            letter-spacing: -0.5px;
         }
 
         .card-content p {
             color: var(--text-medium);
-            font-size: 0.95rem;
-            line-height: 1.4;
+            font-size: 1rem; /* 설명 글자 크기 증가 */
+            line-height: 1.6;
             font-weight: 400;
         }
 
-        /* 💡 회사 URL 우측 하단 고정 */
+        /* 회사 URL 우측 하단 고정 */
         .footer-url {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            font-size: 0.85rem;
+            bottom: 25px; /* 위치 조정 */
+            right: 25px; /* 위치 조정 */
+            font-size: 0.9rem;
             color: var(--text-medium);
-            background: rgba(43, 43, 43, 0.8); /* 배경 추가로 가독성 높임 */
-            padding: 8px 12px;
-            border-radius: 8px;
-            backdrop-filter: blur(5px);
+            background: rgba(43, 43, 43, 0.7); /* 배경 투명도 조정 */
+            padding: 10px 15px; /* 패딩 조정 */
+            border-radius: 10px; /* 둥근 모서리 조정 */
+            backdrop-filter: blur(8px); /* 블러 강도 조정 */
             z-index: 100;
             font-weight: 500;
-            border: 1px solid #3d3d3d;
+            border: 1px solid var(--border-color);
         }
         
         .footer-url a {
@@ -160,22 +169,27 @@
         }
         
         .footer-url a:hover {
-            color: var(--secondary-color); /* 호버 시 마젠타 색상으로 변화 */
+            color: var(--secondary-color);
         }
-
 
         /* 모바일 최적화 (768px 이하) */
         @media (max-width: 768px) {
             body {
-                padding: 20px 0;
+                padding: 30px 0;
             }
             
             .container {
-                padding: 0 16px;
+                padding: 0 18px;
             }
 
             .logo-area {
                 margin-bottom: 30px;
+                padding-bottom: 20px;
+            }
+            
+            .logo-area img {
+                max-width: 200px;
+                margin-bottom: 10px;
             }
 
             .header {
@@ -183,23 +197,45 @@
             }
 
             .header h1 {
-                font-size: 1.6rem;
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 0.95rem;
             }
 
             .dashboard-grid {
                 grid-template-columns: 1fr;
-                gap: 16px;
+                gap: 18px;
             }
 
             .card {
-                padding: 20px;
+                padding: 25px;
+            }
+            
+            .card-icon {
+                width: 50px;
+                height: 50px;
+                margin-bottom: 20px;
+            }
+            
+            .card-icon .material-symbols-outlined {
+                font-size: 28px;
+            }
+            
+            .card-content h3 {
+                font-size: 1.1rem;
+            }
+
+            .card-content p {
+                font-size: 0.9rem;
             }
             
             .footer-url {
-                bottom: 10px;
-                right: 10px;
-                font-size: 0.75rem;
-                padding: 6px 10px;
+                bottom: 15px;
+                right: 15px;
+                font-size: 0.8rem;
+                padding: 8px 12px;
             }
         }
 
@@ -209,28 +245,28 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: var(--background-dark);
+            background: var(--background-start);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #4a4a4a;
+            background: #555;
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #6a6a6a;
+            background: #777;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="logo-area">
-            <h2 style="color: var(--primary-color); font-size: 1.8rem; font-weight: 700; letter-spacing: 0.1em; text-shadow: 0 0 5px rgba(138, 201, 38, 0.5);">SLICKX</h2>
-        </div>
+            <img src="https://i.imgur.com/your-slickx-logo-image.png" alt="SlickX Logo"> 
+            </div>
 
         <div class="header">
-            <h1>계산기 대시보드</h1>
-            <p>SlickX의 주요 계산 및 측정 도구를 확인하세요.</p>
+            <h1>SlickX 프로그램 대시보드</h1>
+            <p>다양한 계산 및 유틸리티 프로그램을 한눈에 확인하고 활용해보세요.</p>
         </div>
 
         <div class="dashboard-grid" id="dashboardGrid">
@@ -249,7 +285,8 @@
             '시간': 'schedule', '금융': 'paid', '변환': 'swap_horiz', '통계': 'bar_chart',
             '물리': 'science', '원': 'circle', '속도': 'speed', '무게': 'balance',
             '온도': 'thermostat', '전기': 'electrical_services', '건축': 'architecture',
-            '비율': 'percent', '평균': 'exposure', '합계': 'functions'
+            '비율': 'percent', '백분율': 'percent', '평균': 'exposure', '합계': 'functions',
+            '합판': 'layers', '구매': 'shopping_cart', '쇼핑': 'shopping_bag' // 합판 계산기 키워드 추가
         };
 
         // 제목에서 아이콘을 자동으로 찾는 함수 (기존 함수 유지)
@@ -263,20 +300,20 @@
             if (lowerTitle.includes('계산')) {
                 return 'calculate';
             }
-            return 'apps';
+            return 'apps'; // 기본 아이콘
         }
 
-        // 계산기 데이터 (기존 데이터 유지)
+        // 계산기 데이터 (새로운 합판 계산기 추가)
         const calculators = [
             {
                 key: '앵글 계산기',
                 url: 'https://lawncom93.github.io/SlickX/Program/angle_simulation.html',
-                description: '삼각형 길이, 각도 계산기'
+                description: '삼각형 길이, 각도 계산기.'
             },
             {
                 key: '합판 구매 계산기',
-                url: 'https://lawncom93.github.io/SlickX/Program/Program/plywood_calculator.html',
-                description: '합판 구매 계산기.'
+                url: 'https://lawncom93.github.io/SlickX/Program/plywood_calculator.html', // URL 수정
+                description: '합판 구매 수량 및 비용을 효율적으로 계산.'
             }
         ];
 
