@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>합판 구매 계산기 | Plywood Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --wood-dark: #2c1810;
+            --wood-medium: #8b5a3c;
+            --wood-light: #c4956c;
+            --cream: #faf6f0;
+            --paper: #f5ede1;
+            --accent-blue: #2d5f7f;
+            --accent-orange: #d97642;
+            --shadow: rgba(44, 24, 16, 0.1);
+            --shadow-heavy: rgba(44, 24, 16, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background: linear-gradient(135deg, var(--paper) 0%, var(--cream) 100%);
+            color: var(--wood-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 0.75rem;
+                align-items: flex-start;
+                padding-top: 1rem;
+            }
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(139, 90, 60, 0.02) 2px,
+                    rgba(139, 90, 60, 0.02) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                margin-bottom: 1rem;
+            }
+        }
+
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            color: var(--wood-dark);
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-blue));
+            border-radius: 2px;
+            animation: expandWidth 0.6s ease-out 0.3s both;
+        }
+        
+        @media (max-width: 768px) {
+            h1::after {
+                height: 3px;
+                bottom: -6px;
+            }
+        }
+
+        @keyframes expandWidth {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--wood-medium);
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        
+        @media (max-width: 768px) {
+            .subtitle {
+                font-size: 0.7rem;
+            }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: 
+                0 4px 6px var(--shadow),
+                0 12px 24px var(--shadow-heavy);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: cardSlideIn 0.6s ease-out both;
+        }
+        
+        @media (max-width: 768px) {
+            .card {
+                padding: 1.25rem;
+                border-radius: 12px;
+            }
+        }
+
+        .card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 8px 12px var(--shadow),
+                0 16px 32px var(--shadow-heavy);
+        }
+        
+        @media (max-width: 768px) {
+            .card:hover {
+                transform: none;
+            }
+        }
+
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--wood-dark);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .card-title {
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        .card-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--accent-orange);
+            border-radius: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        @media (max-width: 768px) {
+            .input-group {
+                margin-bottom: 1rem;
+            }
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--wood-medium);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        
+        @media (max-width: 768px) {
+            label {
+                font-size: 0.75rem;
+            }
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .input-row {
+                gap: 0.75rem;
+            }
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            padding-right: 3rem;
+            border: 2px solid var(--paper);
+            border-radius: 8px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--wood-dark);
+            background: var(--cream);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        @media (max-width: 768px) {
+            input[type="number"] {
+                padding: 0.75rem 0.875rem;
+                padding-right: 3rem;
+                font-size: 1rem;
+            }
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--accent-blue);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(45, 95, 127, 0.1);
+        }
+
+        .unit {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.875rem;
+            color: var(--wood-medium);
+            font-weight: 400;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .unit {
+                font-size: 0.75rem;
+                right: 0.875rem;
+            }
+        }
+
+        .dimension-label {
+            font-size: 0.75rem;
+            color: var(--wood-medium);
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .dimension-label {
+                font-size: 0.7rem;
+                margin-bottom: 0.4rem;
+            }
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-blue));
+            border: none;
+            border-radius: 12px;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 12px rgba(217, 118, 66, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            button {
+                padding: 0.875rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(217, 118, 66, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: 
+                0 4px 6px var(--shadow),
+                0 12px 24px var(--shadow-heavy);
+            animation: cardSlideIn 0.6s ease-out 0.3s both;
+            border: 2px solid var(--paper);
+        }
+        
+        @media (max-width: 768px) {
+            .result-card {
+                padding: 1.25rem;
+                border-radius: 12px;
+            }
+        }
+
+        .result-card.show {
+            animation: resultPop 0.5s ease-out;
+        }
+
+        @keyframes resultPop {
+            0% {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.02);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .result-header {
+                margin-bottom: 1rem;
+            }
+        }
+
+        .result-number {
+            font-family: 'Syne', sans-serif;
+            font-size: 5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .result-number {
+                font-size: 3.5rem;
+            }
+        }
+
+        .result-label {
+            font-size: 1.125rem;
+            color: var(--wood-medium);
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .result-label {
+                font-size: 1rem;
+            }
+        }
+
+        .result-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--paper);
+        }
+        
+        @media (max-width: 768px) {
+            .result-details {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+                margin-top: 1rem;
+                padding-top: 1rem;
+            }
+        }
+
+        .detail-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--cream);
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .detail-item {
+                padding: 0.75rem;
+            }
+        }
+
+        .detail-item:hover {
+            transform: translateY(-4px);
+        }
+        
+        @media (max-width: 768px) {
+            .detail-item:hover {
+                transform: none;
+            }
+        }
+
+        .detail-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--wood-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: var(--wood-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        @media (max-width: 768px) {
+            .detail-value {
+                font-size: 1.5rem;
+            }
+            
+            .detail-label {
+                font-size: 0.7rem;
+            }
+        }
+
+        .visualization {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: var(--cream);
+            border-radius: 12px;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .visualization {
+                margin-top: 1rem;
+                padding: 1rem;
+                min-height: 200px;
+            }
+        }
+
+        .plywood-grid {
+            display: grid;
+            gap: 8px;
+            justify-content: center;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .plywood-sheet {
+            background: linear-gradient(135deg, var(--wood-light), var(--wood-medium));
+            border-radius: 6px;
+            box-shadow: 0 2px 8px var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+            transition: transform 0.3s ease;
+            animation: plywoodPop 0.4s ease-out both;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .plywood-sheet {
+                font-size: 0.7rem;
+                border-radius: 4px;
+            }
+        }
+
+        .plywood-sheet .sheet-number {
+            position: absolute;
+            top: 6px;
+            left: 8px;
+            background: rgba(44, 24, 16, 0.8);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            z-index: 2;
+        }
+        
+        @media (max-width: 768px) {
+            .plywood-sheet .sheet-number {
+                font-size: 0.65rem;
+                padding: 2px 5px;
+                top: 4px;
+                left: 6px;
+            }
+        }
+
+        .cut-grid {
+            display: grid;
+            width: 100%;
+            height: 100%;
+            gap: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .cut-piece {
+            border: 1px solid rgba(44, 24, 16, 0.3);
+            background: rgba(139, 90, 60, 0.1);
+            transition: background 0.2s ease;
+        }
+
+        .cut-piece:hover {
+            background: rgba(139, 90, 60, 0.25);
+        }
+
+        @media (max-width: 768px) {
+            .cut-piece {
+                border-width: 0.5px;
+            }
+        }
+
+        .plywood-sheet:nth-child(1) { animation-delay: 0s; }
+        .plywood-sheet:nth-child(2) { animation-delay: 0.05s; }
+        .plywood-sheet:nth-child(3) { animation-delay: 0.1s; }
+        .plywood-sheet:nth-child(4) { animation-delay: 0.15s; }
+        .plywood-sheet:nth-child(5) { animation-delay: 0.2s; }
+        .plywood-sheet:nth-child(6) { animation-delay: 0.25s; }
+
+        @keyframes plywoodPop {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .plywood-sheet:hover {
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .plywood-sheet:hover {
+                transform: none;
+            }
+        }
+
+        .no-result {
+            text-align: center;
+            color: var(--wood-medium);
+            font-size: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .no-result {
+                font-size: 0.85rem;
+            }
+        }
+
+        .formula-info {
+            margin-top: 1.25rem;
+            padding: 1rem;
+            background: var(--paper);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-blue);
+        }
+        
+        @media (max-width: 768px) {
+            .formula-info {
+                margin-top: 1rem;
+                padding: 0.75rem;
+            }
+        }
+
+        .formula-title {
+            font-weight: 600;
+            color: var(--wood-dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .formula-text {
+            font-size: 0.85rem;
+            color: var(--wood-medium);
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .formula-title {
+                font-size: 0.8rem;
+            }
+            
+            .formula-text {
+                font-size: 0.75rem;
+                line-height: 1.5;
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            color: var(--wood-medium);
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 768px) {
+            footer {
+                margin-top: 1.5rem;
+                padding: 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>합판 구매 계산기</h1>
+            <p class="subtitle">Plywood Purchase Calculator</p>
+        </header>
+
+        <div class="main-content">
+            <div class="card">
+                <h2 class="card-title">합판 규격</h2>
+                <div class="input-group">
+                    <label>표준 합판 크기</label>
+                    <div class="input-row">
+                        <div>
+                            <div class="dimension-label">가로 (Width)</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="sheetWidth" value="1220" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="dimension-label">세로 (Height)</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="sheetHeight" value="2440" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formula-info">
+                    <div class="formula-title">💡 기본 규격 안내</div>
+                    <div class="formula-text">
+                        표준 합판 크기는 1220mm × 2440mm (4×8 feet) 입니다. 
+                        다른 규격을 사용하시는 경우 위에서 수정하실 수 있습니다.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">필요한 크기</h2>
+                <div class="input-group">
+                    <label>재단할 크기 (가로/세로 구분 없음)</label>
+                    <div class="input-row">
+                        <div>
+                            <div class="dimension-label">크기 1</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="cutWidth" value="900" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="dimension-label">크기 2</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="cutHeight" value="450" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>필요한 조각 수량</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="quantity" value="5" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                        <span class="unit">장</span>
+                    </div>
+                </div>
+                
+                <div class="formula-info">
+                    <div class="formula-title">💡 자동 최적화</div>
+                    <div class="formula-text">
+                        가로/세로 방향을 자동으로 계산하여 가장 효율적인 배치를 찾아드립니다. 
+                        예: 900과 450을 입력하면, 가로든 세로든 최적의 방향으로 계산됩니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="resultCard" class="result-card hidden">
+            <div class="result-header">
+                <div class="result-number" id="resultNumber">0</div>
+                <div class="result-label">장의 합판을 구매해야 합니다</div>
+            </div>
+
+            <div class="result-details">
+                <div class="detail-item">
+                    <div class="detail-value" id="piecesPerSheet">0</div>
+                    <div class="detail-label">합판 1장당 재단 가능</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-value" id="totalPieces">0</div>
+                    <div class="detail-label">실제 제작 가능 개수</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-value" id="efficiency">0%</div>
+                    <div class="detail-label">합판 활용률</div>
+                </div>
+            </div>
+
+            <div class="visualization">
+                <div id="visualization" class="plywood-grid">
+                    <div class="no-result">계산 버튼을 눌러주세요</div>
+                </div>
+            </div>
+
+            <div class="formula-info">
+                <div class="formula-title">📐 계산 방식</div>
+                <div class="formula-text" id="formulaText">
+                    가로/세로 방향을 모두 고려하여 최적의 배치를 계산합니다.
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Design inspired by modern carpentry tools & precision measurement
+        </footer>
+    </div>
+
+    <script>
+        // 자동 계산 함수 (입력값 변경 시)
+        function autoCalculate() {
+            const sheetWidth = parseFloat(document.getElementById('sheetWidth').value);
+            const sheetHeight = parseFloat(document.getElementById('sheetHeight').value);
+            const cutWidth = parseFloat(document.getElementById('cutWidth').value);
+            const cutHeight = parseFloat(document.getElementById('cutHeight').value);
+            const quantity = parseInt(document.getElementById('quantity').value);
+
+            // 모든 값이 유효할 때만 계산
+            if (sheetWidth > 0 && sheetHeight > 0 && cutWidth > 0 && cutHeight > 0 && quantity > 0) {
+                calculate();
+            }
+        }
+
+        function calculate() {
+            // 입력값 가져오기
+            const sheetWidth = parseFloat(document.getElementById('sheetWidth').value);
+            const sheetHeight = parseFloat(document.getElementById('sheetHeight').value);
+            const cutWidth = parseFloat(document.getElementById('cutWidth').value);
+            const cutHeight = parseFloat(document.getElementById('cutHeight').value);
+            const quantity = parseInt(document.getElementById('quantity').value);
+
+            // 유효성 검사
+            if (sheetWidth <= 0 || sheetHeight <= 0 || cutWidth <= 0 || cutHeight <= 0 || quantity <= 0) {
+                return;
+            }
+
+            if (cutWidth > sheetWidth && cutHeight > sheetHeight) {
+                // 결과 카드 숨기기
+                document.getElementById('resultCard').classList.add('hidden');
+                return;
+            }
+
+            // 가로 방향 배치 (cutWidth가 sheetWidth 방향)
+            const horizontal1 = Math.floor(sheetWidth / cutWidth) * Math.floor(sheetHeight / cutHeight);
+            
+            // 세로 방향 배치 (cutWidth가 sheetHeight 방향)
+            const horizontal2 = Math.floor(sheetWidth / cutHeight) * Math.floor(sheetHeight / cutWidth);
+            
+            // 최대값 선택
+            const piecesPerSheet = Math.max(horizontal1, horizontal2);
+            
+            if (piecesPerSheet === 0) {
+                // 결과 카드 숨기기
+                document.getElementById('resultCard').classList.add('hidden');
+                return;
+            }
+
+            // 필요한 합판 수
+            const sheetsNeeded = Math.ceil(quantity / piecesPerSheet);
+            const totalPieces = sheetsNeeded * piecesPerSheet;
+
+            // 활용률 계산
+            const cutArea = cutWidth * cutHeight;
+            const sheetArea = sheetWidth * sheetHeight;
+            const efficiency = ((piecesPerSheet * cutArea) / sheetArea * 100).toFixed(1);
+
+            // 최적 배치 방향 결정
+            let bestOrientation = '';
+            let cutCols = 0;
+            let cutRows = 0;
+            let actualWidth = cutWidth;
+            let actualHeight = cutHeight;
+            
+            if (horizontal1 > horizontal2) {
+                cutCols = Math.floor(sheetWidth / cutWidth);
+                cutRows = Math.floor(sheetHeight / cutHeight);
+                bestOrientation = `${cutWidth}×${cutHeight}mm 방향으로 가로 ${cutCols}개 × 세로 ${cutRows}개`;
+            } else {
+                cutCols = Math.floor(sheetWidth / cutHeight);
+                cutRows = Math.floor(sheetHeight / cutWidth);
+                actualWidth = cutHeight;
+                actualHeight = cutWidth;
+                bestOrientation = `${cutHeight}×${cutWidth}mm 방향으로 가로 ${cutCols}개 × 세로 ${cutRows}개`;
+            }
+
+            // 결과 표시
+            document.getElementById('resultNumber').textContent = sheetsNeeded;
+            document.getElementById('piecesPerSheet').textContent = piecesPerSheet;
+            document.getElementById('totalPieces').textContent = totalPieces;
+            document.getElementById('efficiency').textContent = efficiency + '%';
+            document.getElementById('formulaText').innerHTML = `
+                합판 1장에서 <strong>${piecesPerSheet}개</strong> 재단 가능 (${bestOrientation})<br>
+                <strong>${cutWidth}×${cutHeight}mm 또는 ${cutHeight}×${cutWidth}mm</strong> 크기를 <strong>${quantity}장</strong> 만들려면 → 합판 <strong style="color: var(--accent-orange);">${sheetsNeeded}장</strong> 구매 필요<br>
+                (합판 ${sheetsNeeded}장으로 총 ${totalPieces}개 제작 가능, ${totalPieces - quantity}개 여유분)
+            `;
+
+            // 시각화 (재단선 포함)
+            visualizePlywood(sheetsNeeded, cutCols, cutRows);
+
+            // 결과 카드 표시
+            const resultCard = document.getElementById('resultCard');
+            resultCard.classList.remove('hidden');
+            
+            // 첫 계산이 아닐 때만 애니메이션 효과
+            if (!resultCard.classList.contains('show')) {
+                resultCard.classList.add('show');
+            }
+        }
+
+        function visualizePlywood(sheets, cutCols, cutRows) {
+            const visualization = document.getElementById('visualization');
+            visualization.innerHTML = '';
+            
+            // 최대 6장까지만 표시
+            const displaySheets = Math.min(sheets, 6);
+            const showMore = sheets > 6;
+
+            // 모바일 감지
+            const isMobile = window.innerWidth <= 768;
+            const sheetWidth = isMobile ? '90px' : '120px';
+            const sheetHeight = isMobile ? '135px' : '180px';
+
+            // 그리드 레이아웃 설정
+            const cols = displaySheets <= 3 ? displaySheets : 3;
+            visualization.style.gridTemplateColumns = `repeat(${cols}, ${sheetWidth})`;
+            visualization.style.gap = isMobile ? '6px' : '8px';
+
+            for (let i = 0; i < displaySheets; i++) {
+                const sheet = document.createElement('div');
+                sheet.className = 'plywood-sheet';
+                sheet.style.width = sheetWidth;
+                sheet.style.height = sheetHeight;
+                
+                // 합판 번호 표시
+                const sheetNumber = document.createElement('div');
+                sheetNumber.className = 'sheet-number';
+                sheetNumber.textContent = `#${i + 1}`;
+                sheet.appendChild(sheetNumber);
+                
+                // 재단선 그리드 생성
+                if (cutCols > 0 && cutRows > 0) {
+                    const cutGrid = document.createElement('div');
+                    cutGrid.className = 'cut-grid';
+                    cutGrid.style.gridTemplateColumns = `repeat(${cutCols}, 1fr)`;
+                    cutGrid.style.gridTemplateRows = `repeat(${cutRows}, 1fr)`;
+                    
+                    // 각 재단 조각 생성
+                    for (let r = 0; r < cutRows; r++) {
+                        for (let c = 0; c < cutCols; c++) {
+                            const piece = document.createElement('div');
+                            piece.className = 'cut-piece';
+                            cutGrid.appendChild(piece);
+                        }
+                    }
+                    
+                    sheet.appendChild(cutGrid);
+                }
+                
+                visualization.appendChild(sheet);
+            }
+
+            if (showMore) {
+                const more = document.createElement('div');
+                more.className = 'plywood-sheet';
+                more.style.width = sheetWidth;
+                more.style.height = sheetHeight;
+                more.style.background = 'linear-gradient(135deg, var(--wood-medium), var(--wood-dark))';
+                more.textContent = `+${sheets - 6}`;
+                visualization.appendChild(more);
+            }
+        }
+
+        // 페이지 로드 시 초기 계산
+        document.addEventListener('DOMContentLoaded', function() {
+            autoCalculate();
+        });
+    </script>
+</body>
+</html>
