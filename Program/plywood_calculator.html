@@ -17,12 +17,11 @@
             --paper: #f5ede1;
             --accent-blue: #2d5f7f;
             --accent-orange: #d97642;
-            --bright-green: #4ade80; /* 밝은 녹색 */
-            --bright-red: #f87171; /* 붉은색 */
             --shadow: rgba(44, 24, 16, 0.1);
             --shadow-heavy: rgba(44, 24, 16, 0.2);
         }
 
+```
     * {
         margin: 0;
         padding: 0;
@@ -452,10 +451,12 @@
         font-family: 'Syne', sans-serif;
         font-size: 5rem;
         font-weight: 800;
-        /* 기존 그라데이션 제거 및 초기화 */
+        background: linear-gradient(135deg, var(--accent-orange), var(--accent-blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         line-height: 1;
         margin-bottom: 0.5rem;
-        transition: all 0.3s ease;
     }
     
     @media (max-width: 768px) {
@@ -777,6 +778,8 @@
         display: none;
     }
 </style>
+```
+
 </head>
 <body>
     <div class="container">
@@ -785,348 +788,361 @@
             <p class="subtitle">Plywood Purchase Calculator</p>
         </header>
 
-        <div class="main-content">
-            <div class="card">
-                <h2 class="card-title">필요한 크기</h2>
-                <div class="input-group">
-                    <label>재단할 크기 (가로/세로 구분 없음)</label>
-                    <div class="input-row">
-                        <div>
-                            <div class="dimension-label">크기 1</div>
-                            <div class="input-wrapper">
-                                <input type="number" id="cutWidth" value="1400" min="1" onfocus="this.select()" oninput="autoCalculate()">
-                                <span class="unit">mm</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="dimension-label">크기 2</div>
-                            <div class="input-wrapper">
-                                <input type="number" id="cutHeight" value="450" min="1" onfocus="this.select()" oninput="autoCalculate()">
-                                <span class="unit">mm</span>
-                            </div>
+```
+    <div class="main-content">
+        <div class="card">
+            <h2 class="card-title">합판 규격</h2>
+            <div class="input-group">
+                <label>표준 합판 크기</label>
+                <div class="input-row">
+                    <div>
+                        <div class="dimension-label">가로 (Width)</div>
+                        <div class="input-wrapper">
+                            <input type="number" id="sheetWidth" value="1220" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                            <span class="unit">mm</span>
                         </div>
                     </div>
-                </div>
-
-                <div class="input-group">
-                    <label>필요한 조각 수량</label>
-                    <div class="input-wrapper">
-                        <input type="number" id="quantity" value="2" min="1" onfocus="this.select()" oninput="autoCalculate()">
-                        <span class="unit">장</span>
+                    <div>
+                        <div class="dimension-label">세로 (Height)</div>
+                        <div class="input-wrapper">
+                            <input type="number" id="sheetHeight" value="2440" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                            <span class="unit">mm</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card">
-                <h2 class="card-title">합판 규격</h2>
-                <div class="input-group">
-                    <label>표준 합판 크기</label>
-                    <div class="input-row">
-                        <div>
-                            <div class="dimension-label">가로 (Width)</div>
-                            <div class="input-wrapper">
-                                <input type="number" id="sheetWidth" value="1220" min="1" onfocus="this.select()" oninput="autoCalculate()">
-                                <span class="unit">mm</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="dimension-label">세로 (Height)</div>
-                            <div class="input-wrapper">
-                                <input type="number" id="sheetHeight" value="2440" min="1" onfocus="this.select()" oninput="autoCalculate()">
-                                <span class="unit">mm</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>합판 1장 가격</label>
-                    <div class="input-wrapper">
-                        <input type="number" id="sheetPrice" value="25000" min="0" onfocus="this.select()" oninput="autoCalculate()">
-                        <span class="unit">원</span>
-                    </div>
+            <div class="formula-info">
+                <div class="formula-title">💡 기본 규격 안내</div>
+                <div class="formula-text">
+                    표준 합판 크기는 1220mm × 2440mm (4×8 feet) 입니다. 
+                    다른 규격을 사용하시는 경우 위에서 수정하실 수 있습니다.
                 </div>
             </div>
         </div>
-        
 
-        <footer>
-            Design inspired by modern carpentry tools & precision measurement
-        </footer>
+        <div class="card">
+            <h2 class="card-title">필요한 크기</h2>
+            <div class="input-group">
+                <label>재단할 크기 (가로/세로 구분 없음)</label>
+                <div class="input-row">
+                    <div>
+                        <div class="dimension-label">크기 1</div>
+                        <div class="input-wrapper">
+                            <input type="number" id="cutWidth" value="1400" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                            <span class="unit">mm</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="dimension-label">크기 2</div>
+                        <div class="input-wrapper">
+                            <input type="number" id="cutHeight" value="450" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                            <span class="unit">mm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>필요한 조각 수량</label>
+                <div class="input-wrapper">
+                    <input type="number" id="quantity" value="2" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                    <span class="unit">장</span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script>
-        // 자동 계산 함수 (입력값 변경 시)
-        function autoCalculate() {
-            const sheetWidth = parseFloat(document.getElementById('sheetWidth').value);
-            const sheetHeight = parseFloat(document.getElementById('sheetHeight').value);
-            const cutWidth = parseFloat(document.getElementById('cutWidth').value);
-            const cutHeight = parseFloat(document.getElementById('cutHeight').value);
-            const quantity = parseInt(document.getElementById('quantity').value);
+    <div id="resultCard" class="result-card hidden">
+        <div class="result-header">
+            <div class="result-number" id="resultNumber">0</div>
+            <div class="result-label">장의 합판을 구매해야 합니다</div>
+        </div>
 
-            // 모든 값이 유효할 때만 계산
-            if (sheetWidth > 0 && sheetHeight > 0 && cutWidth > 0 && cutHeight > 0 && quantity > 0) {
-                calculate();
-            }
+        <div class="result-details">
+            <div class="detail-item">
+                <div class="detail-value" id="piecesPerSheet">0</div>
+                <div class="detail-label">합판 1장당 재단 가능</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-value" id="totalPieces">0</div>
+                <div class="detail-label">실제 제작 가능 개수</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-value" id="efficiency">0%</div>
+                <div class="detail-label">합판 활용률</div>
+            </div>
+        </div>
+
+        <div class="formula-info">
+            <div class="formula-title">📐 계산 방식</div>
+            <div class="formula-text" id="formulaText">
+                가로/세로 방향을 모두 고려하여 최적의 배치를 계산합니다.
+            </div>
+        </div>
+        
+        <div class="visualization">
+            <div id="visualization" class="plywood-grid">
+                <div class="no-result">계산 버튼을 눌러주세요</div>
+            </div>
+        </div>
+
+        <div class="formula-info">
+            <div class="formula-title">💡 기본 규격 안내</div>
+            <div class="formula-text">
+                표준 합판 크기는 1220mm × 2440mm (4×8 feet) 입니다. 
+                다른 규격을 사용하시는 경우 상단에서 수정하실 수 있습니다.
+            </div>
+        </div>
+        
+        <div class="formula-info">
+            <div class="formula-title">🎯 그리드 배치 방식</div>
+            <div class="formula-text">
+                이 계산기는 합판을 격자(그리드) 형태로 나누어 한 번에 여러 개를 재단하는 방식입니다.<br><br>
+                <strong>예시: 1400×450mm 2장 필요</strong><br>
+                • <strong>450×1400mm 방향</strong>으로 배치<br>
+                • 가로 방향: 1220mm ÷ 450mm = <strong>2개</strong> 배치 가능<br>
+                • 세로 방향: 2440mm ÷ 1400mm = <strong>1줄</strong> 배치 가능<br>
+                • 합판 1장에: 2개 × 1줄 = <strong>2개 동시 재단</strong><br>
+                • 결론: <strong>합판 1장</strong> 필요 ✓<br><br>
+                💡 재단선 시각화(#1, #2...)를 보면 2개가 나란히 배치되어 있는 것을 확인할 수 있습니다!
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Design inspired by modern carpentry tools & precision measurement
+    </footer>
+</div>
+
+<script>
+    // 자동 계산 함수 (입력값 변경 시)
+    function autoCalculate() {
+        const sheetWidth = parseFloat(document.getElementById('sheetWidth').value);
+        const sheetHeight = parseFloat(document.getElementById('sheetHeight').value);
+        const cutWidth = parseFloat(document.getElementById('cutWidth').value);
+        const cutHeight = parseFloat(document.getElementById('cutHeight').value);
+        const quantity = parseInt(document.getElementById('quantity').value);
+
+        // 모든 값이 유효할 때만 계산
+        if (sheetWidth > 0 && sheetHeight > 0 && cutWidth > 0 && cutHeight > 0 && quantity > 0) {
+            calculate();
+        }
+    }
+
+    function calculate() {
+        // 입력값 가져오기
+        const sheetWidth = parseFloat(document.getElementById('sheetWidth').value);
+        const sheetHeight = parseFloat(document.getElementById('sheetHeight').value);
+        const size1 = parseFloat(document.getElementById('cutWidth').value);
+        const size2 = parseFloat(document.getElementById('cutHeight').value);
+        const quantity = parseInt(document.getElementById('quantity').value);
+
+        // 유효성 검사
+        if (sheetWidth <= 0 || sheetHeight <= 0 || size1 <= 0 || size2 <= 0 || quantity <= 0) {
+            return;
         }
 
-        /**
-         * @function calculate
-         * @description 요청하신 순차 재단 로직에 따라 합판 구매 수량을 계산합니다.
-         */
-        function calculate() {
-            // 1. 입력값 가져오기
-            const baseW = parseFloat(document.getElementById('sheetWidth').value); 
-            const baseH = parseFloat(document.getElementById('sheetHeight').value); 
-            const reqW = parseFloat(document.getElementById('cutWidth').value); 
-            const reqH = parseFloat(document.getElementById('cutHeight').value); 
-            let remainingCount = parseInt(document.getElementById('quantity').value); 
+        // 모든 가능한 방향 시도
+        const orientations = [
+            { w: size1, h: size2, name: `${size1}×${size2}` },
+            { w: size2, h: size1, name: `${size2}×${size1}` }
+        ];
+        
+        // 가장 많이 재단할 수 있는 방향 찾기
+        let bestOrientation = null;
+        let maxPieces = 0;
+        
+        for (let orient of orientations) {
+            // 한 줄에 들어가는 개수
+            const piecesPerRow = Math.floor(sheetWidth / orient.w);
+            // 세로로 들어가는 줄 수
+            const rows = Math.floor(sheetHeight / orient.h);
+            // 총 개수
+            const pieces = piecesPerRow * rows;
             
-            // 유효성 검사
-            if (baseW <= 0 || baseH <= 0 || reqW <= 0 || reqH <= 0 || remainingCount <= 0) {
-                return;
-            }
-
-            // 요청 사이즈 (긴 변, 짧은 변)
-            const cutL = Math.max(reqW, reqH); 
-            const cutS = Math.min(reqW, reqH); 
-
-            // 합판 사이즈 (긴 변, 짧은 변)
-            const baseL = Math.max(baseW, baseH); 
-            const baseS = Math.min(baseW, baseH); 
-
-            // 합판에 요청 사이즈를 재단할 수 있는지 1차 확인
-            if (cutL > baseL || cutS > baseS) {
-                document.getElementById('resultCard').classList.add('hidden');
-                alert(`재단 크기(${cutL}x${cutS})가 합판(${baseL}x${baseS})보다 커서 재단이 불가능합니다!`);
-                return;
-            }
-            
-            let requiredBoards = 0; 
-            let totalCut = 0; 
-            let allSheetDetails = []; 
-            let log = []; 
-
-            // 요청 수량이 남아있는 동안 반복
-            while (remainingCount > 0) {
-                requiredBoards++; 
-                log.push(`\n**⭐ 새 합판 #${requiredBoards} 재단 시작** (${baseW}x${baseH}mm)`);
-                let cutsInSheet = [];
-
-                // 1. 첫 번째 조각 재단
-                if (remainingCount > 0) {
-                    // 요청 사이즈 1장 재단
-                    cutsInSheet.push({
-                        x: 0,
-                        y: 0,
-                        width: reqW,
-                        height: reqH,
-                        orientation: `${reqW}×${reqH}` 
-                    });
-                    remainingCount--;
-                    totalCut++;
-                    log.push(`1. 요청 사이즈 1장 (${cutL}x${cutS}) 재단 완료. (남은 요청: ${remainingCount}장)`);
-
-                    // 2. 잔여 합판 사이즈 계산 (요청된 로직 3번 기반: 차이값)
-                    const remainingL = baseL - cutL; 
-                    const remainingS = baseS - cutS; 
-                    
-                    // 잔여 합판의 긴 변
-                    const remL = Math.max(remainingL, remainingS); 
-                    
-                    log.push(`2. 남은 합판 잔여 크기: ${remainingL} x ${remainingS}mm (로직 기반)`);
-
-                    // 3. 남은 요청 수량에 대해 잔여 합판 검토 (로직 4-6)
-                    if (remainingCount > 0) {
-                        log.push(`3. 남은 요청 사이즈: ${cutL}x${cutS}mm`);
-                        
-                        // 요청 사이즈의 긴 변(cutL)이 남은 합판의 가장 긴 변(remL)보다 큰지 확인
-                        if (cutL > remL) {
-                            log.push(`4. 요청 긴 변 (${cutL}) > 잔여 합판 긴 변 (${remL})`);
-                            log.push(`5. **결론**: 잔여 합판으로는 재단 불가능. 다음 합판으로 이동.`);
-                        } else {
-                            // 로직대로 '잔여 합판에서 1장만 재단 후 다음 합판으로 넘어가는' 방식을 유지
-                            log.push(`4. 잔여 합판으로 재단 가능 여부를 판단해야 하지만, 요청된 로직의 예시(1장만 재단 후 새 합판)를 따름.`);
-                            log.push(`5. **결론**: 다음 합판으로 이동.`);
-                        }
-                    } else {
-                         log.push(`3. 남은 요청 없음. 재단 종료.`);
-                    }
-                }
-                
-                allSheetDetails.push({
-                    sheetNumber: requiredBoards,
-                    cuts: cutsInSheet,
-                    piecesCount: cutsInSheet.length, 
-                    waste: { w: baseL - cutL, h: baseS - cutS } 
-                });
-            }
-
-            // 결과 계산 및 표시
-            const piecesPerSheet = 1; // 이 로직에서는 합판 1장당 1개만 재단 가능
-            
-            // 활용률 계산 (총 재단된 조각 수 기준)
-            const cutArea = reqW * reqH;
-            const sheetArea = baseW * baseH;
-            const efficiency = ((totalCut * cutArea) / (requiredBoards * sheetArea) * 100).toFixed(1);
-
-            // 가격 계산
-            const sheetPrice = parseFloat(document.getElementById('sheetPrice').value) || 0;
-            const totalPrice = requiredBoards * sheetPrice;
-
-            // -----------------------------------------------------------------
-            // ⭐ 결과 표시 업데이트: 색상 변경 적용
-            // -----------------------------------------------------------------
-
-            // 1. 구매 수량 (resultNumber)을 밝은 녹색으로 설정
-            const resultNumberElement = document.getElementById('resultNumber');
-            resultNumberElement.textContent = requiredBoards;
-            // 밝은 녹색 그라디언트 적용 (CSS에서 기본 색상이 아닌 경우 재설정 필요)
-            resultNumberElement.style.background = 'linear-gradient(135deg, var(--bright-green), #22c55e)'; 
-            resultNumberElement.style.webkitBackgroundClip = 'text';
-            resultNumberElement.style.webkitTextFillColor = 'transparent';
-            resultNumberElement.style.backgroundClip = 'text';
-            resultNumberElement.style.color = 'initial'; // 초기화
-
-            document.getElementById('piecesPerSheet').textContent = piecesPerSheet;
-            document.getElementById('totalPieces').textContent = totalCut;
-            document.getElementById('efficiency').textContent = efficiency + '%';
-            
-            // 2. 총 구매 금액 (totalPrice) 숫자를 붉은색으로 설정
-            const totalPriceElement = document.getElementById('totalPrice');
-            totalPriceElement.textContent = totalPrice.toLocaleString() + '원';
-            totalPriceElement.style.color = 'var(--bright-red)'; // 붉은색 변수 사용
-
-            // 계산 과정 상세 설명
-            let explanation = `<div style="background: var(--cream); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                <strong style="color: var(--accent-blue);">⚙️ 순차 재단 상세 과정</strong><br>
-                <span style="font-size: 0.9em; color: var(--wood-medium);">
-                ${log.join('<br>').replace(/\n/g, '<br>').replace(/\*\*/g, '<strong>').replace(/\*\*/g, '</strong>')}
-                </span></div>`;
-            
-            document.getElementById('formulaText').innerHTML = explanation + `
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid var(--wood-light);">
-                <strong>${reqW}×${reqH}mm</strong> 크기를 <strong>${remainingCount + totalCut}개</strong> 만들려면<br>
-                → 합판 <strong style="color: var(--bright-green); font-size: 1.3em;">${requiredBoards}장</strong> 구매 필요<br>
-                → 총 구매 금액: <strong style="color: var(--bright-red); font-size: 1.3em;">${totalPrice.toLocaleString()}원</strong><br>
-                </div>
-            `;
-
-            // 시각화
-            visualizePlywood(allSheetDetails, baseW, baseH, reqW, reqH, true);
-
-            // 결과 카드 표시
-            const resultCard = document.getElementById('resultCard');
-            resultCard.classList.remove('hidden');
-            
-            if (!resultCard.classList.contains('show')) {
-                resultCard.classList.add('show');
+            if (pieces > maxPieces) {
+                maxPieces = pieces;
+                bestOrientation = {
+                    ...orient,
+                    piecesPerRow,
+                    rows,
+                    totalPieces: pieces
+                };
             }
         }
+        
+        if (!bestOrientation || maxPieces === 0) {
+            document.getElementById('resultCard').classList.add('hidden');
+            return;
+        }
+        
+        const piecesPerSheet = bestOrientation.totalPieces;
+        const sheetsNeeded = Math.ceil(quantity / piecesPerSheet);
+        const totalPieces = sheetsNeeded * piecesPerSheet;
+        
+        // 활용률 계산
+        const cutArea = size1 * size2;
+        const sheetArea = sheetWidth * sheetHeight;
+        const efficiency = ((piecesPerSheet * cutArea) / sheetArea * 100).toFixed(1);
+        
+        // 낭비 영역 계산
+        const usedWidth = bestOrientation.piecesPerRow * bestOrientation.w;
+        const usedHeight = bestOrientation.rows * bestOrientation.h;
+        const wasteWidth = sheetWidth - usedWidth;
+        const wasteHeight = sheetHeight - usedHeight;
 
+        // 결과 표시
+        document.getElementById('resultNumber').textContent = sheetsNeeded;
+        document.getElementById('piecesPerSheet').textContent = piecesPerSheet;
+        document.getElementById('totalPieces').textContent = totalPieces;
+        document.getElementById('efficiency').textContent = efficiency + '%';
+        
+        // 계산 과정 설명
+        let explanation = `<div style="background: var(--cream); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <strong style="color: var(--accent-blue);">⚙️ 계산 방식: ${bestOrientation.name}mm 방향</strong><br>
+            <span style="font-size: 0.9em; color: var(--wood-medium);">
+            • 가로 ${sheetWidth}mm ÷ ${bestOrientation.w}mm = <strong>${bestOrientation.piecesPerRow}개</strong> (한 줄)<br>
+            • 세로 ${sheetHeight}mm ÷ ${bestOrientation.h}mm = <strong>${bestOrientation.rows}줄</strong><br>
+            • 합판 1장당: ${bestOrientation.piecesPerRow} × ${bestOrientation.rows} = <strong style="color: var(--accent-orange);">${piecesPerSheet}개</strong> 재단 가능<br>`;
+        
+        if (wasteWidth > 0 || wasteHeight > 0) {
+            explanation += `• 낭비 영역: `;
+            if (wasteWidth > 0) explanation += `오른쪽 ${wasteWidth.toFixed(0)}mm `;
+            if (wasteHeight > 0) explanation += `아래쪽 ${wasteHeight.toFixed(0)}mm`;
+            explanation += ` (X 표시)`;
+        }
+        
+        explanation += `</span></div>`;
+        
+        document.getElementById('formulaText').innerHTML = explanation + `
+            <strong>${size1}×${size2}mm</strong> 크기를 <strong>${quantity}장</strong> 만들려면<br>
+            → 합판 <strong style="color: var(--accent-orange); font-size: 1.2em;">${sheetsNeeded}장</strong> 구매 필요<br>
+            <span style="color: var(--wood-medium); font-size: 0.9em;">(총 ${totalPieces}개 제작 가능, ${totalPieces - quantity}개 여유분)</span>
+        `;
 
-        // 시각화 함수 (순차 재단 로직에 맞게 업데이트)
-        function visualizePlywood(allSheetDetails, sheetWidth, sheetHeight, cutW, cutH, isSequential) {
-            const visualization = document.getElementById('visualization');
-            visualization.innerHTML = '';
+        // 시각화
+        visualizePlywood(sheetsNeeded, bestOrientation, usedWidth, usedHeight, sheetWidth, sheetHeight);
+
+        // 결과 카드 표시
+        const resultCard = document.getElementById('resultCard');
+        resultCard.classList.remove('hidden');
+        
+        if (!resultCard.classList.contains('show')) {
+            resultCard.classList.add('show');
+        }
+    }
+
+    function visualizePlywood(sheetsNeeded, orientation, usedWidth, usedHeight, sheetWidth, sheetHeight) {
+        const visualization = document.getElementById('visualization');
+        visualization.innerHTML = '';
+        
+        // 최대 6장까지만 표시
+        const displaySheets = Math.min(sheetsNeeded, 6);
+        const showMore = sheetsNeeded > 6;
+
+        // 모바일 감지
+        const isMobile = window.innerWidth <= 768;
+        const baseSheetWidth = isMobile ? 90 : 120;
+        const baseSheetHeight = isMobile ? 135 : 180;
+
+        // 그리드 레이아웃 설정
+        const cols = displaySheets <= 3 ? displaySheets : 3;
+        visualization.style.gridTemplateColumns = `repeat(${cols}, ${baseSheetWidth}px)`;
+        visualization.style.gap = isMobile ? '6px' : '8px';
+
+        // 비율 계산
+        const usedWidthRatio = usedWidth / sheetWidth;
+        const usedHeightRatio = usedHeight / sheetHeight;
+
+        for (let i = 0; i < displaySheets; i++) {
+            const sheet = document.createElement('div');
+            sheet.className = 'plywood-sheet';
+            sheet.style.width = baseSheetWidth + 'px';
+            sheet.style.height = baseSheetHeight + 'px';
+            sheet.style.position = 'relative';
             
-            // 최대 6장까지만 표시
-            const displaySheets = Math.min(allSheetDetails.length, 6);
-            const showMore = allSheetDetails.length > 6;
-
-            // 모바일 감지
-            const isMobile = window.innerWidth <= 768;
-            const baseSheetWidth = isMobile ? 90 : 120;
-            const baseSheetHeight = isMobile ? 135 : 180;
-
-            // 그리드 레이아웃 설정
-            const cols = displaySheets <= 3 ? displaySheets : 3;
-            visualization.style.gridTemplateColumns = `repeat(${cols}, ${baseSheetWidth}px)`;
-            visualization.style.gap = isMobile ? '6px' : '8px';
-
-            const cutAreaWidth = cutW;
-            const cutAreaHeight = cutH;
-
-            for (let i = 0; i < displaySheets; i++) {
-                const sheetDetail = allSheetDetails[i];
-                const sheet = document.createElement('div');
-                sheet.className = 'plywood-sheet';
-                sheet.style.width = baseSheetWidth + 'px';
-                sheet.style.height = baseSheetHeight + 'px';
-                sheet.style.position = 'relative';
-                
-                // 합판 번호 표시
-                const sheetNumber = document.createElement('div');
-                sheetNumber.className = 'sheet-number';
-                sheetNumber.textContent = `#${sheetDetail.sheetNumber}`;
-                sheet.appendChild(sheetNumber);
-                
-                // 재단 조각 표시 (1장만 재단되므로)
-                if (sheetDetail.cuts.length > 0) {
-                    const cut = sheetDetail.cuts[0];
+            // 합판 번호 표시
+            const sheetNumber = document.createElement('div');
+            sheetNumber.className = 'sheet-number';
+            sheetNumber.textContent = `#${i + 1}`;
+            sheet.appendChild(sheetNumber);
+            
+            // 재단 그리드 생성
+            const cutGrid = document.createElement('div');
+            cutGrid.style.position = 'absolute';
+            cutGrid.style.top = '0';
+            cutGrid.style.left = '0';
+            cutGrid.style.width = (usedWidthRatio * 100) + '%';
+            cutGrid.style.height = (usedHeightRatio * 100) + '%';
+            cutGrid.style.display = 'grid';
+            cutGrid.style.gridTemplateColumns = `repeat(${orientation.piecesPerRow}, 1fr)`;
+            cutGrid.style.gridTemplateRows = `repeat(${orientation.rows}, 1fr)`;
+            cutGrid.style.gap = '0';
+            
+            // 각 재단 조각 생성
+            let pieceNum = 1;
+            for (let r = 0; r < orientation.rows; r++) {
+                for (let c = 0; c < orientation.piecesPerRow; c++) {
                     const piece = document.createElement('div');
                     piece.className = 'cut-piece';
-                    piece.style.position = 'absolute';
-                    
-                    // 재단된 조각 위치 및 크기
-                    piece.style.left = '0%';
-                    piece.style.top = '0%';
-                    piece.style.width = ((cut.width / sheetWidth) * 100) + '%';
-                    piece.style.height = ((cut.height / sheetHeight) * 100) + '%';
-                    
                     piece.style.display = 'flex';
                     piece.style.alignItems = 'center';
                     piece.style.justifyContent = 'center';
                     piece.style.fontSize = isMobile ? '0.65rem' : '0.7rem';
                     piece.style.fontWeight = '600';
                     piece.style.color = 'var(--wood-dark)';
-                    piece.textContent = `1장 (${cut.width}x${cut.height})`;
-                    sheet.appendChild(piece);
-
-                    // 낭비 영역 표시 (로직에 따른 잔여 영역)
-                    
-                    // 1. 오른쪽 낭비 영역 (남은 W x 전체 H)
-                    const waste1 = document.createElement('div'); 
-                    waste1.className = 'waste-area';
-                    waste1.style.position = 'absolute';
-                    waste1.style.left = ((cutAreaWidth / sheetWidth) * 100) + '%';
-                    waste1.style.top = '0';
-                    waste1.style.width = (((sheetWidth - cutAreaWidth) / sheetWidth) * 100) + '%';
-                    waste1.style.height = '100%';
-                    sheet.appendChild(waste1);
-                    
-                    // 2. 아래쪽 낭비 영역 (전체 W x 남은 H)
-                    const waste2 = document.createElement('div'); 
-                    waste2.className = 'waste-area';
-                    waste2.style.position = 'absolute';
-                    waste2.style.left = '0';
-                    waste2.style.top = ((cutAreaHeight / sheetHeight) * 100) + '%';
-                    waste2.style.width = ((cutAreaWidth / sheetWidth) * 100) + '%';
-                    waste2.style.height = (((sheetHeight - cutAreaHeight) / sheetHeight) * 100) + '%';
-                    sheet.appendChild(waste2);
-
-                } else {
-                    sheet.textContent = '재단 없음';
+                    piece.textContent = `#${pieceNum++}`;
+                    cutGrid.appendChild(piece);
                 }
-                
-                visualization.appendChild(sheet);
             }
-
-            if (showMore) {
-                const more = document.createElement('div');
-                more.className = 'plywood-sheet';
-                more.style.width = baseSheetWidth + 'px';
-                more.style.height = baseSheetHeight + 'px';
-                more.style.background = 'linear-gradient(135deg, var(--wood-medium), var(--wood-dark))';
-                more.textContent = `+${allSheetDetails.length - 6}`;
-                visualization.appendChild(more);
+            
+            sheet.appendChild(cutGrid);
+            
+            // 오른쪽 낭비 영역
+            if (usedWidthRatio < 0.99) {
+                const wasteRight = document.createElement('div');
+                wasteRight.className = 'waste-area';
+                wasteRight.style.position = 'absolute';
+                wasteRight.style.top = '0';
+                wasteRight.style.left = (usedWidthRatio * 100) + '%';
+                wasteRight.style.width = ((1 - usedWidthRatio) * 100) + '%';
+                wasteRight.style.height = (usedHeightRatio * 100) + '%';
+                sheet.appendChild(wasteRight);
             }
+            
+            // 아래쪽 낭비 영역
+            if (usedHeightRatio < 0.99) {
+                const wasteBottom = document.createElement('div');
+                wasteBottom.className = 'waste-area';
+                wasteBottom.style.position = 'absolute';
+                wasteBottom.style.top = (usedHeightRatio * 100) + '%';
+                wasteBottom.style.left = '0';
+                wasteBottom.style.width = '100%';
+                wasteBottom.style.height = ((1 - usedHeightRatio) * 100) + '%';
+                sheet.appendChild(wasteBottom);
+            }
+            
+            visualization.appendChild(sheet);
         }
 
-        // 페이지 로드 시 초기 계산
-        document.addEventListener('DOMContentLoaded', function() {
-            autoCalculate();
-        });
-    </script>
+        if (showMore) {
+            const more = document.createElement('div');
+            more.className = 'plywood-sheet';
+            more.style.width = baseSheetWidth + 'px';
+            more.style.height = baseSheetHeight + 'px';
+            more.style.background = 'linear-gradient(135deg, var(--wood-medium), var(--wood-dark))';
+            more.textContent = `+${sheetsNeeded - 6}`;
+            visualization.appendChild(more);
+        }
+    }
+
+    // 페이지 로드 시 초기 계산
+    document.addEventListener('DOMContentLoaded', function() {
+        autoCalculate();
+    });
+</script>
+```
+
 </body>
 </html>
