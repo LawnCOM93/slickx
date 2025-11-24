@@ -1,2 +1,503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계산기 대시보드</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-test ok.... index.html
+        body {
+            font-family: 'Noto Sans KR', 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.1),
+                0 2px 8px rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.15),
+                0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card:active {
+            transform: translateY(-8px) scale(1.01);
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+            transition: all 0.4s ease;
+        }
+
+        .card:hover .card-icon {
+            transform: rotate(10deg) scale(1.1);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6);
+        }
+
+        .card-icon .material-symbols-outlined {
+            font-size: 36px;
+            color: white;
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+
+        .card-content h3 {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .card:hover .card-content h3 {
+            color: #667eea;
+        }
+
+        .card-content p {
+            color: #718096;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-badge {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(102, 126, 234, 0.3);
+            transform: scale(0);
+            animation: ripple-animation 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .card {
+                padding: 30px;
+            }
+        }
+
+        /* 스크롤바 스타일링 */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* 추가 카드를 위한 스타일 */
+        .add-card {
+            border: 3px dashed rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 250px;
+        }
+
+        .add-card:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .add-card-content {
+            text-align: center;
+            color: white;
+        }
+
+        .add-card-content .material-symbols-outlined {
+            font-size: 48px;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+
+        .add-card-content p {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>계산기 대시보드</h1>
+            <p>필요한 계산기를 선택하세요</p>
+        </div>
+
+        <div class="dashboard-grid" id="dashboardGrid">
+            <!-- 카드들이 JavaScript로 동적 생성됩니다 -->
+        </div>
+    </div>
+
+    <script>
+        // 키워드 기반 아이콘 매칭 시스템
+        const iconKeywords = {
+            // 각도/앵글 관련
+            '앵글': 'architecture',
+            '각도': 'rotate_right',
+            'angle': 'architecture',
+            '회전': 'rotation',
+            '삼각': 'change_history',
+            
+            // 측정/자 관련
+            'rule': 'straighten',
+            '자': 'straighten',
+            '측정': 'square_foot',
+            '길이': 'height',
+            '거리': 'social_distance',
+            '스케일': 'straighten',
+            
+            // 계산 관련
+            '계산기': 'calculate',
+            '계산': 'functions',
+            'calculator': 'calculate',
+            '수학': 'calculate',
+            
+            // 면적/부피 관련
+            '면적': 'square_foot',
+            '넓이': 'crop_square',
+            '부피': 'view_in_ar',
+            '체적': 'cube',
+            
+            // 시간 관련
+            '시간': 'schedule',
+            '날짜': 'calendar_today',
+            '타이머': 'timer',
+            '스톱워치': 'av_timer',
+            
+            // 금융 관련
+            '금융': 'paid',
+            '대출': 'account_balance',
+            '이자': 'trending_up',
+            '환율': 'currency_exchange',
+            '투자': 'show_chart',
+            
+            // 변환 관련
+            '변환': 'swap_horiz',
+            '컨버터': 'sync_alt',
+            '단위': 'straighten',
+            
+            // 통계/데이터 관련
+            '통계': 'bar_chart',
+            '그래프': 'analytics',
+            '데이터': 'data_usage',
+            '분석': 'query_stats',
+            
+            // 과학 관련
+            '물리': 'science',
+            '화학': 'biotech',
+            '공식': 'function',
+            '실험': 'science',
+            
+            // 기하학 관련
+            '원': 'circle',
+            '사각형': 'crop_square',
+            '삼각형': 'change_history',
+            '도형': 'category',
+            
+            // 속도/운동 관련
+            '속도': 'speed',
+            '가속도': 'flash_on',
+            '운동': 'directions_run',
+            
+            // 무게/질량 관련
+            '무게': 'balance',
+            '질량': 'fitness_center',
+            
+            // 온도 관련
+            '온도': 'thermostat',
+            '열': 'local_fire_department',
+            
+            // 전기 관련
+            '전기': 'electrical_services',
+            '전압': 'bolt',
+            '전류': 'power',
+            
+            // 건축/설계 관련
+            '건축': 'architecture',
+            '설계': 'draw',
+            '청사진': 'grid_on',
+            
+            // 기타
+            '비율': 'percent',
+            '백분율': 'percent',
+            '평균': 'exposure',
+            '합계': 'functions'
+        };
+
+        // 제목에서 아이콘을 자동으로 찾는 함수
+        function findIconForTitle(title) {
+            const lowerTitle = title.toLowerCase();
+            
+            // 정확한 키워드 매칭 (우선순위 높음)
+            for (const [keyword, icon] of Object.entries(iconKeywords)) {
+                if (lowerTitle.includes(keyword.toLowerCase())) {
+                    return icon;
+                }
+            }
+            
+            // 매칭되는 키워드가 없으면 기본 아이콘 반환
+            if (lowerTitle.includes('계산')) {
+                return 'calculate';
+            }
+            
+            // 최종 기본값
+            return 'apps';
+        }
+
+        // 계산기 데이터 (아이콘 자동 생성)
+        const calculators = [
+            {
+                key: '앵글 계산기',
+                url: 'https://lawncom93.github.io/SlickX/Program/angle_simulation.html',
+                description: '정밀한 각도 계산을 위한 도구입니다'
+            },
+            {
+                key: 'rule 계산기',
+                url: 'https://lawncom93.github.io/SlickX/Program/rule_simulation.html',
+                description: '측정 및 규칙 계산을 위한 도구입니다'
+            }
+            // 여기에 새로운 계산기를 추가하면 자동으로 적절한 아이콘이 할당됩니다!
+            // 예시:
+            // {
+            //     key: '면적 계산기',
+            //     url: 'https://example.com/area.html',
+            //     description: '다양한 도형의 면적을 계산합니다'
+            // }
+        ];
+
+        // 대시보드 그리드 렌더링
+        function renderDashboard() {
+            const grid = document.getElementById('dashboardGrid');
+            
+            calculators.forEach((calc, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.animationDelay = `${index * 0.1}s`;
+                
+                // 아이콘 자동 찾기
+                const icon = findIconForTitle(calc.key);
+                
+                card.innerHTML = `
+                    <div class="card-icon">
+                        <span class="material-symbols-outlined">${icon}</span>
+                    </div>
+                    <div class="card-content">
+                        <h3>${calc.key}</h3>
+                        <p>${calc.description}</p>
+                    </div>
+                    <div class="card-badge">클릭하여 열기</div>
+                `;
+                
+                // 클릭 이벤트
+                card.addEventListener('click', (e) => {
+                    createRipple(e, card);
+                    setTimeout(() => {
+                        window.open(calc.url, '_blank');
+                    }, 300);
+                });
+                
+                grid.appendChild(card);
+            });
+
+            // 추가 카드 플레이스홀더 (옵션)
+            // const addCard = document.createElement('div');
+            // addCard.className = 'card add-card';
+            // addCard.innerHTML = `
+            //     <div class="add-card-content">
+            //         <span class="material-symbols-outlined">add_circle</span>
+            //         <p>새 계산기 추가</p>
+            //     </div>
+            // `;
+            // grid.appendChild(addCard);
+        }
+
+        // 리플 효과
+        function createRipple(event, element) {
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            
+            const rect = element.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            
+            element.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+
+        // 페이지 로드시 대시보드 렌더링
+        document.addEventListener('DOMContentLoaded', renderDashboard);
+    </script>
+</body>
+</html>
