@@ -839,6 +839,50 @@
             </div>
         </div>
 
+        <div class="card">
+            <h2 class="card-title">합판 규격</h2>
+            <div class="input-group">
+                <label>표준 합판 크기</label>
+                <div class="input-row">
+                    <div>
+                        <div class="dimension-label">가로 (Width)</div>
+                        <div class="input-wrapper">
+                            <input type="number" id="sheetWidth" value="1220" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                            <span class="unit">mm</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="dimension-label">세로 (Height)</div>
+                        <div class="input-wrapper">
+                            <input type="number" id="sheetHeight" value="2440" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                            <span class="unit">mm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>절단날 폭 (Kerf)</label>
+                <div class="input-wrapper">
+                    <input type="number" id="kerfWidth" value="2" min="0" step="0.1" onfocus="this.select()" oninput="autoCalculate()">
+                    <span class="unit">mm</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>합판 1장 가격</label>
+                <div class="input-wrapper">
+                    <input type="number" id="sheetPrice" value="25000" min="0" onfocus="this.select()" oninput="autoCalculate()">
+                    <span class="unit">원</span>
+                </div>
+
+                <div class="detail-item">
+                <div class="detail-value" id="totalPrice">0원</div>
+                <div class="detail-label">총 구매 금액</div>
+            </div>
+            </div>
+        </div>        
+
         <div id="resultCard" class="result-card hidden">
             <div class="result-header">
                 <div class="result-number" id="resultNumber">0</div>
