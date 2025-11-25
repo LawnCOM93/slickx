@@ -873,9 +873,25 @@
             const quantity = parseInt(document.getElementById('quantity').value);
             const kerfWidth = parseFloat(document.getElementById('kerfWidth').value);
 
+            // 모든 값이 유효하고 양수일 때만 계산
             if (sheetWidth > 0 && sheetHeight > 0 && cutWidth > 0 && cutHeight > 0 && quantity > 0 && kerfWidth >= 0) {
-                calculate();
-            }
+                // 재단 크기가 합판보다 작은지 사전 체크
+                const canFit = (cutWidth <= sheetWidth && cutHeight <= sheetHeight) || 
+                               (cutWidth <= sheetHeight && cutHeight <= sheetWidth);
+                
+                if (canFit) {
+                    calculate();
+                } else {
+                    // 재단 불가능한 경우 결과 카드에 에러 메시지 표시
+                    showError(`재단 크기(${cutWidth}×${cutHeight}mm)가 합판(${sheetWidth}×${sheetHeight}mm)보다 커서 재단이 불가능합니다.`);
+                }
+            } else {
+                // 입력값이 완전하지 않으면 결과 카드 숨김
+                document.getElementById('resultCard').classList.add('hidden');
+            }            
+            // if (sheetWidth > 0 && sheetHeight > 0 && cutWidth > 0 && cutHeight > 0 && quantity > 0 && kerfWidth >= 0) {
+            //     calculate();
+            // }
         }
 
         /**
