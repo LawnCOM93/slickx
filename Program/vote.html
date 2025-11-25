@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Choice Vote - 짜장면 vs 짬뽕</title>
+    <title>Choice Vote - 투표 시스템</title>
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -13,16 +13,18 @@
         }
 
         :root {
-            --jjajang-color: #8B4513;
-            --jjajang-light: #D2691E;
-            --jjajang-glow: rgba(139, 69, 19, 0.4);
-            --jjampong-color: #DC143C;
-            --jjampong-light: #FF6B6B;
-            --jjampong-glow: rgba(220, 20, 60, 0.4);
+            --option-a-color: #6366f1;
+            --option-a-light: #818cf8;
+            --option-a-glow: rgba(99, 102, 241, 0.3);
+            --option-b-color: #ec4899;
+            --option-b-light: #f472b6;
+            --option-b-glow: rgba(236, 72, 153, 0.3);
             --bg-dark: #0a0a0f;
             --bg-card: #16161f;
+            --bg-sidebar: #111118;
             --text-primary: #ffffff;
             --text-secondary: #a0a0b0;
+            --border-color: rgba(255,255,255,0.08);
         }
 
         body {
@@ -30,193 +32,269 @@
             background: var(--bg-dark);
             color: var(--text-primary);
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
-        .container {
+        /* Main Layout */
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar - 투표 목록 */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-header h1 {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, var(--option-a-light), var(--option-b-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .btn-new-vote {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--option-a-color), var(--option-b-color));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-new-vote:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .vote-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .vote-list-item {
+            padding: 15px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .vote-list-item:hover {
+            border-color: var(--option-a-color);
+        }
+
+        .vote-list-item.active {
+            border-color: var(--option-a-light);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .vote-list-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .vote-list-options {
+            display: flex;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .vote-list-options span {
+            padding: 3px 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+        }
+
+        .vote-list-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-list {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-list-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+        }
+
+        .content-wrapper {
             max-width: 900px;
             margin: 0 auto;
-            padding: 20px 15px;
         }
 
-        /* Header */
-        .header {
+        /* Vote Header */
+        .vote-header {
             text-align: center;
             margin-bottom: 25px;
         }
 
-        .header h1 {
+        .vote-question {
             font-family: 'Black Han Sans', sans-serif;
-            font-size: clamp(1.8rem, 5vw, 2.5rem);
-            background: linear-gradient(135deg, var(--jjajang-light), #fff, var(--jjampong-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: 10px;
+            color: var(--text-primary);
         }
 
-        .header p {
+        .vote-date {
+            font-size: 0.85rem;
             color: var(--text-secondary);
-            font-size: clamp(0.85rem, 2.5vw, 1rem);
         }
 
-        /* Vote Section - 항상 좌우 배치 */
-        .vote-section {
-            display: flex;
-            flex-direction: row;
-            gap: 15px;
+        /* Vote Cards */
+        .vote-cards-wrapper {
+            position: relative;
             margin-bottom: 25px;
-            align-items: stretch;
         }
 
-        /* Vote Card */
+        .vote-cards {
+            display: flex;
+            gap: 15px;
+        }
+
         .vote-card {
             flex: 1;
             background: var(--bg-card);
             border-radius: 16px;
-            padding: 20px 15px;
+            padding: 25px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-            min-width: 0;
         }
 
-        .vote-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .vote-card.jjajang::before {
-            background: radial-gradient(circle at center, var(--jjajang-glow), transparent 70%);
-        }
-
-        .vote-card.jjampong::before {
-            background: radial-gradient(circle at center, var(--jjampong-glow), transparent 70%);
-        }
-
-        .vote-card:hover::before,
-        .vote-card:active::before {
-            opacity: 1;
-        }
-
-        .vote-card.jjajang:hover,
-        .vote-card.jjajang:active {
-            border-color: var(--jjajang-color);
+        .vote-card.option-a:hover {
+            border-color: var(--option-a-color);
             transform: translateY(-3px);
         }
 
-        .vote-card.jjampong:hover,
-        .vote-card.jjampong:active {
-            border-color: var(--jjampong-color);
+        .vote-card.option-b:hover {
+            border-color: var(--option-b-color);
             transform: translateY(-3px);
         }
 
-        .vote-icon {
-            font-size: clamp(3rem, 12vw, 5rem);
-            margin-bottom: 10px;
-            display: block;
-            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.3));
-            transition: transform 0.3s ease;
-        }
-
-        .vote-card:hover .vote-icon,
-        .vote-card:active .vote-icon {
-            transform: scale(1.1) rotate(-5deg);
-        }
-
-        .vote-title {
-            font-family: 'Black Han Sans', sans-serif;
-            font-size: clamp(1.2rem, 4vw, 1.6rem);
-            margin-bottom: 5px;
-        }
-
-        .vote-card.jjajang .vote-title {
-            color: var(--jjajang-light);
-        }
-
-        .vote-card.jjampong .vote-title {
-            color: var(--jjampong-light);
-        }
-
-        .vote-description {
-            font-size: clamp(0.7rem, 2vw, 0.85rem);
-            color: var(--text-secondary);
+        .vote-card-icon {
+            font-size: 3.5rem;
             margin-bottom: 12px;
+            display: block;
         }
 
-        .vote-count {
-            font-size: clamp(2rem, 8vw, 3rem);
+        .vote-card-title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .vote-card.option-a .vote-card-title {
+            color: var(--option-a-light);
+        }
+
+        .vote-card.option-b .vote-card-title {
+            color: var(--option-b-light);
+        }
+
+        .vote-card-count {
+            font-size: 2.5rem;
             font-weight: 700;
             line-height: 1;
-            margin-bottom: 3px;
         }
 
-        .vote-card.jjajang .vote-count {
-            color: var(--jjajang-light);
+        .vote-card.option-a .vote-card-count {
+            color: var(--option-a-light);
         }
 
-        .vote-card.jjampong .vote-count {
-            color: var(--jjampong-light);
+        .vote-card.option-b .vote-card-count {
+            color: var(--option-b-light);
         }
 
-        .vote-percentage {
-            font-size: clamp(0.9rem, 3vw, 1.1rem);
+        .vote-card-percent {
+            font-size: 1rem;
             color: var(--text-secondary);
+            margin-top: 5px;
         }
 
-        .click-hint {
-            font-size: 0.7rem;
+        .vote-card-hint {
+            font-size: 0.75rem;
             color: var(--text-secondary);
-            margin-top: 10px;
+            margin-top: 12px;
             opacity: 0.7;
         }
 
-        /* VS Badge */
         .vs-badge {
             position: absolute;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, var(--jjajang-color), var(--jjampong-color));
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--option-a-color), var(--option-b-color));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Black Han Sans', sans-serif;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: white;
             z-index: 10;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
-        .vote-wrapper {
-            position: relative;
-        }
-
         /* Progress Bar */
         .progress-section {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .progress-bar {
-            height: 35px;
+            height: 40px;
             background: var(--bg-card);
             border-radius: 20px;
             overflow: hidden;
             display: flex;
-            position: relative;
         }
 
         .progress-fill {
@@ -225,109 +303,158 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             transition: width 0.5s ease;
-            min-width: 0;
         }
 
-        .progress-fill.jjajang {
-            background: linear-gradient(90deg, var(--jjajang-color), var(--jjajang-light));
+        .progress-fill.option-a {
+            background: linear-gradient(90deg, var(--option-a-color), var(--option-a-light));
         }
 
-        .progress-fill.jjampong {
-            background: linear-gradient(90deg, var(--jjampong-light), var(--jjampong-color));
-        }
-
-        .progress-fill span {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding: 0 8px;
+        .progress-fill.option-b {
+            background: linear-gradient(90deg, var(--option-b-light), var(--option-b-color));
         }
 
         .total-votes {
             text-align: center;
-            margin-top: 10px;
+            margin-top: 12px;
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
-        /* Recent Votes */
-        .recent-section {
+        /* Comments Section - 좌우 분리 */
+        .comments-section {
+            display: flex;
+            gap: 20px;
+        }
+
+        .comments-column {
+            flex: 1;
             background: var(--bg-card);
             border-radius: 16px;
             padding: 20px;
+            min-height: 300px;
         }
 
-        .recent-section h3 {
-            font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.2rem;
+        .comments-column.option-a {
+            border-top: 3px solid var(--option-a-color);
+        }
+
+        .comments-column.option-b {
+            border-top: 3px solid var(--option-b-color);
+        }
+
+        .comments-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comments-header-icon {
+            font-size: 1.5rem;
+        }
+
+        .comments-header-title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.1rem;
+        }
+
+        .comments-column.option-a .comments-header-title {
+            color: var(--option-a-light);
+        }
+
+        .comments-column.option-b .comments-header-title {
+            color: var(--option-b-light);
+        }
+
+        .comments-header-count {
+            margin-left: auto;
+            font-size: 0.85rem;
             color: var(--text-secondary);
         }
 
-        .vote-list {
-            max-height: 250px;
+        .comments-list {
+            max-height: 350px;
             overflow-y: auto;
         }
 
-        .vote-item {
-            display: flex;
-            align-items: center;
+        .comment-item {
             padding: 12px;
             background: rgba(255,255,255,0.03);
             border-radius: 10px;
-            margin-bottom: 8px;
-            gap: 12px;
+            margin-bottom: 10px;
         }
 
-        .vote-item:last-child {
+        .comment-item:last-child {
             margin-bottom: 0;
         }
 
-        .vote-item-icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .vote-item-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .vote-item-name {
+        .comment-name {
             font-weight: 600;
             font-size: 0.9rem;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
 
-        .vote-item.jjajang .vote-item-name {
-            color: var(--jjajang-light);
+        .comments-column.option-a .comment-name {
+            color: var(--option-a-light);
         }
 
-        .vote-item.jjampong .vote-item-name {
-            color: var(--jjampong-light);
+        .comments-column.option-b .comment-name {
+            color: var(--option-b-light);
         }
 
-        .vote-item-comment {
-            font-size: 0.8rem;
+        .comment-text {
+            font-size: 0.85rem;
             color: var(--text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            margin-bottom: 6px;
         }
 
-        .vote-item-date {
+        .comment-date {
             font-size: 0.7rem;
             color: var(--text-secondary);
             opacity: 0.7;
-            flex-shrink: 0;
         }
 
-        .empty-state {
+        .empty-comments {
             text-align: center;
-            padding: 30px;
+            padding: 40px 20px;
             color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
+        .welcome-title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--option-a-light), var(--option-b-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-text {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 30px;
         }
 
         /* Modal */
@@ -354,7 +481,7 @@
             border-radius: 20px;
             padding: 30px;
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             animation: modalIn 0.3s ease;
         }
 
@@ -375,25 +502,32 @@
         }
 
         .modal-icon {
-            font-size: 4rem;
+            font-size: 3.5rem;
             margin-bottom: 10px;
         }
 
         .modal-title {
             font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
         }
 
-        .modal.jjajang .modal-title {
-            color: var(--jjajang-light);
+        .modal.option-a .modal-title {
+            color: var(--option-a-light);
         }
 
-        .modal.jjampong .modal-title {
-            color: var(--jjampong-light);
+        .modal.option-b .modal-title {
+            color: var(--option-b-light);
+        }
+
+        .modal.new-vote .modal-title {
+            background: linear-gradient(135deg, var(--option-a-light), var(--option-b-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
@@ -401,6 +535,7 @@
             margin-bottom: 8px;
             font-weight: 500;
             color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
         .form-group input,
@@ -424,12 +559,48 @@
 
         .form-group textarea {
             resize: none;
-            height: 80px;
+            height: 70px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .emoji-picker {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .emoji-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .emoji-btn:hover {
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .emoji-btn.selected {
+            border-color: var(--option-a-light);
+            background: rgba(99, 102, 241, 0.2);
         }
 
         .modal-buttons {
             display: flex;
             gap: 12px;
+            margin-top: 25px;
         }
 
         .btn {
@@ -456,17 +627,48 @@
             color: white;
         }
 
-        .modal.jjajang .btn-submit {
-            background: linear-gradient(135deg, var(--jjajang-color), var(--jjajang-light));
+        .modal.option-a .btn-submit {
+            background: linear-gradient(135deg, var(--option-a-color), var(--option-a-light));
         }
 
-        .modal.jjampong .btn-submit {
-            background: linear-gradient(135deg, var(--jjampong-color), var(--jjampong-light));
+        .modal.option-b .btn-submit {
+            background: linear-gradient(135deg, var(--option-b-color), var(--option-b-light));
+        }
+
+        .modal.new-vote .btn-submit {
+            background: linear-gradient(135deg, var(--option-a-color), var(--option-b-color));
         }
 
         .btn-submit:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-delete {
+            background: rgba(220, 38, 38, 0.2);
+            color: #ef4444;
+        }
+
+        .btn-delete:hover {
+            background: rgba(220, 38, 38, 0.3);
+        }
+
+        /* Mobile Toggle */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--option-a-color), var(--option-b-color));
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
 
         /* Scrollbar */
@@ -482,70 +684,111 @@
             background: rgba(255,255,255,0.2);
             border-radius: 3px;
         }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                bottom: 0;
+                z-index: 200;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .sidebar-backdrop {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 150;
+            }
+
+            .sidebar-backdrop.open {
+                display: block;
+            }
+
+            .mobile-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .main-content {
+                padding: 20px 15px;
+            }
+
+            .vote-cards {
+                flex-direction: row;
+                gap: 10px;
+            }
+
+            .vote-card {
+                padding: 20px 15px;
+            }
+
+            .vote-card-icon {
+                font-size: 2.5rem;
+            }
+
+            .vote-card-title {
+                font-size: 1.2rem;
+            }
+
+            .vote-card-count {
+                font-size: 2rem;
+            }
+
+            .comments-section {
+                flex-direction: column;
+            }
+
+            .comments-column {
+                min-height: 200px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <h1>🍜 Choice Vote 🍲</h1>
-            <p>당신의 선택을 들려주세요!</p>
-        </header>
-
-        <!-- Vote Cards -->
-        <div class="vote-wrapper">
-            <section class="vote-section">
-                <div class="vote-card jjajang" id="card-jjajang">
-                    <span class="vote-icon">🍜</span>
-                    <h2 class="vote-title">짜장면</h2>
-                    <p class="vote-description">고소하고 진한 검은 맛</p>
-                    <div class="vote-count" id="jjajang-count">0</div>
-                    <div class="vote-percentage" id="jjajang-percentage">0%</div>
-                    <div class="click-hint">👆 터치하여 투표</div>
-                </div>
-
-                <div class="vote-card jjampong" id="card-jjampong">
-                    <span class="vote-icon">🍲</span>
-                    <h2 class="vote-title">짬뽕</h2>
-                    <p class="vote-description">얼큰하고 시원한 빨간 맛</p>
-                    <div class="vote-count" id="jjampong-count">0</div>
-                    <div class="vote-percentage" id="jjampong-percentage">0%</div>
-                    <div class="click-hint">👆 터치하여 투표</div>
-                </div>
-            </section>
-            <div class="vs-badge">VS</div>
-        </div>
-
-        <!-- Progress Bar -->
-        <section class="progress-section">
-            <div class="progress-bar">
-                <div class="progress-fill jjajang" id="progress-jjajang" style="width: 50%;">
-                    <span>짜장 50%</span>
-                </div>
-                <div class="progress-fill jjampong" id="progress-jjampong" style="width: 50%;">
-                    <span>짬뽕 50%</span>
-                </div>
+    <div class="app-container">
+        <!-- Sidebar - 투표 목록 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>🗳️ Choice Vote</h1>
+                <button class="btn-new-vote" id="btn-new-vote">
+                    <span>➕</span> 신규 투표 만들기
+                </button>
             </div>
-            <div class="total-votes">총 <span id="total-votes">0</span>표</div>
-        </section>
-
-        <!-- Recent Votes -->
-        <section class="recent-section">
-            <h3>📋 최근 투표</h3>
             <div class="vote-list" id="vote-list">
-                <div class="empty-state">
-                    아직 투표가 없습니다.<br>첫 번째 투표자가 되어주세요!
-                </div>
+                <!-- 투표 목록이 여기 렌더링됨 -->
             </div>
-        </section>
+        </aside>
+
+        <!-- Mobile Backdrop -->
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <!-- Main Content -->
+        <main class="main-content" id="main-content">
+            <!-- 투표 상세 또는 웰컴 스크린이 여기 렌더링됨 -->
+        </main>
+
+        <!-- Mobile Toggle Button -->
+        <button class="mobile-toggle" id="mobile-toggle">📋</button>
     </div>
 
-    <!-- Modal -->
-    <div class="modal-overlay" id="modal-overlay">
+    <!-- Vote Modal -->
+    <div class="modal-overlay" id="vote-modal-overlay">
         <div class="modal" id="vote-modal">
             <div class="modal-header">
-                <div class="modal-icon" id="modal-icon">🍜</div>
-                <h2 class="modal-title" id="modal-title">짜장면에 투표</h2>
+                <div class="modal-icon" id="vote-modal-icon">🗳️</div>
+                <h2 class="modal-title" id="vote-modal-title">투표하기</h2>
             </div>
             <div class="form-group">
                 <label for="voter-name">이름 (닉네임)</label>
@@ -556,109 +799,468 @@
                 <textarea id="voter-comment" placeholder="왜 이 선택을 하셨나요?" maxlength="100"></textarea>
             </div>
             <div class="modal-buttons">
-                <button class="btn btn-cancel" id="btn-cancel">취소</button>
-                <button class="btn btn-submit" id="btn-submit">투표하기</button>
+                <button class="btn btn-cancel" id="vote-cancel">취소</button>
+                <button class="btn btn-submit" id="vote-submit">투표하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Vote Modal -->
+    <div class="modal-overlay" id="new-vote-modal-overlay">
+        <div class="modal new-vote" id="new-vote-modal">
+            <div class="modal-header">
+                <div class="modal-icon">🗳️</div>
+                <h2 class="modal-title">신규 투표 만들기</h2>
+            </div>
+            <div class="form-group">
+                <label for="vote-question">질문</label>
+                <input type="text" id="vote-question" placeholder="예: 당신은 어디를 좋아합니까?" maxlength="50">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="option-a-name">선택지 A</label>
+                    <input type="text" id="option-a-name" placeholder="예: 바다" maxlength="20">
+                </div>
+                <div class="form-group">
+                    <label for="option-b-name">선택지 B</label>
+                    <input type="text" id="option-b-name" placeholder="예: 산" maxlength="20">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>아이콘 선택 (선택지 A / B)</label>
+                <div class="form-row">
+                    <div class="emoji-picker" id="emoji-picker-a">
+                        <button type="button" class="emoji-btn selected" data-emoji="🏖️">🏖️</button>
+                        <button type="button" class="emoji-btn" data-emoji="🌊">🌊</button>
+                        <button type="button" class="emoji-btn" data-emoji="🍜">🍜</button>
+                        <button type="button" class="emoji-btn" data-emoji="☕">☕</button>
+                        <button type="button" class="emoji-btn" data-emoji="🐶">🐶</button>
+                        <button type="button" class="emoji-btn" data-emoji="🍕">🍕</button>
+                    </div>
+                    <div class="emoji-picker" id="emoji-picker-b">
+                        <button type="button" class="emoji-btn selected" data-emoji="⛰️">⛰️</button>
+                        <button type="button" class="emoji-btn" data-emoji="🏔️">🏔️</button>
+                        <button type="button" class="emoji-btn" data-emoji="🍲">🍲</button>
+                        <button type="button" class="emoji-btn" data-emoji="🍵">🍵</button>
+                        <button type="button" class="emoji-btn" data-emoji="🐱">🐱</button>
+                        <button type="button" class="emoji-btn" data-emoji="🍔">🍔</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-cancel" id="new-vote-cancel">취소</button>
+                <button class="btn btn-submit" id="new-vote-submit">만들기</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Vote Manager Class
-        class VoteManager {
+        // ============================================
+        // Vote System App
+        // ============================================
+        class VoteApp {
             constructor() {
-                this.votes = [];
-                this.currentChoice = null;
-                this.loadVotes();
+                this.polls = [];
+                this.currentPollId = null;
+                this.currentVoteOption = null;
+                this.selectedEmojiA = '🏖️';
+                this.selectedEmojiB = '⛰️';
+                
+                this.loadData();
                 this.bindEvents();
-                this.updateUI();
-            }
-
-            // LocalStorage에서 투표 데이터 로드
-            loadVotes() {
-                try {
-                    const saved = localStorage.getItem('choiceVotes');
-                    this.votes = saved ? JSON.parse(saved) : [];
-                } catch (e) {
-                    this.votes = [];
+                this.render();
+                
+                // 샘플 데이터가 없으면 기본 투표 생성
+                if (this.polls.length === 0) {
+                    this.createDefaultPolls();
                 }
             }
 
-            // LocalStorage에 투표 데이터 저장
-            saveVotes() {
+            // 기본 투표 생성
+            createDefaultPolls() {
+                const defaultPolls = [
+                    {
+                        id: Date.now(),
+                        question: '짜장면 vs 짬뽕',
+                        optionA: { name: '짜장면', icon: '🍜' },
+                        optionB: { name: '짬뽕', icon: '🍲' },
+                        votes: [],
+                        createdAt: Date.now()
+                    },
+                    {
+                        id: Date.now() + 1,
+                        question: '당신은 어디를 좋아합니까?',
+                        optionA: { name: '바다', icon: '🏖️' },
+                        optionB: { name: '산', icon: '⛰️' },
+                        votes: [],
+                        createdAt: Date.now() + 1
+                    }
+                ];
+                
+                this.polls = defaultPolls;
+                this.currentPollId = defaultPolls[0].id;
+                this.saveData();
+                this.render();
+            }
+
+            // 데이터 로드
+            loadData() {
                 try {
-                    localStorage.setItem('choiceVotes', JSON.stringify(this.votes));
+                    const saved = localStorage.getItem('voteAppData');
+                    if (saved) {
+                        const data = JSON.parse(saved);
+                        this.polls = data.polls || [];
+                        this.currentPollId = data.currentPollId || null;
+                    }
                 } catch (e) {
-                    console.error('저장 실패:', e);
+                    console.error('데이터 로드 실패:', e);
+                }
+            }
+
+            // 데이터 저장
+            saveData() {
+                try {
+                    localStorage.setItem('voteAppData', JSON.stringify({
+                        polls: this.polls,
+                        currentPollId: this.currentPollId
+                    }));
+                } catch (e) {
+                    console.error('데이터 저장 실패:', e);
                 }
             }
 
             // 이벤트 바인딩
             bindEvents() {
-                // 짜장면 카드 클릭
-                document.getElementById('card-jjajang').addEventListener('click', () => {
-                    this.openModal('jjajang');
+                // 신규 투표 버튼
+                document.getElementById('btn-new-vote').addEventListener('click', () => {
+                    this.openNewVoteModal();
                 });
 
-                // 짬뽕 카드 클릭
-                document.getElementById('card-jjampong').addEventListener('click', () => {
-                    this.openModal('jjampong');
+                // 신규 투표 모달 이벤트
+                document.getElementById('new-vote-cancel').addEventListener('click', () => {
+                    this.closeNewVoteModal();
+                });
+                
+                document.getElementById('new-vote-submit').addEventListener('click', () => {
+                    this.createNewPoll();
+                });
+                
+                document.getElementById('new-vote-modal-overlay').addEventListener('click', (e) => {
+                    if (e.target.id === 'new-vote-modal-overlay') {
+                        this.closeNewVoteModal();
+                    }
                 });
 
-                // 취소 버튼
-                document.getElementById('btn-cancel').addEventListener('click', () => {
-                    this.closeModal();
+                // 이모지 선택
+                document.getElementById('emoji-picker-a').addEventListener('click', (e) => {
+                    if (e.target.classList.contains('emoji-btn')) {
+                        document.querySelectorAll('#emoji-picker-a .emoji-btn').forEach(btn => btn.classList.remove('selected'));
+                        e.target.classList.add('selected');
+                        this.selectedEmojiA = e.target.dataset.emoji;
+                    }
+                });
+                
+                document.getElementById('emoji-picker-b').addEventListener('click', (e) => {
+                    if (e.target.classList.contains('emoji-btn')) {
+                        document.querySelectorAll('#emoji-picker-b .emoji-btn').forEach(btn => btn.classList.remove('selected'));
+                        e.target.classList.add('selected');
+                        this.selectedEmojiB = e.target.dataset.emoji;
+                    }
                 });
 
-                // 투표 버튼
-                document.getElementById('btn-submit').addEventListener('click', () => {
+                // 투표 모달 이벤트
+                document.getElementById('vote-cancel').addEventListener('click', () => {
+                    this.closeVoteModal();
+                });
+                
+                document.getElementById('vote-submit').addEventListener('click', () => {
                     this.submitVote();
                 });
-
-                // 오버레이 클릭시 닫기
-                document.getElementById('modal-overlay').addEventListener('click', (e) => {
-                    if (e.target.id === 'modal-overlay') {
-                        this.closeModal();
+                
+                document.getElementById('vote-modal-overlay').addEventListener('click', (e) => {
+                    if (e.target.id === 'vote-modal-overlay') {
+                        this.closeVoteModal();
                     }
                 });
 
-                // Enter 키로 투표
                 document.getElementById('voter-name').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.submitVote();
-                    }
+                    if (e.key === 'Enter') this.submitVote();
+                });
+
+                // 모바일 토글
+                document.getElementById('mobile-toggle').addEventListener('click', () => {
+                    document.getElementById('sidebar').classList.toggle('open');
+                    document.getElementById('sidebar-backdrop').classList.toggle('open');
+                });
+
+                document.getElementById('sidebar-backdrop').addEventListener('click', () => {
+                    document.getElementById('sidebar').classList.remove('open');
+                    document.getElementById('sidebar-backdrop').classList.remove('open');
                 });
             }
 
-            // 모달 열기
-            openModal(choice) {
-                this.currentChoice = choice;
+            // 렌더링
+            render() {
+                this.renderPollList();
+                this.renderMainContent();
+            }
+
+            // 투표 목록 렌더링
+            renderPollList() {
+                const container = document.getElementById('vote-list');
+                
+                if (this.polls.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-list">
+                            <div class="empty-list-icon">📭</div>
+                            <p>아직 투표가 없습니다.<br>첫 번째 투표를 만들어보세요!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = this.polls.map(poll => {
+                    const votesA = poll.votes.filter(v => v.option === 'a').length;
+                    const votesB = poll.votes.filter(v => v.option === 'b').length;
+                    const total = votesA + votesB;
+                    const isActive = poll.id === this.currentPollId;
+                    
+                    return `
+                        <div class="vote-list-item ${isActive ? 'active' : ''}" data-poll-id="${poll.id}">
+                            <div class="vote-list-title">${this.escapeHtml(poll.question)}</div>
+                            <div class="vote-list-options">
+                                <span>${poll.optionA.icon} ${this.escapeHtml(poll.optionA.name)}</span>
+                                <span>${poll.optionB.icon} ${this.escapeHtml(poll.optionB.name)}</span>
+                            </div>
+                            <div class="vote-list-stats">
+                                <span>총 ${total}표</span>
+                                <span>${this.formatDate(poll.createdAt)}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // 클릭 이벤트 추가
+                container.querySelectorAll('.vote-list-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        this.selectPoll(parseInt(item.dataset.pollId));
+                    });
+                });
+            }
+
+            // 메인 콘텐츠 렌더링
+            renderMainContent() {
+                const container = document.getElementById('main-content');
+                const poll = this.polls.find(p => p.id === this.currentPollId);
+
+                if (!poll) {
+                    container.innerHTML = `
+                        <div class="welcome-screen">
+                            <div class="welcome-icon">🗳️</div>
+                            <h2 class="welcome-title">Choice Vote</h2>
+                            <p class="welcome-text">좌측 목록에서 투표를 선택하거나<br>새로운 투표를 만들어보세요!</p>
+                            <button class="btn-new-vote" onclick="voteApp.openNewVoteModal()">
+                                <span>➕</span> 신규 투표 만들기
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const votesA = poll.votes.filter(v => v.option === 'a');
+                const votesB = poll.votes.filter(v => v.option === 'b');
+                const total = votesA.length + votesB.length;
+                const percentA = total > 0 ? Math.round((votesA.length / total) * 100) : 50;
+                const percentB = total > 0 ? 100 - percentA : 50;
+
+                container.innerHTML = `
+                    <div class="content-wrapper">
+                        <!-- Header -->
+                        <header class="vote-header">
+                            <h1 class="vote-question">${this.escapeHtml(poll.question)}</h1>
+                            <p class="vote-date">생성일: ${this.formatDateFull(poll.createdAt)}</p>
+                        </header>
+
+                        <!-- Vote Cards -->
+                        <div class="vote-cards-wrapper">
+                            <section class="vote-cards">
+                                <div class="vote-card option-a" data-option="a">
+                                    <span class="vote-card-icon">${poll.optionA.icon}</span>
+                                    <h2 class="vote-card-title">${this.escapeHtml(poll.optionA.name)}</h2>
+                                    <div class="vote-card-count">${votesA.length}</div>
+                                    <div class="vote-card-percent">${percentA}%</div>
+                                    <div class="vote-card-hint">👆 터치하여 투표</div>
+                                </div>
+                                <div class="vote-card option-b" data-option="b">
+                                    <span class="vote-card-icon">${poll.optionB.icon}</span>
+                                    <h2 class="vote-card-title">${this.escapeHtml(poll.optionB.name)}</h2>
+                                    <div class="vote-card-count">${votesB.length}</div>
+                                    <div class="vote-card-percent">${percentB}%</div>
+                                    <div class="vote-card-hint">👆 터치하여 투표</div>
+                                </div>
+                            </section>
+                            <div class="vs-badge">VS</div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <section class="progress-section">
+                            <div class="progress-bar">
+                                <div class="progress-fill option-a" style="width: ${percentA}%;">
+                                    ${percentA >= 15 ? poll.optionA.name + ' ' + percentA + '%' : ''}
+                                </div>
+                                <div class="progress-fill option-b" style="width: ${percentB}%;">
+                                    ${percentB >= 15 ? poll.optionB.name + ' ' + percentB + '%' : ''}
+                                </div>
+                            </div>
+                            <div class="total-votes">총 <strong>${total}</strong>표</div>
+                        </section>
+
+                        <!-- Comments - 좌우 분리 -->
+                        <section class="comments-section">
+                            <div class="comments-column option-a">
+                                <div class="comments-header">
+                                    <span class="comments-header-icon">${poll.optionA.icon}</span>
+                                    <span class="comments-header-title">${this.escapeHtml(poll.optionA.name)} 의견</span>
+                                    <span class="comments-header-count">${votesA.length}명</span>
+                                </div>
+                                <div class="comments-list">
+                                    ${votesA.length === 0 ? `
+                                        <div class="empty-comments">아직 의견이 없습니다</div>
+                                    ` : votesA.map(v => `
+                                        <div class="comment-item">
+                                            <div class="comment-name">${this.escapeHtml(v.name)}</div>
+                                            <div class="comment-text">${this.escapeHtml(v.comment || '(코멘트 없음)')}</div>
+                                            <div class="comment-date">${this.formatDate(v.timestamp)}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <div class="comments-column option-b">
+                                <div class="comments-header">
+                                    <span class="comments-header-icon">${poll.optionB.icon}</span>
+                                    <span class="comments-header-title">${this.escapeHtml(poll.optionB.name)} 의견</span>
+                                    <span class="comments-header-count">${votesB.length}명</span>
+                                </div>
+                                <div class="comments-list">
+                                    ${votesB.length === 0 ? `
+                                        <div class="empty-comments">아직 의견이 없습니다</div>
+                                    ` : votesB.map(v => `
+                                        <div class="comment-item">
+                                            <div class="comment-name">${this.escapeHtml(v.name)}</div>
+                                            <div class="comment-text">${this.escapeHtml(v.comment || '(코멘트 없음)')}</div>
+                                            <div class="comment-date">${this.formatDate(v.timestamp)}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Delete Button -->
+                        <div style="margin-top: 30px; text-align: center;">
+                            <button class="btn btn-delete" onclick="voteApp.deletePoll(${poll.id})" style="padding: 12px 30px;">
+                                🗑️ 이 투표 삭제
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                // 투표 카드 클릭 이벤트
+                container.querySelectorAll('.vote-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        this.openVoteModal(card.dataset.option);
+                    });
+                });
+            }
+
+            // 투표 선택
+            selectPoll(pollId) {
+                this.currentPollId = pollId;
+                this.saveData();
+                this.render();
+                
+                // 모바일에서 사이드바 닫기
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('sidebar-backdrop').classList.remove('open');
+            }
+
+            // 신규 투표 모달 열기
+            openNewVoteModal() {
+                document.getElementById('vote-question').value = '';
+                document.getElementById('option-a-name').value = '';
+                document.getElementById('option-b-name').value = '';
+                document.getElementById('new-vote-modal-overlay').classList.add('active');
+                setTimeout(() => document.getElementById('vote-question').focus(), 100);
+            }
+
+            // 신규 투표 모달 닫기
+            closeNewVoteModal() {
+                document.getElementById('new-vote-modal-overlay').classList.remove('active');
+            }
+
+            // 신규 투표 생성
+            createNewPoll() {
+                const question = document.getElementById('vote-question').value.trim();
+                const optionAName = document.getElementById('option-a-name').value.trim();
+                const optionBName = document.getElementById('option-b-name').value.trim();
+
+                if (!question) {
+                    alert('질문을 입력해주세요!');
+                    return;
+                }
+                if (!optionAName || !optionBName) {
+                    alert('두 가지 선택지를 모두 입력해주세요!');
+                    return;
+                }
+
+                const newPoll = {
+                    id: Date.now(),
+                    question: question,
+                    optionA: { name: optionAName, icon: this.selectedEmojiA },
+                    optionB: { name: optionBName, icon: this.selectedEmojiB },
+                    votes: [],
+                    createdAt: Date.now()
+                };
+
+                this.polls.unshift(newPoll);
+                this.currentPollId = newPoll.id;
+                this.saveData();
+                this.closeNewVoteModal();
+                this.render();
+            }
+
+            // 투표 삭제
+            deletePoll(pollId) {
+                if (!confirm('정말 이 투표를 삭제하시겠습니까?')) return;
+                
+                this.polls = this.polls.filter(p => p.id !== pollId);
+                this.currentPollId = this.polls.length > 0 ? this.polls[0].id : null;
+                this.saveData();
+                this.render();
+            }
+
+            // 투표 모달 열기
+            openVoteModal(option) {
+                const poll = this.polls.find(p => p.id === this.currentPollId);
+                if (!poll) return;
+
+                this.currentVoteOption = option;
                 const modal = document.getElementById('vote-modal');
-                const overlay = document.getElementById('modal-overlay');
-                const icon = document.getElementById('modal-icon');
-                const title = document.getElementById('modal-title');
-
-                // 선택에 따른 스타일 변경
-                modal.className = 'modal ' + choice;
-                icon.textContent = choice === 'jjajang' ? '🍜' : '🍲';
-                title.textContent = choice === 'jjajang' ? '짜장면에 투표' : '짬뽕에 투표';
-
-                // 입력 필드 초기화
+                const optionData = option === 'a' ? poll.optionA : poll.optionB;
+                
+                modal.className = 'modal option-' + option;
+                document.getElementById('vote-modal-icon').textContent = optionData.icon;
+                document.getElementById('vote-modal-title').textContent = optionData.name + '에 투표';
                 document.getElementById('voter-name').value = '';
                 document.getElementById('voter-comment').value = '';
-
-                // 모달 표시
-                overlay.classList.add('active');
+                document.getElementById('vote-modal-overlay').classList.add('active');
                 
-                // 포커스
-                setTimeout(() => {
-                    document.getElementById('voter-name').focus();
-                }, 100);
+                setTimeout(() => document.getElementById('voter-name').focus(), 100);
             }
 
-            // 모달 닫기
-            closeModal() {
-                document.getElementById('modal-overlay').classList.remove('active');
-                this.currentChoice = null;
+            // 투표 모달 닫기
+            closeVoteModal() {
+                document.getElementById('vote-modal-overlay').classList.remove('active');
+                this.currentVoteOption = null;
             }
 
             // 투표 제출
@@ -668,98 +1270,23 @@
 
                 if (!name) {
                     alert('이름을 입력해주세요!');
-                    document.getElementById('voter-name').focus();
                     return;
                 }
 
-                if (!this.currentChoice) {
-                    return;
-                }
+                const poll = this.polls.find(p => p.id === this.currentPollId);
+                if (!poll || !this.currentVoteOption) return;
 
-                // 새 투표 추가
-                const vote = {
+                poll.votes.unshift({
                     id: Date.now(),
-                    choice: this.currentChoice,
+                    option: this.currentVoteOption,
                     name: name,
-                    comment: comment || '',
+                    comment: comment,
                     timestamp: Date.now()
-                };
+                });
 
-                this.votes.unshift(vote);
-                this.saveVotes();
-                this.updateUI();
-                this.closeModal();
-            }
-
-            // UI 업데이트
-            updateUI() {
-                const jjajangVotes = this.votes.filter(v => v.choice === 'jjajang').length;
-                const jjampongVotes = this.votes.filter(v => v.choice === 'jjampong').length;
-                const total = jjajangVotes + jjampongVotes;
-
-                // 투표 수 표시
-                document.getElementById('jjajang-count').textContent = jjajangVotes;
-                document.getElementById('jjampong-count').textContent = jjampongVotes;
-                document.getElementById('total-votes').textContent = total;
-
-                // 퍼센트 계산
-                let jjajangPercent = total > 0 ? Math.round((jjajangVotes / total) * 100) : 50;
-                let jjampongPercent = total > 0 ? 100 - jjajangPercent : 50;
-
-                document.getElementById('jjajang-percentage').textContent = jjajangPercent + '%';
-                document.getElementById('jjampong-percentage').textContent = jjampongPercent + '%';
-
-                // 프로그레스 바
-                const progressJjajang = document.getElementById('progress-jjajang');
-                const progressJjampong = document.getElementById('progress-jjampong');
-
-                if (total === 0) {
-                    progressJjajang.style.width = '50%';
-                    progressJjampong.style.width = '50%';
-                    progressJjajang.querySelector('span').textContent = '짜장 50%';
-                    progressJjampong.querySelector('span').textContent = '짬뽕 50%';
-                } else {
-                    progressJjajang.style.width = jjajangPercent + '%';
-                    progressJjampong.style.width = jjampongPercent + '%';
-                    progressJjajang.querySelector('span').textContent = jjajangPercent >= 15 ? '짜장 ' + jjajangPercent + '%' : '';
-                    progressJjampong.querySelector('span').textContent = jjampongPercent >= 15 ? '짬뽕 ' + jjampongPercent + '%' : '';
-                }
-
-                // 최근 투표 목록
-                this.renderVoteList();
-            }
-
-            // 투표 목록 렌더링
-            renderVoteList() {
-                const container = document.getElementById('vote-list');
-                
-                if (this.votes.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            아직 투표가 없습니다.<br>첫 번째 투표자가 되어주세요!
-                        </div>
-                    `;
-                    return;
-                }
-
-                const html = this.votes.slice(0, 20).map(vote => {
-                    const icon = vote.choice === 'jjajang' ? '🍜' : '🍲';
-                    const date = this.formatDate(vote.timestamp);
-                    const comment = vote.comment || '(코멘트 없음)';
-                    
-                    return `
-                        <div class="vote-item ${vote.choice}">
-                            <span class="vote-item-icon">${icon}</span>
-                            <div class="vote-item-content">
-                                <div class="vote-item-name">${this.escapeHtml(vote.name)}</div>
-                                <div class="vote-item-comment">${this.escapeHtml(comment)}</div>
-                            </div>
-                            <span class="vote-item-date">${date}</span>
-                        </div>
-                    `;
-                }).join('');
-
-                container.innerHTML = html;
+                this.saveData();
+                this.closeVoteModal();
+                this.render();
             }
 
             // 날짜 포맷
@@ -771,8 +1298,12 @@
                 if (diff < 60000) return '방금 전';
                 if (diff < 3600000) return Math.floor(diff / 60000) + '분 전';
                 if (diff < 86400000) return Math.floor(diff / 3600000) + '시간 전';
-                
                 return (date.getMonth() + 1) + '/' + date.getDate();
+            }
+
+            formatDateFull(timestamp) {
+                const date = new Date(timestamp);
+                return `${date.getFullYear()}. ${date.getMonth() + 1}. ${date.getDate()}`;
             }
 
             // HTML 이스케이프
@@ -784,52 +1315,10 @@
         }
 
         // 앱 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            window.voteApp = new VoteManager();
+        let voteApp;
+        document.addEventListener('DOMContentLoaded', () => {
+            voteApp = new VoteApp();
         });
-
-        /*
-        ========================================
-        Firebase 연동 가이드 (향후 적용)
-        ========================================
-        
-        1. Firebase 프로젝트 생성 후 웹 앱 추가
-        
-        2. Firebase SDK 추가 (head 태그 내):
-           <script src="https://www.gstatic.com/firebasejs/9.x/firebase-app-compat.js"><\/script>
-           <script src="https://www.gstatic.com/firebasejs/9.x/firebase-database-compat.js"><\/script>
-        
-        3. Firebase 초기화:
-           const firebaseConfig = {
-               apiKey: "YOUR_API_KEY",
-               authDomain: "YOUR_AUTH_DOMAIN",
-               databaseURL: "YOUR_DATABASE_URL",
-               projectId: "YOUR_PROJECT_ID",
-               storageBucket: "YOUR_STORAGE_BUCKET",
-               messagingSenderId: "YOUR_SENDER_ID",
-               appId: "YOUR_APP_ID"
-           };
-           firebase.initializeApp(firebaseConfig);
-           const database = firebase.database();
-        
-        4. 저장 메서드 변경:
-           // saveVotes() 대신:
-           database.ref('votes/' + vote.id).set(vote);
-        
-        5. 로드 메서드 변경:
-           // loadVotes() 대신:
-           database.ref('votes').on('value', (snapshot) => {
-               const votes = [];
-               snapshot.forEach((child) => {
-                   votes.push(child.val());
-               });
-               this.votes = votes.sort((a, b) => b.timestamp - a.timestamp);
-               this.updateUI();
-           });
-        
-        이렇게 하면 실시간 동기화가 자동으로 됩니다!
-        ========================================
-        */
     </script>
 </body>
 </html>
