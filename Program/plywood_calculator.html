@@ -786,6 +786,17 @@
             <div class="card">
                 <h2 class="card-title">합판 규격</h2>
                 <div class="input-group">
+                    <label>절단날 폭 (Kerf)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="kerfWidth" value="2" min="0" step="0.1" onfocus="this.select()" oninput="autoCalculate()">
+                        <span class="unit">mm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">합판 규격</h2>
+                <div class="input-group">
                     <label>표준 합판 크기</label>
                     <div class="input-row">
                         <div>
