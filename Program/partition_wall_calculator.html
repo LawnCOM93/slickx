@@ -271,8 +271,13 @@
             outline: none;
         }
         
+        input[type="number"].dan-input {
+            color: rgb(212, 106, 226);
+            font-weight: 600;
+        }
+
         input[type="number"].price-input {
-            color: var(--accent-blue);
+            color: var(--accent-orange);
             font-weight: 600;
         }
 
@@ -639,7 +644,7 @@
                         <div>
                             <div class="dimension-label">구매 단수 (자동계산)</div>
                             <div class="input-wrapper" style="position: relative;">
-                                <input type="number" id="studBundles" value="1" min="1" readonly style="background: #f5f5f5; cursor: not-allowed;">
+                                <input type="number" id="studBundles" class="dan-input" value="1" min="1" readonly style="background: #f5f5f5; cursor: not-allowed;">
                                 <span class="unit">단</span>
                             </div>
                         </div>
@@ -699,15 +704,6 @@
         </div>
 
         <!-- 결과 요약 -->
-        <div id="resultCard" class="result-card">
-            <div class="result-summary">
-
-                <div class="summary-item">
-                    <div id="studCount"></div>
-                    
-                </div>
-            </div>
-
             <!-- 시각화 -->
             <div class="visualization-container">
                 <div class="viz-title">🏗️ 가벽 구조 시각화</div>
@@ -733,6 +729,10 @@
                     </div>
                 </div>
             </div>
+
+        <div id="resultCard" class="result-card">
+
+
         </div>
 
         <!-- 자재 목록 -->
@@ -771,6 +771,8 @@
                 <div id="calculationDetail" style="background: white; padding: 1.5rem; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; line-height: 1.8; color: var(--wood-dark);"></div>
             </div>
         </div>
+
+<div id="studCount"></div>
 
         <footer>
             Design inspired by modern carpentry & precision engineering
