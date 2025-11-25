@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -17,729 +16,719 @@
             --paper: #f5ede1;
             --accent-blue: #2d5f7f;
             --accent-orange: #d97642;
-            --bright-green: #4ade80; /* 밝은 녹색 */
-            --bright-red: #f87171; /* 붉은색 */
+            --bright-green: #4ade80;
+            --bright-red: #f87171;
             --shadow: rgba(44, 24, 16, 0.1);
             --shadow-heavy: rgba(44, 24, 16, 0.2);
         }
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-        font-family: 'IBM Plex Mono', monospace;
-        background: linear-gradient(135deg, var(--paper) 0%, var(--cream) 100%);
-        color: var(--wood-dark);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 1.5rem;
-        position: relative;
-        overflow-x: hidden;
-    }
-    
-    @media (max-width: 768px) {
         body {
-            padding: 0.75rem;
-            align-items: flex-start;
-            padding-top: 1rem;
-        }
-    }
-
-    body::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: 
-            repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(139, 90, 60, 0.02) 2px,
-                rgba(139, 90, 60, 0.02) 4px
-            );
-        pointer-events: none;
-        z-index: 1;
-    }
-
-    .container {
-        max-width: 1200px;
-        width: 100%;
-        position: relative;
-        z-index: 2;
-        animation: fadeInUp 0.8s ease-out;
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-    
-    @media (max-width: 768px) {
-        header {
-            margin-bottom: 1rem;
-        }
-    }
-
-    h1 {
-        font-family: 'Syne', sans-serif;
-        font-size: clamp(2rem, 5vw, 3.5rem);
-        font-weight: 800;
-        color: var(--wood-dark);
-        letter-spacing: -0.02em;
-        margin-bottom: 0.5rem;
-        position: relative;
-        display: inline-block;
-    }
-    
-    @media (max-width: 768px) {
-        h1 {
-            font-size: 1.75rem;
-        }
-    }
-
-    h1::after {
-        content: '';
-        position: absolute;
-        bottom: -8px;
-        left: 0;
-        width: 100%;
-        height: 4px;
-        background: linear-gradient(90deg, var(--accent-orange), var(--accent-blue));
-        border-radius: 2px;
-        animation: expandWidth 0.6s ease-out 0.3s both;
-    }
-    
-    @media (max-width: 768px) {
-        h1::after {
-            height: 3px;
-            bottom: -6px;
-        }
-    }
-
-    @keyframes expandWidth {
-        from {
-            width: 0;
-        }
-        to {
-            width: 100%;
-        }
-    }
-
-    .subtitle {
-        font-size: 0.9rem;
-        color: var(--wood-medium);
-        font-weight: 300;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-    }
-    
-    @media (max-width: 768px) {
-        .subtitle {
-            font-size: 0.7rem;
-        }
-    }
-
-    .main-content {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    @media (max-width: 968px) {
-        .main-content {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-    }
-
-    .card {
-        background: white;
-        border-radius: 16px;
-        padding: 1.75rem;
-        box-shadow: 
-            0 4px 6px var(--shadow),
-            0 12px 24px var(--shadow-heavy);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        animation: cardSlideIn 0.6s ease-out both;
-    }
-    
-    @media (max-width: 768px) {
-        .card {
-            padding: 1.25rem;
-            border-radius: 12px;
-        }
-    }
-
-    .card:nth-child(1) {
-        animation-delay: 0.1s;
-    }
-
-    .card:nth-child(2) {
-        animation-delay: 0.2s;
-    }
-
-    @keyframes cardSlideIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .card:hover {
-        transform: translateY(-4px);
-        box-shadow: 
-            0 8px 12px var(--shadow),
-            0 16px 32px var(--shadow-heavy);
-    }
-    
-    @media (max-width: 768px) {
-        .card:hover {
-            transform: none;
-        }
-    }
-
-    .card-title {
-        font-family: 'Syne', sans-serif;
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--wood-dark);
-        margin-bottom: 1.25rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    @media (max-width: 768px) {
-        .card-title {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-    }
-
-    .card-title::before {
-        content: '';
-        width: 4px;
-        height: 24px;
-        background: var(--accent-orange);
-        border-radius: 2px;
-    }
-
-    .input-group {
-        margin-bottom: 1.25rem;
-    }
-    
-    @media (max-width: 768px) {
-        .input-group {
-            margin-bottom: 1rem;
-        }
-    }
-
-    label {
-        display: block;
-        font-size: 0.85rem;
-        font-weight: 500;
-        color: var(--wood-medium);
-        margin-bottom: 0.5rem;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-    }
-    
-    @media (max-width: 768px) {
-        label {
-            font-size: 0.75rem;
-        }
-    }
-
-    .input-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-    }
-    
-    @media (max-width: 768px) {
-        .input-row {
-            gap: 0.75rem;
-        }
-    }
-
-    .input-wrapper {
-        position: relative;
-    }
-
-    input[type="number"] {
-        width: 100%;
-        padding: 0.875rem 1rem;
-        padding-right: 3rem;
-        border: 2px solid var(--paper);
-        border-radius: 8px;
-        font-family: 'IBM Plex Mono', monospace;
-        font-size: 1.125rem;
-        font-weight: 500;
-        color: var(--wood-dark);
-        background: var(--cream);
-        transition: all 0.3s ease;
-        outline: none;
-    }
-    
-    @media (max-width: 768px) {
-        input[type="number"] {
-            padding: 0.75rem 0.875rem;
-            padding-right: 3rem;
-            font-size: 1rem;
-        }
-    }
-
-    input[type="number"]:focus {
-        border-color: var(--accent-blue);
-        background: white;
-        box-shadow: 0 0 0 4px rgba(45, 95, 127, 0.1);
-    }
-
-    .unit {
-        position: absolute;
-        right: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 0.875rem;
-        color: var(--wood-medium);
-        font-weight: 400;
-        pointer-events: none;
-    }
-    
-    @media (max-width: 768px) {
-        .unit {
-            font-size: 0.75rem;
-            right: 0.875rem;
-        }
-    }
-
-    .dimension-label {
-        font-size: 0.75rem;
-        color: var(--wood-medium);
-        margin-bottom: 0.5rem;
-    }
-    
-    @media (max-width: 768px) {
-        .dimension-label {
-            font-size: 0.7rem;
-            margin-bottom: 0.4rem;
-        }
-    }
-
-    button {
-        width: 100%;
-        padding: 1rem 2rem;
-        background: linear-gradient(135deg, var(--accent-orange), var(--accent-blue));
-        border: none;
-        border-radius: 12px;
-        font-family: 'Syne', sans-serif;
-        font-size: 1.125rem;
-        font-weight: 700;
-        color: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        box-shadow: 0 4px 12px rgba(217, 118, 66, 0.3);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    @media (max-width: 768px) {
-        button {
-            padding: 0.875rem 1.5rem;
-            font-size: 1rem;
-        }
-    }
-
-    button::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        transition: left 0.5s ease;
-    }
-
-    button:hover::before {
-        left: 100%;
-    }
-
-    button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(217, 118, 66, 0.4);
-    }
-
-    button:active {
-        transform: translateY(0);
-    }
-
-    .result-card {
-        background: white;
-        border-radius: 16px;
-        padding: 1.75rem;
-        box-shadow: 
-            0 4px 6px var(--shadow),
-            0 12px 24px var(--shadow-heavy);
-        animation: cardSlideIn 0.6s ease-out 0.3s both;
-        border: 2px solid var(--paper);
-    }
-    
-    @media (max-width: 768px) {
-        .result-card {
-            padding: 1.25rem;
-            border-radius: 12px;
-        }
-    }
-
-    .result-card.show {
-        animation: resultPop 0.5s ease-out;
-    }
-
-    @keyframes resultPop {
-        0% {
-            transform: scale(0.9);
-            opacity: 0;
-        }
-        50% {
-            transform: scale(1.02);
-        }
-        100% {
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
-
-    .result-header {
-        text-align: center;
-        margin-bottom: 1.5rem;
-    }
-    
-    @media (max-width: 768px) {
-        .result-header {
-            margin-bottom: 1rem;
-        }
-    }
-
-    .result-number {
-        font-family: 'Syne', sans-serif;
-        font-size: 5rem;
-        font-weight: 800;
-        /* 기존 그라데이션 제거 및 초기화 */
-        line-height: 1;
-        margin-bottom: 0.5rem;
-        transition: all 0.3s ease;
-    }
-    
-    @media (max-width: 768px) {
-        .result-number {
-            font-size: 3.5rem;
-        }
-    }
-
-    .result-label {
-        font-size: 1.125rem;
-        color: var(--wood-medium);
-        font-weight: 500;
-    }
-    
-    @media (max-width: 768px) {
-        .result-label {
-            font-size: 1rem;
-        }
-    }
-
-    .result-details {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-top: 1.5rem;
-        padding-top: 1.5rem;
-        border-top: 2px solid var(--paper);
-    }
-    
-    @media (max-width: 768px) {
-        .result-details {
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-        }
-    }
-
-    .detail-item {
-        text-align: center;
-        padding: 1rem;
-        background: var(--cream);
-        border-radius: 12px;
-        transition: transform 0.3s ease;
-    }
-    
-    @media (max-width: 768px) {
-        .detail-item {
-            padding: 0.75rem;
-        }
-    }
-
-    .detail-item:hover {
-        transform: translateY(-4px);
-    }
-    
-    @media (max-width: 768px) {
-        .detail-item:hover {
-            transform: none;
-        }
-    }
-
-    .detail-value {
-        font-family: 'Syne', sans-serif;
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: var(--wood-dark);
-        margin-bottom: 0.25rem;
-    }
-
-    .detail-label {
-        font-size: 0.75rem;
-        color: var(--wood-medium);
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-    }
-    
-    @media (max-width: 768px) {
-        .detail-value {
-            font-size: 1.5rem;
+            font-family: 'IBM Plex Mono', monospace;
+            background: linear-gradient(135deg, var(--paper) 0%, var(--cream) 100%);
+            color: var(--wood-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+            overflow-x: hidden;
         }
         
-        .detail-label {
-            font-size: 0.7rem;
+        @media (max-width: 768px) {
+            body {
+                padding: 0.75rem;
+                align-items: flex-start;
+                padding-top: 1rem;
+            }
         }
-    }
 
-    .visualization {
-        margin-top: 1.5rem;
-        padding: 1.5rem;
-        background: var(--cream);
-        border-radius: 12px;
-        min-height: 250px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    @media (max-width: 768px) {
-        .visualization {
-            margin-top: 1rem;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(139, 90, 60, 0.02) 2px,
+                    rgba(139, 90, 60, 0.02) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                margin-bottom: 1rem;
+            }
+        }
+
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            color: var(--wood-dark);
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-blue));
+            border-radius: 2px;
+            animation: expandWidth 0.6s ease-out 0.3s both;
+        }
+        
+        @media (max-width: 768px) {
+            h1::after {
+                height: 3px;
+                bottom: -6px;
+            }
+        }
+
+        @keyframes expandWidth {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--wood-medium);
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        
+        @media (max-width: 768px) {
+            .subtitle {
+                font-size: 0.7rem;
+            }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: 
+                0 4px 6px var(--shadow),
+                0 12px 24px var(--shadow-heavy);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: cardSlideIn 0.6s ease-out both;
+        }
+        
+        @media (max-width: 768px) {
+            .card {
+                padding: 1.25rem;
+                border-radius: 12px;
+            }
+        }
+
+        .card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 8px 12px var(--shadow),
+                0 16px 32px var(--shadow-heavy);
+        }
+        
+        @media (max-width: 768px) {
+            .card:hover {
+                transform: none;
+            }
+        }
+
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--wood-dark);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .card-title {
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        .card-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--accent-orange);
+            border-radius: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        @media (max-width: 768px) {
+            .input-group {
+                margin-bottom: 1rem;
+            }
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--wood-medium);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        
+        @media (max-width: 768px) {
+            label {
+                font-size: 0.75rem;
+            }
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .input-row {
+                gap: 0.75rem;
+            }
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            padding-right: 3rem;
+            border: 2px solid var(--paper);
+            border-radius: 8px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--wood-dark);
+            background: var(--cream);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        @media (max-width: 768px) {
+            input[type="number"] {
+                padding: 0.75rem 0.875rem;
+                padding-right: 3rem;
+                font-size: 1rem;
+            }
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--accent-blue);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(45, 95, 127, 0.1);
+        }
+
+        .unit {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.875rem;
+            color: var(--wood-medium);
+            font-weight: 400;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .unit {
+                font-size: 0.75rem;
+                right: 0.875rem;
+            }
+        }
+
+        .dimension-label {
+            font-size: 0.75rem;
+            color: var(--wood-medium);
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .dimension-label {
+                font-size: 0.7rem;
+                margin-bottom: 0.4rem;
+            }
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: 
+                0 4px 6px var(--shadow),
+                0 12px 24px var(--shadow-heavy);
+            animation: cardSlideIn 0.6s ease-out 0.3s both;
+            border: 2px solid var(--paper);
+        }
+        
+        @media (max-width: 768px) {
+            .result-card {
+                padding: 1.25rem;
+                border-radius: 12px;
+            }
+        }
+
+        .result-card.show {
+            animation: resultPop 0.5s ease-out;
+        }
+
+        @keyframes resultPop {
+            0% {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.02);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .result-header {
+                margin-bottom: 1rem;
+            }
+        }
+
+        .result-number {
+            font-family: 'Syne', sans-serif;
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .result-number {
+                font-size: 3.5rem;
+            }
+        }
+
+        .result-label {
+            font-size: 1.125rem;
+            color: var(--wood-medium);
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .result-label {
+                font-size: 1rem;
+            }
+        }
+
+        .layout-info {
+            background: var(--cream);
+            border-radius: 12px;
             padding: 1rem;
-            min-height: 200px;
+            margin-bottom: 1.5rem;
+            text-align: center;
         }
-    }
 
-    .plywood-grid {
-        display: grid;
-        gap: 8px;
-        justify-content: center;
-        animation: fadeIn 0.6s ease-out;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
+        @media (max-width: 768px) {
+            .layout-info {
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+            }
         }
-        to {
-            opacity: 1;
-        }
-    }
 
-    .plywood-sheet {
-        background: linear-gradient(135deg, var(--wood-light), var(--wood-medium));
-        border-radius: 6px;
-        box-shadow: 0 2px 8px var(--shadow);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        font-weight: 700;
-        color: white;
-        transition: transform 0.3s ease;
-        animation: plywoodPop 0.4s ease-out both;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    @media (max-width: 768px) {
-        .plywood-sheet {
-            font-size: 0.7rem;
+        .layout-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--wood-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .layout-title {
+                font-size: 0.8rem;
+            }
+        }
+
+        .layout-pattern {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        @media (max-width: 768px) {
+            .layout-pattern {
+                font-size: 1.2rem;
+            }
+        }
+
+        .result-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--paper);
+        }
+        
+        @media (max-width: 768px) {
+            .result-details {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+                margin-top: 1rem;
+                padding-top: 1rem;
+            }
+        }
+
+        .detail-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--cream);
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .detail-item {
+                padding: 0.75rem;
+            }
+        }
+
+        .detail-item:hover {
+            transform: translateY(-4px);
+        }
+        
+        @media (max-width: 768px) {
+            .detail-item:hover {
+                transform: none;
+            }
+        }
+
+        .detail-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--wood-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: var(--wood-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        @media (max-width: 768px) {
+            .detail-value {
+                font-size: 1.5rem;
+            }
+            
+            .detail-label {
+                font-size: 0.7rem;
+            }
+        }
+
+        .visualization {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: var(--cream);
+            border-radius: 12px;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .visualization {
+                margin-top: 1rem;
+                padding: 1rem;
+                min-height: 200px;
+            }
+        }
+
+        .sheets-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        @media (max-width: 768px) {
+            .sheets-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        .sheet-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sheet-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--wood-dark);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .sheet-title {
+                font-size: 0.8rem;
+            }
+        }
+
+        .more-sheets {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--wood-medium), var(--wood-dark));
+            border-radius: 8px;
+            color: white;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            min-height: 150px;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        @media (max-width: 768px) {
+            .more-sheets {
+                font-size: 1.2rem;
+                min-height: 120px;
+            }
+        }
+
+        .plywood-visual {
+            background: linear-gradient(135deg, var(--wood-light), var(--wood-medium));
+            border-radius: 8px;
+            box-shadow: 0 4px 12px var(--shadow);
+            position: relative;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .cut-area {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .cut-row {
+            display: flex;
+            gap: 2px;
+        }
+
+        .cut-item {
+            background: rgba(255, 255, 255, 0.25);
+            border: 2px solid rgba(44, 24, 16, 0.4);
             border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--wood-dark);
+            box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.3);
         }
-    }
 
-    .plywood-sheet .sheet-number {
-        position: absolute;
-        top: 6px;
-        left: 8px;
-        background: rgba(44, 24, 16, 0.8);
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-size: 0.7rem;
-        z-index: 2;
-    }
-    
-    @media (max-width: 768px) {
-        .plywood-sheet .sheet-number {
-            font-size: 0.65rem;
-            padding: 2px 5px;
-            top: 4px;
-            left: 6px;
+        @media (max-width: 768px) {
+            .cut-item {
+                font-size: 0.65rem;
+                border-width: 1.5px;
+            }
         }
-    }
 
-    .cut-piece {
-        border: 1px solid rgba(44, 24, 16, 0.3);
-        background: rgba(139, 90, 60, 0.1);
-        transition: background 0.2s ease;
-    }
-
-    .cut-piece:hover {
-        background: rgba(139, 90, 60, 0.25);
-    }
-
-    @media (max-width: 768px) {
-        .cut-piece {
-            border-width: 0.5px;
-        }
-    }
-
-    .waste-area {
-        background: 
-            repeating-linear-gradient(
-                45deg,
-                rgba(217, 118, 66, 0.15),
-                rgba(217, 118, 66, 0.15) 4px,
-                transparent 4px,
-                transparent 8px
-            ),
-            repeating-linear-gradient(
-                -45deg,
-                rgba(217, 118, 66, 0.15),
-                rgba(217, 118, 66, 0.15) 4px,
-                transparent 4px,
-                transparent 8px
-            ),
-            rgba(44, 24, 16, 0.05);
-        border: 1px dashed rgba(217, 118, 66, 0.4);
-    }
-
-    @media (max-width: 768px) {
         .waste-area {
+            position: absolute;
             background: 
                 repeating-linear-gradient(
                     45deg,
-                    rgba(217, 118, 66, 0.2),
-                    rgba(217, 118, 66, 0.2) 3px,
-                    transparent 3px,
-                    transparent 6px
+                    transparent,
+                    transparent 8px,
+                    rgba(217, 118, 66, 0.3) 8px,
+                    rgba(217, 118, 66, 0.3) 10px
                 ),
                 repeating-linear-gradient(
                     -45deg,
-                    rgba(217, 118, 66, 0.2),
-                    rgba(217, 118, 66, 0.2) 3px,
-                    transparent 3px,
-                    transparent 6px
+                    transparent,
+                    transparent 8px,
+                    rgba(217, 118, 66, 0.3) 8px,
+                    rgba(217, 118, 66, 0.3) 10px
                 ),
-                rgba(44, 24, 16, 0.05);
+                rgba(44, 24, 16, 0.15);
+            border: 2px dashed rgba(217, 118, 66, 0.6);
+            border-radius: 4px;
         }
-    }
 
-    .plywood-sheet:nth-child(1) { animation-delay: 0s; }
-    .plywood-sheet:nth-child(2) { animation-delay: 0.05s; }
-    .plywood-sheet:nth-child(3) { animation-delay: 0.1s; }
-    .plywood-sheet:nth-child(4) { animation-delay: 0.15s; }
-    .plywood-sheet:nth-child(5) { animation-delay: 0.2s; }
-    .plywood-sheet:nth-child(6) { animation-delay: 0.25s; }
-
-    @keyframes plywoodPop {
-        from {
-            transform: scale(0.8);
-            opacity: 0;
+        @media (max-width: 768px) {
+            .waste-area {
+                background: 
+                    repeating-linear-gradient(
+                        45deg,
+                        transparent,
+                        transparent 6px,
+                        rgba(217, 118, 66, 0.35) 6px,
+                        rgba(217, 118, 66, 0.35) 8px
+                    ),
+                    repeating-linear-gradient(
+                        -45deg,
+                        transparent,
+                        transparent 6px,
+                        rgba(217, 118, 66, 0.35) 6px,
+                        rgba(217, 118, 66, 0.35) 8px
+                    ),
+                    rgba(44, 24, 16, 0.15);
+                border-width: 1.5px;
+            }
         }
-        to {
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
 
-    .plywood-sheet:hover {
-        transform: scale(1.05);
-    }
-    
-    @media (max-width: 768px) {
-        .plywood-sheet:hover {
-            transform: none;
-        }
-    }
-
-    .no-result {
-        text-align: center;
-        color: var(--wood-medium);
-        font-size: 1rem;
-    }
-    
-    @media (max-width: 768px) {
         .no-result {
+            text-align: center;
+            color: var(--wood-medium);
+            font-size: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .no-result {
+                font-size: 0.85rem;
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            color: var(--wood-medium);
             font-size: 0.85rem;
         }
-    }
-
-    /* 설명과정 제거: formula-info 클래스 스타일은 사용하지 않으므로 제거됨 */
-
-    footer {
-        text-align: center;
-        margin-top: 2rem;
-        padding: 1rem;
-        color: var(--wood-medium);
-        font-size: 0.85rem;
-    }
-    
-    @media (max-width: 768px) {
-        footer {
-            margin-top: 1.5rem;
-            padding: 0.75rem;
-            font-size: 0.75rem;
+        
+        @media (max-width: 768px) {
+            footer {
+                margin-top: 1.5rem;
+                padding: 0.75rem;
+                font-size: 0.75rem;
+            }
         }
-    }
 
-    .hidden {
-        display: none;
-    }
-</style>
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -757,14 +746,14 @@
                         <div>
                             <div class="dimension-label">크기 1</div>
                             <div class="input-wrapper">
-                                <input type="number" id="cutWidth" value="1400" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                                <input type="number" id="cutWidth" value="1210" min="1" onfocus="this.select()" oninput="autoCalculate()">
                                 <span class="unit">mm</span>
                             </div>
                         </div>
                         <div>
                             <div class="dimension-label">크기 2</div>
                             <div class="input-wrapper">
-                                <input type="number" id="cutHeight" value="450" min="1" onfocus="this.select()" oninput="autoCalculate()">
+                                <input type="number" id="cutHeight" value="1219" min="1" onfocus="this.select()" oninput="autoCalculate()">
                                 <span class="unit">mm</span>
                             </div>
                         </div>
@@ -803,6 +792,14 @@
                 </div>
 
                 <div class="input-group">
+                    <label>절단날 폭 (Kerf)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="kerfWidth" value="2" min="0" step="0.1" onfocus="this.select()" oninput="autoCalculate()">
+                        <span class="unit">mm</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
                     <label>합판 1장 가격</label>
                     <div class="input-wrapper">
                         <input type="number" id="sheetPrice" value="25000" min="0" onfocus="this.select()" oninput="autoCalculate()">
@@ -818,14 +815,27 @@
                 <div class="result-label">장의 합판을 구매해야 합니다</div>
             </div>
 
+            <div class="layout-info">
+                <div class="layout-title">최적 배치 패턴</div>
+                <div class="layout-pattern" id="layoutPattern">-</div>
+            </div>
+
             <div class="result-details">
                 <div class="detail-item">
                     <div class="detail-value" id="piecesPerSheet">0</div>
                     <div class="detail-label">합판 1장당 재단 가능</div>
                 </div>
                 <div class="detail-item">
+                    <div class="detail-value" id="requiredPieces">0</div>
+                    <div class="detail-label">필요한 조각 수</div>
+                </div>
+                <div class="detail-item">
                     <div class="detail-value" id="totalPieces">0</div>
                     <div class="detail-label">실제 제작 가능 개수</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-value" id="extraPieces">0</div>
+                    <div class="detail-label">여유분</div>
                 </div>
                 <div class="detail-item">
                     <div class="detail-value" id="efficiency">0%</div>
@@ -838,11 +848,10 @@
             </div>
             
             <div class="visualization">
-                <div id="visualization" class="plywood-grid">
-                    <div class="no-result">계산 버튼을 눌러주세요</div>
+                <div id="visualization">
+                    <div class="no-result">입력값을 변경하면 자동으로 계산됩니다</div>
                 </div>
             </div>
-
         </div>
 
         <footer>
@@ -851,134 +860,99 @@
     </div>
 
     <script>
-        // 자동 계산 함수 (입력값 변경 시)
+        // 자동 계산 함수
         function autoCalculate() {
             const sheetWidth = parseFloat(document.getElementById('sheetWidth').value);
             const sheetHeight = parseFloat(document.getElementById('sheetHeight').value);
             const cutWidth = parseFloat(document.getElementById('cutWidth').value);
             const cutHeight = parseFloat(document.getElementById('cutHeight').value);
             const quantity = parseInt(document.getElementById('quantity').value);
+            const kerfWidth = parseFloat(document.getElementById('kerfWidth').value);
 
-            // 모든 값이 유효할 때만 계산
-            if (sheetWidth > 0 && sheetHeight > 0 && cutWidth > 0 && cutHeight > 0 && quantity > 0) {
+            if (sheetWidth > 0 && sheetHeight > 0 && cutWidth > 0 && cutHeight > 0 && quantity > 0 && kerfWidth >= 0) {
                 calculate();
             }
         }
 
         /**
-         * @function calculate
-         * @description 요청하신 순차 재단 로직에 따라 합판 구매 수량을 계산합니다.
+         * 최적 배치 계산 함수
+         * 2가지 회전 방향을 모두 고려하여 최대 효율 배치를 찾음
          */
         function calculate() {
-            // 1. 입력값 가져오기
-            const baseW = parseFloat(document.getElementById('sheetWidth').value); 
-            const baseH = parseFloat(document.getElementById('sheetHeight').value); 
-            const reqW = parseFloat(document.getElementById('cutWidth').value); 
-            const reqH = parseFloat(document.getElementById('cutHeight').value); 
-            let remainingCount = parseInt(document.getElementById('quantity').value); 
-            
+            const sheetW = parseFloat(document.getElementById('sheetWidth').value);
+            const sheetH = parseFloat(document.getElementById('sheetHeight').value);
+            const cutW = parseFloat(document.getElementById('cutWidth').value);
+            const cutH = parseFloat(document.getElementById('cutHeight').value);
+            const kerf = parseFloat(document.getElementById('kerfWidth').value);
+            const quantity = parseInt(document.getElementById('quantity').value);
+
             // 유효성 검사
-            if (baseW <= 0 || baseH <= 0 || reqW <= 0 || reqH <= 0 || remainingCount <= 0) {
+            if (sheetW <= 0 || sheetH <= 0 || cutW <= 0 || cutH <= 0 || quantity <= 0 || kerf < 0) {
                 return;
             }
 
-            // 요청 사이즈 (긴 변, 짧은 변)
-            const cutL = Math.max(reqW, reqH); 
-            const cutS = Math.min(reqW, reqH); 
+            // 방법 1: 요청 사이즈를 그대로 배치 (cutW × cutH)
+            const layout1 = calculateLayout(sheetW, sheetH, cutW, cutH, kerf);
+            
+            // 방법 2: 요청 사이즈를 90도 회전 배치 (cutH × cutW)
+            const layout2 = calculateLayout(sheetW, sheetH, cutH, cutW, kerf);
 
-            // 합판 사이즈 (긴 변, 짧은 변)
-            const baseL = Math.max(baseW, baseH); 
-            const baseS = Math.min(baseW, baseH); 
+            // 더 많이 들어가는 배치 선택
+            let bestLayout = layout1.piecesPerSheet >= layout2.piecesPerSheet ? layout1 : layout2;
 
-            // 합판에 요청 사이즈를 재단할 수 있는지 1차 확인
-            if (cutL > baseL || cutS > baseS) {
+            // 재단 불가능한 경우
+            if (bestLayout.piecesPerSheet === 0) {
                 document.getElementById('resultCard').classList.add('hidden');
-                alert(`재단 크기(${cutL}x${cutS})가 합판(${baseL}x${baseS})보다 커서 재단이 불가능합니다!`);
+                alert(`재단 크기(${cutW}×${cutH})가 합판(${sheetW}×${sheetH})보다 커서 재단이 불가능합니다!`);
                 return;
             }
-            
-            let requiredBoards = 0; 
-            let totalCut = 0; 
-            let allSheetDetails = []; 
 
-            // 요청 수량이 남아있는 동안 반복
-            while (remainingCount > 0) {
-                requiredBoards++; 
-                let cutsInSheet = [];
+            // 필요한 합판 수 계산
+            const requiredBoards = Math.ceil(quantity / bestLayout.piecesPerSheet);
+            const totalPieces = requiredBoards * bestLayout.piecesPerSheet;
+            const extraPieces = totalPieces - quantity;
 
-                // 1. 첫 번째 조각 재단
-                if (remainingCount > 0) {
-                    // 요청 사이즈 1장 재단
-                    cutsInSheet.push({
-                        x: 0,
-                        y: 0,
-                        width: reqW,
-                        height: reqH,
-                        orientation: `${reqW}×${reqH}` 
-                    });
-                    remainingCount--;
-                    totalCut++;
-
-                    // 2. 잔여 합판 사이즈 계산 (로직: 차이값)
-                    const remainingL = baseL - cutL; 
-                    const remainingS = baseS - cutS; 
-                    
-                    // 잔여 합판의 긴 변
-                    const remL = Math.max(remainingL, remainingS); 
-                    
-                    // 3. 남은 요청 수량에 대해 잔여 합판 검토
-                    if (remainingCount > 0) {
-                        // 요청 사이즈의 긴 변(cutL)이 남은 합판의 가장 긴 변(remL)보다 큰지 확인
-                        if (cutL > remL) {
-                            // 잔여 합판으로는 재단 불가능. 다음 합판으로 이동. (이 로직에서는 항상 1장만 재단 후 다음 합판으로 넘어감)
-                        } else {
-                            // 로직대로 '잔여 합판에서 1장만 재단 후 다음 합판으로 넘어가는' 방식을 유지
-                        }
-                    }
-                }
-                
-                allSheetDetails.push({
-                    sheetNumber: requiredBoards,
-                    cuts: cutsInSheet,
-                    piecesCount: cutsInSheet.length, 
-                    waste: { w: baseL - cutL, h: baseS - cutS } 
-                });
-            }
-
-            // 결과 계산
-            const piecesPerSheet = 1; // 이 로직에서는 합판 1장당 1개만 재단 가능
-            
-            // 활용률 계산 (총 재단된 조각 수 기준)
-            const cutArea = reqW * reqH;
-            const sheetArea = baseW * baseH;
-            const efficiency = ((totalCut * cutArea) / (requiredBoards * sheetArea) * 100).toFixed(1);
+            // 활용률 계산
+            const cutArea = cutW * cutH;
+            const sheetArea = sheetW * sheetH;
+            const efficiency = ((quantity * cutArea) / (requiredBoards * sheetArea) * 100).toFixed(1);
 
             // 가격 계산
             const sheetPrice = parseFloat(document.getElementById('sheetPrice').value) || 0;
             const totalPrice = requiredBoards * sheetPrice;
 
-            // 결과 표시 업데이트: 색상 적용 유지
-            
-            // 1. 구매 수량 (resultNumber)을 밝은 녹색으로 설정
+            // 결과 표시
             const resultNumberElement = document.getElementById('resultNumber');
             resultNumberElement.textContent = requiredBoards;
-            resultNumberElement.style.background = 'linear-gradient(135deg, var(--bright-green), #22c55e)'; 
+            resultNumberElement.style.background = 'linear-gradient(135deg, var(--bright-green), #22c55e)';
             resultNumberElement.style.webkitBackgroundClip = 'text';
             resultNumberElement.style.webkitTextFillColor = 'transparent';
             resultNumberElement.style.backgroundClip = 'text';
-            resultNumberElement.style.color = 'initial'; 
 
-            document.getElementById('piecesPerSheet').textContent = piecesPerSheet;
-            document.getElementById('totalPieces').textContent = totalCut;
+            document.getElementById('layoutPattern').textContent = 
+                `${bestLayout.cols}열 × ${bestLayout.rows}행 (${bestLayout.orientation === 'normal' ? cutW + '×' + cutH : cutH + '×' + cutW})`;
+            
+            document.getElementById('piecesPerSheet').textContent = bestLayout.piecesPerSheet;
+            document.getElementById('requiredPieces').textContent = quantity;
+            document.getElementById('totalPieces').textContent = totalPieces;
+            
+            const extraPiecesElement = document.getElementById('extraPieces');
+            extraPiecesElement.textContent = extraPieces;
+            // 여유분이 있으면 파란색, 없으면 기본색
+            if (extraPieces > 0) {
+                extraPiecesElement.style.color = 'var(--accent-blue)';
+            } else {
+                extraPiecesElement.style.color = 'var(--wood-dark)';
+            }
+            
             document.getElementById('efficiency').textContent = efficiency + '%';
             
-            // 2. 총 구매 금액 (totalPrice) 숫자를 붉은색으로 설정
             const totalPriceElement = document.getElementById('totalPrice');
             totalPriceElement.textContent = totalPrice.toLocaleString() + '원';
-            totalPriceElement.style.color = 'var(--bright-red)'; 
+            totalPriceElement.style.color = 'var(--bright-red)';
 
             // 시각화
-            visualizePlywood(allSheetDetails, baseW, baseH, reqW, reqH, true);
+            visualizeCutting(sheetW, sheetH, bestLayout, requiredBoards, quantity);
 
             // 결과 카드 표시
             const resultCard = document.getElementById('resultCard');
@@ -989,103 +963,270 @@
             }
         }
 
+        /**
+         * 특정 배치에서 몇 개를 재단할 수 있는지 계산
+         */
+        function calculateLayout(sheetW, sheetH, pieceW, pieceH, kerf) {
+            // 재단 불가능 체크
+            if (pieceW > sheetW || pieceH > sheetH) {
+                return {
+                    cols: 0,
+                    rows: 0,
+                    piecesPerSheet: 0,
+                    orientation: 'none',
+                    pieceW: pieceW,
+                    pieceH: pieceH,
+                    usedWidth: 0,
+                    usedHeight: 0
+                };
+            }
 
-        // 시각화 함수 (순차 재단 로직에 맞게 업데이트)
-        function visualizePlywood(allSheetDetails, sheetWidth, sheetHeight, cutW, cutH, isSequential) {
+            // 가로 방향으로 몇 개 들어가는지 (마지막 조각 제외하고 kerf 포함)
+            let cols = 1;
+            let usedWidth = pieceW;
+            while (usedWidth + kerf + pieceW <= sheetW) {
+                cols++;
+                usedWidth += kerf + pieceW;
+            }
+
+            // 세로 방향으로 몇 개 들어가는지 (마지막 조각 제외하고 kerf 포함)
+            let rows = 1;
+            let usedHeight = pieceH;
+            while (usedHeight + kerf + pieceH <= sheetH) {
+                rows++;
+                usedHeight += kerf + pieceH;
+            }
+
+            const piecesPerSheet = cols * rows;
+
+            return {
+                cols: cols,
+                rows: rows,
+                piecesPerSheet: piecesPerSheet,
+                orientation: (pieceW === parseFloat(document.getElementById('cutWidth').value)) ? 'normal' : 'rotated',
+                pieceW: pieceW,
+                pieceH: pieceH,
+                usedWidth: usedWidth,
+                usedHeight: usedHeight
+            };
+        }
+
+        /**
+         * 재단 패턴 시각화 - 모든 구매 합판 표시
+         */
+        function visualizeCutting(sheetW, sheetH, layout, requiredBoards, totalQuantity) {
             const visualization = document.getElementById('visualization');
             visualization.innerHTML = '';
+
+            if (layout.piecesPerSheet === 0) {
+                visualization.innerHTML = '<div class="no-result">재단 불가능</div>';
+                return;
+            }
+
+            const kerf = parseFloat(document.getElementById('kerfWidth').value);
+            const isMobile = window.innerWidth <= 768;
             
             // 최대 6장까지만 표시
-            const displaySheets = Math.min(allSheetDetails.length, 6);
-            const showMore = allSheetDetails.length > 6;
+            const maxDisplay = 6;
+            const displayBoards = Math.min(requiredBoards, maxDisplay);
+            const hasMore = requiredBoards > maxDisplay;
 
-            // 모바일 감지
-            const isMobile = window.innerWidth <= 768;
-            const baseSheetWidth = isMobile ? 90 : 120;
-            const baseSheetHeight = isMobile ? 135 : 180;
+            // 합판들을 담을 컨테이너
+            const sheetsContainer = document.createElement('div');
+            sheetsContainer.className = 'sheets-container';
 
-            // 그리드 레이아웃 설정
-            const cols = displaySheets <= 3 ? displaySheets : 3;
-            visualization.style.gridTemplateColumns = `repeat(${cols}, ${baseSheetWidth}px)`;
-            visualization.style.gap = isMobile ? '6px' : '8px';
+            let pieceCounter = 0; // 전체 조각 번호 카운터
 
-            const cutAreaWidth = cutW;
-            const cutAreaHeight = cutH;
+            // 각 합판 표시
+            for (let sheetNum = 1; sheetNum <= displayBoards; sheetNum++) {
+                const sheetWrapper = document.createElement('div');
+                sheetWrapper.className = 'sheet-wrapper';
 
-            for (let i = 0; i < displaySheets; i++) {
-                const sheetDetail = allSheetDetails[i];
-                const sheet = document.createElement('div');
-                sheet.className = 'plywood-sheet';
-                sheet.style.width = baseSheetWidth + 'px';
-                sheet.style.height = baseSheetHeight + 'px';
-                sheet.style.position = 'relative';
+                // 합판 제목
+                const sheetTitle = document.createElement('div');
+                sheetTitle.className = 'sheet-title';
+                sheetTitle.textContent = `합판 #${sheetNum}`;
+                sheetWrapper.appendChild(sheetTitle);
+
+                // 이 합판에 들어갈 조각 수 계산
+                let piecesInThisSheet = layout.piecesPerSheet;
+                if (sheetNum === requiredBoards) {
+                    // 마지막 합판은 필요한 개수만
+                    const remainingPieces = totalQuantity - (pieceCounter);
+                    piecesInThisSheet = remainingPieces;
+                }
+
+                // 합판 시각화
+                const plywoodVisual = createPlywoodVisual(
+                    sheetW, sheetH, layout, kerf, 
+                    pieceCounter, piecesInThisSheet, isMobile
+                );
+                sheetWrapper.appendChild(plywoodVisual);
+
+                pieceCounter += piecesInThisSheet;
+                sheetsContainer.appendChild(sheetWrapper);
+            }
+
+            // "+N장 더" 표시
+            if (hasMore) {
+                const moreWrapper = document.createElement('div');
+                moreWrapper.className = 'sheet-wrapper';
                 
-                // 합판 번호 표시
-                const sheetNumber = document.createElement('div');
-                sheetNumber.className = 'sheet-number';
-                sheetNumber.textContent = `#${sheetDetail.sheetNumber}`;
-                sheet.appendChild(sheetNumber);
+                const moreSheets = document.createElement('div');
+                moreSheets.className = 'more-sheets';
+                moreSheets.textContent = `+${requiredBoards - maxDisplay}장`;
+                moreWrapper.appendChild(moreSheets);
                 
-                // 재단 조각 표시 (1장만 재단되므로)
-                if (sheetDetail.cuts.length > 0) {
-                    const cut = sheetDetail.cuts[0];
-                    const piece = document.createElement('div');
-                    piece.className = 'cut-piece';
-                    piece.style.position = 'absolute';
-                    
-                    // 재단된 조각 위치 및 크기
-                    piece.style.left = '0%';
-                    piece.style.top = '0%';
-                    piece.style.width = ((cut.width / sheetWidth) * 100) + '%';
-                    piece.style.height = ((cut.height / sheetHeight) * 100) + '%';
-                    
-                    piece.style.display = 'flex';
-                    piece.style.alignItems = 'center';
-                    piece.style.justifyContent = 'center';
-                    piece.style.fontSize = isMobile ? '0.65rem' : '0.7rem';
-                    piece.style.fontWeight = '600';
-                    piece.style.color = 'var(--wood-dark)';
-                    piece.textContent = `1장`;
-                    sheet.appendChild(piece);
+                sheetsContainer.appendChild(moreWrapper);
+            }
 
-                    // 낭비 영역 표시 (로직에 따른 잔여 영역)
-                    
-                    // 1. 오른쪽 낭비 영역 (남은 W x 전체 H)
-                    const waste1 = document.createElement('div'); 
-                    waste1.className = 'waste-area';
-                    waste1.style.position = 'absolute';
-                    waste1.style.left = ((cutAreaWidth / sheetWidth) * 100) + '%';
-                    waste1.style.top = '0';
-                    waste1.style.width = (((sheetWidth - cutAreaWidth) / sheetWidth) * 100) + '%';
-                    waste1.style.height = '100%';
-                    sheet.appendChild(waste1);
-                    
-                    // 2. 아래쪽 낭비 영역 (전체 W x 남은 H)
-                    const waste2 = document.createElement('div'); 
-                    waste2.className = 'waste-area';
-                    waste2.style.position = 'absolute';
-                    waste2.style.left = '0';
-                    waste2.style.top = ((cutAreaHeight / sheetHeight) * 100) + '%';
-                    waste2.style.width = ((cutAreaWidth / sheetWidth) * 100) + '%';
-                    waste2.style.height = (((sheetHeight - cutAreaHeight) / sheetHeight) * 100) + '%';
-                    sheet.appendChild(waste2);
+            visualization.appendChild(sheetsContainer);
 
-                } else {
-                    sheet.textContent = '재단 없음';
+            // 전체 통계 정보
+            const summaryInfo = document.createElement('div');
+            summaryInfo.style.textAlign = 'center';
+            summaryInfo.style.fontSize = isMobile ? '0.75rem' : '0.85rem';
+            summaryInfo.style.color = 'var(--wood-medium)';
+            summaryInfo.style.marginTop = '1rem';
+            summaryInfo.style.lineHeight = '1.5';
+            summaryInfo.style.paddingTop = '1rem';
+            summaryInfo.style.borderTop = '2px solid var(--paper)';
+            
+            const usedArea = ((layout.usedWidth * layout.usedHeight) / (sheetW * sheetH) * 100).toFixed(1);
+            const wasteArea = (100 - usedArea).toFixed(1);
+            
+            summaryInfo.innerHTML = `
+                <span style="color: var(--accent-blue); font-weight: 600;">평균 사용 영역: ${usedArea}%</span> | 
+                <span style="color: var(--accent-orange); font-weight: 600;">평균 낭비 영역: ${wasteArea}%</span>
+            `;
+            visualization.appendChild(summaryInfo);
+        }
+
+        /**
+         * 개별 합판 시각화 생성
+         */
+        function createPlywoodVisual(sheetW, sheetH, layout, kerf, startPieceNum, piecesCount, isMobile) {
+            // 시각화 크기 계산
+            const maxWidth = isMobile ? 250 : 280;
+            const maxHeight = isMobile ? 280 : 320;
+            const scale = Math.min(maxWidth / sheetW, maxHeight / sheetH);
+            
+            const visualW = sheetW * scale;
+            const visualH = sheetH * scale;
+
+            // 합판 컨테이너
+            const plywoodVisual = document.createElement('div');
+            plywoodVisual.className = 'plywood-visual';
+            plywoodVisual.style.width = visualW + 'px';
+            plywoodVisual.style.height = visualH + 'px';
+
+            // 재단 조각들이 들어갈 영역
+            const cutArea = document.createElement('div');
+            cutArea.className = 'cut-area';
+            cutArea.style.left = '0';
+            cutArea.style.top = '0';
+            cutArea.style.width = (layout.usedWidth * scale) + 'px';
+            cutArea.style.height = (layout.usedHeight * scale) + 'px';
+
+            let pieceIndex = startPieceNum;
+            let displayedPieces = 0;
+            
+            // 행별로 재단 조각 배치
+            for (let row = 0; row < layout.rows; row++) {
+                const cutRow = document.createElement('div');
+                cutRow.className = 'cut-row';
+                
+                for (let col = 0; col < layout.cols; col++) {
+                    pieceIndex++;
+                    displayedPieces++;
+                    
+                    const cutItem = document.createElement('div');
+                    cutItem.className = 'cut-item';
+                    cutItem.style.width = (layout.pieceW * scale) + 'px';
+                    cutItem.style.height = (layout.pieceH * scale) + 'px';
+                    
+                    // 필요한 개수만 번호 표시, 나머지는 빈 영역
+                    if (displayedPieces <= piecesCount) {
+                        cutItem.textContent = `#${pieceIndex}`;
+                        cutItem.style.background = 'rgba(255, 255, 255, 0.25)';
+                    } else {
+                        cutItem.textContent = '';
+                        cutItem.style.background = 'rgba(44, 24, 16, 0.05)';
+                        cutItem.style.borderStyle = 'dashed';
+                        cutItem.style.opacity = '0.4';
+                    }
+                    
+                    cutRow.appendChild(cutItem);
+                    
+                    // 마지막 열이 아니면 kerf 간격 추가
+                    if (col < layout.cols - 1) {
+                        const kerfSpace = document.createElement('div');
+                        kerfSpace.style.width = (kerf * scale) + 'px';
+                        kerfSpace.style.height = (layout.pieceH * scale) + 'px';
+                        cutRow.appendChild(kerfSpace);
+                    }
                 }
                 
-                visualization.appendChild(sheet);
+                cutArea.appendChild(cutRow);
+                
+                // 마지막 행이 아니면 kerf 간격 추가
+                if (row < layout.rows - 1) {
+                    const kerfRow = document.createElement('div');
+                    kerfRow.style.height = (kerf * scale) + 'px';
+                    cutArea.appendChild(kerfRow);
+                }
             }
 
-            if (showMore) {
-                const more = document.createElement('div');
-                more.className = 'plywood-sheet';
-                more.style.width = baseSheetWidth + 'px';
-                more.style.height = baseSheetHeight + 'px';
-                more.style.background = 'linear-gradient(135deg, var(--wood-medium), var(--wood-dark))';
-                more.textContent = `+${allSheetDetails.length - 6}`;
-                visualization.appendChild(more);
+            plywoodVisual.appendChild(cutArea);
+
+            // 오른쪽 낭비 영역
+            const wasteRight = sheetW - layout.usedWidth;
+            if (wasteRight > 1) {
+                const wasteAreaRight = document.createElement('div');
+                wasteAreaRight.className = 'waste-area';
+                wasteAreaRight.style.left = (layout.usedWidth * scale) + 'px';
+                wasteAreaRight.style.top = '0';
+                wasteAreaRight.style.width = (wasteRight * scale) + 'px';
+                wasteAreaRight.style.height = visualH + 'px';
+                plywoodVisual.appendChild(wasteAreaRight);
             }
+
+            // 아래쪽 낭비 영역
+            const wasteBottom = sheetH - layout.usedHeight;
+            if (wasteBottom > 1) {
+                const wasteAreaBottom = document.createElement('div');
+                wasteAreaBottom.className = 'waste-area';
+                wasteAreaBottom.style.left = '0';
+                wasteAreaBottom.style.top = (layout.usedHeight * scale) + 'px';
+                wasteAreaBottom.style.width = (layout.usedWidth * scale) + 'px';
+                wasteAreaBottom.style.height = (wasteBottom * scale) + 'px';
+                plywoodVisual.appendChild(wasteAreaBottom);
+            }
+
+            // 오른쪽 아래 코너 낭비 영역
+            if (wasteRight > 1 && wasteBottom > 1) {
+                const wasteCorner = document.createElement('div');
+                wasteCorner.className = 'waste-area';
+                wasteCorner.style.left = (layout.usedWidth * scale) + 'px';
+                wasteCorner.style.top = (layout.usedHeight * scale) + 'px';
+                wasteCorner.style.width = (wasteRight * scale) + 'px';
+                wasteCorner.style.height = (wasteBottom * scale) + 'px';
+                plywoodVisual.appendChild(wasteCorner);
+            }
+
+            // 각 합판의 재단 개수 표시
+            const pieceCountLabel = document.createElement('div');
+            pieceCountLabel.style.textAlign = 'center';
+            pieceCountLabel.style.fontSize = isMobile ? '0.7rem' : '0.75rem';
+            pieceCountLabel.style.color = 'var(--wood-medium)';
+            pieceCountLabel.style.marginTop = '0.5rem';
+            pieceCountLabel.textContent = `${piecesCount}개 재단`;
+            
+            const wrapper = document.createElement('div');
+            wrapper.appendChild(plywoodVisual);
+            wrapper.appendChild(pieceCountLabel);
+            
+            return wrapper;
         }
 
         // 페이지 로드 시 초기 계산
