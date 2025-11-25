@@ -838,10 +838,6 @@
                     <div class="detail-label">합판 1장당 재단 가능</div>
                 </div>
                 <div class="detail-item">
-                    <div class="detail-value" id="requiredPieces">0</div>
-                    <div class="detail-label">필요한 조각 수</div>
-                </div>
-                <div class="detail-item">
                     <div class="detail-value" id="totalPieces">0</div>
                     <div class="detail-label">실제 제작 가능 개수</div>
                 </div>
@@ -852,10 +848,6 @@
                 <div class="detail-item">
                     <div class="detail-value" id="efficiency">0%</div>
                     <div class="detail-label">합판 활용률</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-value" id="totalPrice">0원</div>
-                    <div class="detail-label">총 구매 금액</div>
                 </div>
             </div>
             
@@ -884,6 +876,27 @@
             if (sheetWidth > 0 && sheetHeight > 0 && cutWidth > 0 && cutHeight > 0 && quantity > 0 && kerfWidth >= 0) {
                 calculate();
             }
+        }
+
+        /**
+         * 에러 메시지 표시
+         */
+        function showError(message) {
+            const resultCard = document.getElementById('resultCard');
+            const visualization = document.getElementById('visualization');
+            
+            resultCard.classList.remove('hidden');
+            visualization.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                    <div style="color: var(--accent-orange); font-weight: 600; font-size: 1rem; line-height: 1.6;">
+                        ${message}
+                    </div>
+                    <div style="color: var(--wood-medium); font-size: 0.85rem; margin-top: 0.5rem;">
+                        합판 크기를 늘리거나 재단 크기를 줄여주세요.
+                    </div>
+                </div>
+            `;
         }
 
         /**
