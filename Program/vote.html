@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choice Vote - 당신의 선택은?</title>
-    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Choice Vote - 짜장면 vs 짬뽕</title>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,1488 +12,824 @@
             box-sizing: border-box;
         }
 
-```
-    :root {
-        --color-jjajang: #2C1810;
-        --color-jjajang-light: #8B6F47;
-        --color-jjampong: #C62E2E;
-        --color-jjampong-light: #FF6B6B;
-        --color-bg: #0F0F0F;
-        --color-surface: #1A1A1A;
-        --color-text: #FFFFFF;
-        --color-text-dim: #A0A0A0;
-        --color-border: #2A2A2A;
-    }
-
-    body {
-        font-family: 'Noto Sans KR', sans-serif;
-        background: var(--color-bg);
-        color: var(--color-text);
-        line-height: 1.6;
-        overflow-x: hidden;
-        min-height: 100vh;
-    }
-
-    /* Animated Background */
-    .background-animation {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-        overflow: hidden;
-        pointer-events: none;
-    }
-
-    .bg-gradient {
-        position: absolute;
-        width: 150%;
-        height: 150%;
-        background: radial-gradient(circle at 20% 50%, rgba(139, 111, 71, 0.1) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 50%, rgba(198, 46, 46, 0.1) 0%, transparent 50%);
-        animation: gradientShift 20s ease-in-out infinite;
-    }
-
-    @keyframes gradientShift {
-        0%, 100% { transform: translate(-25%, -25%) rotate(0deg); }
-        50% { transform: translate(-20%, -20%) rotate(180deg); }
-    }
-
-    .floating-shapes {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-    }
-
-    .shape {
-        position: absolute;
-        border-radius: 50%;
-        opacity: 0.05;
-        animation: float 20s ease-in-out infinite;
-    }
-
-    .shape:nth-child(1) {
-        width: 300px;
-        height: 300px;
-        background: var(--color-jjajang);
-        top: 10%;
-        left: 10%;
-        animation-delay: 0s;
-    }
-
-    .shape:nth-child(2) {
-        width: 200px;
-        height: 200px;
-        background: var(--color-jjampong);
-        top: 60%;
-        right: 15%;
-        animation-delay: -7s;
-    }
-
-    .shape:nth-child(3) {
-        width: 150px;
-        height: 150px;
-        background: var(--color-jjajang-light);
-        bottom: 20%;
-        left: 20%;
-        animation-delay: -14s;
-    }
-
-    @keyframes float {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        33% { transform: translate(30px, -30px) scale(1.1); }
-        66% { transform: translate(-20px, 20px) scale(0.9); }
-    }
-
-    /* Container */
-    .container {
-        position: relative;
-        z-index: 1;
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 30px 20px;
-    }
-
-    /* Header */
-    header {
-        text-align: center;
-        margin-bottom: 40px;
-        animation: fadeInDown 0.8s ease-out;
-    }
-
-    h1 {
-        font-family: 'Gowun Batang', serif;
-        font-size: clamp(2rem, 4vw, 3rem);
-        font-weight: 700;
-        margin-bottom: 10px;
-        background: linear-gradient(135deg, var(--color-jjajang-light), var(--color-jjampong-light));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        letter-spacing: -2px;
-    }
-
-    .subtitle {
-        font-size: 1rem;
-        color: var(--color-text-dim);
-        font-weight: 300;
-    }
-
-    /* Vote Section */
-    .vote-section {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 40px;
-        margin-bottom: 60px;
-        animation: fadeInUp 0.8s ease-out 0.2s both;
-        max-width: 1000px;
-        margin-left: auto;
-        margin-right: auto;
-        position: relative;
-    }
-
-    .vote-section::before {
-        content: 'VS';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 2rem;
-        font-weight: 900;
-        color: var(--color-border);
-        z-index: 10;
-        background: var(--color-bg);
-        padding: 15px 20px;
-        border-radius: 50%;
-        border: 3px solid var(--color-border);
-        font-family: 'Gowun Batang', serif;
-        animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-        0%, 100% { transform: translate(-50%, -50%) scale(1); }
-        50% { transform: translate(-50%, -50%) scale(1.1); }
-    }
-
-    .vote-card {
-        position: relative;
-        background: var(--color-surface);
-        border-radius: 20px;
-        padding: 30px 20px;
-        text-align: center;
-        cursor: pointer;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 2px solid var(--color-border);
-        user-select: none;
-    }
-
-    .vote-card:active {
-        transform: translateY(-3px) scale(0.98);
-    }
-
-    .vote-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.05) 100%);
-        opacity: 0;
-        transition: opacity 0.4s ease;
-    }
-
-    .vote-card::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 4px;
-        background: currentColor;
-        transform: scaleX(0);
-        transition: transform 0.4s ease;
-    }
-
-    .vote-card:hover {
-        transform: translateY(-5px);
-        border-color: currentColor;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    }
-
-    .vote-card:hover::before {
-        opacity: 1;
-    }
-
-    .vote-card:hover::after {
-        transform: scaleX(1);
-    }
-
-    .vote-card.jjajang {
-        color: var(--color-jjajang-light);
-    }
-
-    .vote-card.jjampong {
-        color: var(--color-jjampong-light);
-    }
-
-    .vote-icon {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 20px;
-        display: block;
-        border-radius: 50%;
-        object-fit: cover;
-        animation: bounce 2s ease-in-out infinite;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        transition: all 0.4s ease;
-        border: 3px solid transparent;
-        pointer-events: none;
-    }
-
-    .vote-card.jjajang .vote-icon {
-        border-color: var(--color-jjajang-light);
-    }
-
-    .vote-card.jjampong .vote-icon {
-        border-color: var(--color-jjampong-light);
-    }
-
-    .vote-card:hover .vote-icon {
-        animation: shake 0.5s ease-in-out;
-        transform: scale(1.05) rotate(5deg);
-        box-shadow: 0 15px 50px rgba(0,0,0,0.5);
-    }
-
-    .vote-icon-fallback {
-        animation: bounce 2s ease-in-out infinite;
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.05);
-        border: 3px solid currentColor;
-        pointer-events: none;
-        font-size: 3.5rem;
-    }
-
-    @keyframes bounce {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-    }
-
-    @keyframes shake {
-        0%, 100% { transform: rotate(5deg) scale(1.05); }
-        25% { transform: rotate(0deg) scale(1.05); }
-        50% { transform: rotate(10deg) scale(1.05); }
-        75% { transform: rotate(0deg) scale(1.05); }
-    }
-
-    .vote-title {
-        font-size: 2rem;
-        font-weight: 800;
-        margin-bottom: 10px;
-        font-family: 'Gowun Batang', serif;
-    }
-
-    .vote-description {
-        color: var(--color-text-dim);
-        font-size: 0.95rem;
-        margin-bottom: 20px;
-    }
-
-    .vote-count {
-        font-size: 2.5rem;
-        font-weight: 800;
-        margin-bottom: 5px;
-        opacity: 0.9;
-    }
-
-    .vote-percentage {
-        font-size: 1.1rem;
-        opacity: 0.7;
-    }
-
-    /* Progress Bar */
-    .progress-section {
-        margin-bottom: 50px;
-        animation: fadeInUp 0.8s ease-out 0.4s both;
-    }
-
-    .progress-container {
-        position: relative;
-        height: 50px;
-        background: var(--color-surface);
-        border-radius: 25px;
-        overflow: hidden;
-        border: 2px solid var(--color-border);
-        display: flex;
-    }
-
-    .progress-bar {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        font-weight: 700;
-        font-size: 1rem;
-        overflow: hidden;
-        min-width: 80px;
-    }
-
-    .progress-bar span {
-        position: relative;
-        z-index: 10;
-        white-space: nowrap;
-        text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    }
-
-    .progress-bar.jjajang {
-        background: linear-gradient(90deg, var(--color-jjajang) 0%, var(--color-jjajang-light) 100%);
-    }
-
-    .progress-bar.jjampong {
-        background: linear-gradient(90deg, var(--color-jjampong-light) 0%, var(--color-jjampong) 100%);
-    }
-
-    .progress-bar::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-        animation: shimmer 2s infinite;
-    }
-
-    @keyframes shimmer {
-        0% { left: -100%; }
-        100% { left: 100%; }
-    }
-
-    .progress-labels {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 15px;
-        padding: 0 10px;
-    }
-
-    .progress-label {
-        font-size: 0.9rem;
-        color: var(--color-text-dim);
-    }
-
-    /* Modal */
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.85);
-        backdrop-filter: blur(10px);
-        z-index: 1000;
-        animation: fadeIn 0.3s ease-out;
-    }
-
-    .modal.active {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    .modal-content {
-        background: var(--color-surface);
-        border-radius: 24px;
-        padding: 50px;
-        max-width: 500px;
-        width: 90%;
-        border: 2px solid var(--color-border);
-        animation: slideUp 0.4s ease-out;
-        position: relative;
-    }
-
-    @keyframes slideUp {
-        from { transform: translateY(50px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-    }
-
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-    }
-
-    .modal-title {
-        font-size: 2rem;
-        font-weight: 800;
-        font-family: 'Gowun Batang', serif;
-    }
-
-    .modal-title.jjajang {
-        color: var(--color-jjajang-light);
-    }
-
-    .modal-title.jjampong {
-        color: var(--color-jjampong-light);
-    }
-
-    .close-btn {
-        background: none;
-        border: none;
-        color: var(--color-text-dim);
-        font-size: 2rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        line-height: 1;
-        padding: 0;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .close-btn:hover {
-        color: var(--color-text);
-        transform: rotate(90deg);
-    }
-
-    .form-group {
-        margin-bottom: 25px;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 10px;
-        font-weight: 600;
-        color: var(--color-text-dim);
-    }
-
-    input[type="text"],
-    textarea {
-        width: 100%;
-        padding: 15px 20px;
-        background: var(--color-bg);
-        border: 2px solid var(--color-border);
-        border-radius: 12px;
-        color: var(--color-text);
-        font-size: 1rem;
-        font-family: inherit;
-        transition: all 0.3s ease;
-    }
-
-    input[type="text"]:focus,
-    textarea:focus {
-        outline: none;
-        border-color: currentColor;
-        box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
-    }
-
-    textarea {
-        resize: vertical;
-        min-height: 100px;
-    }
-
-    .submit-btn {
-        width: 100%;
-        padding: 18px;
-        background: linear-gradient(135deg, var(--color-jjajang-light), var(--color-jjampong-light));
-        border: none;
-        border-radius: 12px;
-        color: white;
-        font-size: 1.1rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-family: inherit;
-    }
-
-    .submit-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-
-    .submit-btn:active {
-        transform: translateY(0);
-    }
-
-    /* Vote List */
-    .votes-section {
-        animation: fadeInUp 0.8s ease-out 0.6s both;
-    }
-
-    .section-title {
-        font-size: 2rem;
-        font-weight: 800;
-        margin-bottom: 30px;
-        text-align: center;
-        font-family: 'Gowun Batang', serif;
-    }
-
-    .votes-list {
-        display: grid;
-        gap: 20px;
-    }
-
-    .vote-item {
-        background: var(--color-surface);
-        border-radius: 16px;
-        padding: 25px;
-        border-left: 4px solid;
-        transition: all 0.3s ease;
-        animation: slideInLeft 0.5s ease-out;
-    }
-
-    .vote-item:hover {
-        transform: translateX(5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-
-    .vote-item.jjajang {
-        border-left-color: var(--color-jjajang-light);
-    }
-
-    .vote-item.jjampong {
-        border-left-color: var(--color-jjampong-light);
-    }
-
-    @keyframes slideInLeft {
-        from {
-            transform: translateX(-30px);
-            opacity: 0;
+        :root {
+            --jjajang-color: #8B4513;
+            --jjajang-light: #D2691E;
+            --jjajang-glow: rgba(139, 69, 19, 0.4);
+            --jjampong-color: #DC143C;
+            --jjampong-light: #FF6B6B;
+            --jjampong-glow: rgba(220, 20, 60, 0.4);
+            --bg-dark: #0a0a0f;
+            --bg-card: #16161f;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
         }
-        to {
-            transform: translateX(0);
-            opacity: 1;
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-    }
 
-    .vote-item-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-    }
-
-    .voter-info {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .voter-name {
-        font-weight: 700;
-        font-size: 1.1rem;
-    }
-
-    .vote-badge {
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-
-    .vote-badge.jjajang {
-        background: rgba(139, 111, 71, 0.2);
-        color: var(--color-jjajang-light);
-    }
-
-    .vote-badge.jjampong {
-        background: rgba(198, 46, 46, 0.2);
-        color: var(--color-jjampong-light);
-    }
-
-    .vote-date {
-        font-size: 0.85rem;
-        color: var(--color-text-dim);
-    }
-
-    .vote-comment {
-        color: var(--color-text-dim);
-        line-height: 1.6;
-        padding: 10px 15px;
-        background: rgba(255,255,255,0.02);
-        border-radius: 8px;
-        margin-top: 12px;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: var(--color-text-dim);
-    }
-
-    .empty-icon {
-        font-size: 4rem;
-        margin-bottom: 20px;
-        opacity: 0.5;
-    }
-
-    /* Animations */
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Success Animation */
-    .success-animation {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 5rem;
-        z-index: 2000;
-        animation: successPop 0.6s ease-out;
-        pointer-events: none;
-    }
-
-    @keyframes successPop {
-        0% {
-            transform: translate(-50%, -50%) scale(0);
-            opacity: 0;
-        }
-        50% {
-            transform: translate(-50%, -50%) scale(1.2);
-            opacity: 1;
-        }
-        100% {
-            transform: translate(-50%, -50%) scale(0);
-            opacity: 0;
-        }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
         .container {
-            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 15px;
         }
 
-        h1 {
-            font-size: 2.2rem;
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
         }
 
+        .header h1 {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            background: linear-gradient(135deg, var(--jjajang-light), #fff, var(--jjampong-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+        }
+
+        /* Vote Section - 항상 좌우 배치 */
         .vote-section {
-            grid-template-columns: 1fr;
-            gap: 30px;
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            margin-bottom: 25px;
+            align-items: stretch;
         }
 
-        .vote-section::before {
-            font-size: 1.5rem;
-            padding: 12px 18px;
-        }
-
+        /* Vote Card */
         .vote-card {
-            padding: 25px 15px;
+            flex: 1;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .vote-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .vote-card.jjajang::before {
+            background: radial-gradient(circle at center, var(--jjajang-glow), transparent 70%);
+        }
+
+        .vote-card.jjampong::before {
+            background: radial-gradient(circle at center, var(--jjampong-glow), transparent 70%);
+        }
+
+        .vote-card:hover::before,
+        .vote-card:active::before {
+            opacity: 1;
+        }
+
+        .vote-card.jjajang:hover,
+        .vote-card.jjajang:active {
+            border-color: var(--jjajang-color);
+            transform: translateY(-3px);
+        }
+
+        .vote-card.jjampong:hover,
+        .vote-card.jjampong:active {
+            border-color: var(--jjampong-color);
+            transform: translateY(-3px);
         }
 
         .vote-icon {
-            width: 100px;
-            height: 100px;
+            font-size: clamp(3rem, 12vw, 5rem);
+            margin-bottom: 10px;
+            display: block;
+            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.3));
+            transition: transform 0.3s ease;
         }
-        
-        .vote-icon-fallback {
-            font-size: 3rem !important;
-            width: 100px;
-            height: 100px;
+
+        .vote-card:hover .vote-icon,
+        .vote-card:active .vote-icon {
+            transform: scale(1.1) rotate(-5deg);
         }
 
         .vote-title {
-            font-size: 1.7rem;
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            margin-bottom: 5px;
         }
 
-        .modal-content {
-            padding: 30px;
-            width: 95%;
+        .vote-card.jjajang .vote-title {
+            color: var(--jjajang-light);
         }
 
-        .progress-container {
-            height: 45px;
-        }
-        
-        .progress-bar {
-            font-size: 0.9rem;
-        }
-        
-        .progress-bar span {
-            font-size: 0.9rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        h1 {
-            font-size: 1.8rem;
-        }
-        
-        .vote-section {
-            gap: 25px;
+        .vote-card.jjampong .vote-title {
+            color: var(--jjampong-light);
         }
 
-        .vote-section::before {
-            font-size: 1.3rem;
-            padding: 10px 15px;
+        .vote-description {
+            font-size: clamp(0.7rem, 2vw, 0.85rem);
+            color: var(--text-secondary);
+            margin-bottom: 12px;
         }
-        
-        .vote-icon {
-            width: 90px;
-            height: 90px;
-        }
-        
-        .vote-icon-fallback {
-            font-size: 2.5rem !important;
-            width: 90px;
-            height: 90px;
-        }
-        
-        .vote-title {
-            font-size: 1.5rem;
-        }
-        
+
         .vote-count {
-            font-size: 2rem;
+            font-size: clamp(2rem, 8vw, 3rem);
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 3px;
         }
-        
-        .modal-content {
+
+        .vote-card.jjajang .vote-count {
+            color: var(--jjajang-light);
+        }
+
+        .vote-card.jjampong .vote-count {
+            color: var(--jjampong-light);
+        }
+
+        .vote-percentage {
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            color: var(--text-secondary);
+        }
+
+        .click-hint {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            opacity: 0.7;
+        }
+
+        /* VS Badge */
+        .vs-badge {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--jjajang-color), var(--jjampong-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 0.9rem;
+            color: white;
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .vote-wrapper {
+            position: relative;
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            margin-bottom: 25px;
+        }
+
+        .progress-bar {
+            height: 35px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: width 0.5s ease;
+            min-width: 0;
+        }
+
+        .progress-fill.jjajang {
+            background: linear-gradient(90deg, var(--jjajang-color), var(--jjajang-light));
+        }
+
+        .progress-fill.jjampong {
+            background: linear-gradient(90deg, var(--jjampong-light), var(--jjampong-color));
+        }
+
+        .progress-fill span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 8px;
+        }
+
+        .total-votes {
+            text-align: center;
+            margin-top: 10px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Recent Votes */
+        .recent-section {
+            background: var(--bg-card);
+            border-radius: 16px;
             padding: 20px;
         }
-        
+
+        .recent-section h3 {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+
+        .vote-list {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .vote-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            gap: 12px;
+        }
+
+        .vote-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .vote-item-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .vote-item-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .vote-item-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .vote-item.jjajang .vote-item-name {
+            color: var(--jjajang-light);
+        }
+
+        .vote-item.jjampong .vote-item-name {
+            color: var(--jjampong-light);
+        }
+
+        .vote-item-comment {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .vote-item-date {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            opacity: 0.7;
+            flex-shrink: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+
         .modal-title {
+            font-family: 'Black Han Sans', sans-serif;
             font-size: 1.5rem;
         }
-        
-        .progress-container {
-            height: 40px;
-        }
-        
-        .progress-bar {
-            font-size: 0.85rem;
-        }
-    }
-</style>
-```
 
+        .modal.jjajang .modal-title {
+            color: var(--jjajang-light);
+        }
+
+        .modal.jjampong .modal-title {
+            color: var(--jjampong-light);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .form-group textarea {
+            resize: none;
+            height: 80px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-secondary);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .btn-submit {
+            color: white;
+        }
+
+        .modal.jjajang .btn-submit {
+            background: linear-gradient(135deg, var(--jjajang-color), var(--jjajang-light));
+        }
+
+        .modal.jjampong .btn-submit {
+            background: linear-gradient(135deg, var(--jjampong-color), var(--jjampong-light));
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+    </style>
 </head>
 <body>
-    <!-- Background Animation -->
-    <div class="background-animation">
-        <div class="bg-gradient"></div>
-        <div class="floating-shapes">
-            <div class="shape"></div>
-            <div class="shape"></div>
-            <div class="shape"></div>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🍜 Choice Vote 🍲</h1>
+            <p>당신의 선택을 들려주세요!</p>
+        </header>
+
+        <!-- Vote Cards -->
+        <div class="vote-wrapper">
+            <section class="vote-section">
+                <div class="vote-card jjajang" id="card-jjajang">
+                    <span class="vote-icon">🍜</span>
+                    <h2 class="vote-title">짜장면</h2>
+                    <p class="vote-description">고소하고 진한 검은 맛</p>
+                    <div class="vote-count" id="jjajang-count">0</div>
+                    <div class="vote-percentage" id="jjajang-percentage">0%</div>
+                    <div class="click-hint">👆 터치하여 투표</div>
+                </div>
+
+                <div class="vote-card jjampong" id="card-jjampong">
+                    <span class="vote-icon">🍲</span>
+                    <h2 class="vote-title">짬뽕</h2>
+                    <p class="vote-description">얼큰하고 시원한 빨간 맛</p>
+                    <div class="vote-count" id="jjampong-count">0</div>
+                    <div class="vote-percentage" id="jjampong-percentage">0%</div>
+                    <div class="click-hint">👆 터치하여 투표</div>
+                </div>
+            </section>
+            <div class="vs-badge">VS</div>
+        </div>
+
+        <!-- Progress Bar -->
+        <section class="progress-section">
+            <div class="progress-bar">
+                <div class="progress-fill jjajang" id="progress-jjajang" style="width: 50%;">
+                    <span>짜장 50%</span>
+                </div>
+                <div class="progress-fill jjampong" id="progress-jjampong" style="width: 50%;">
+                    <span>짬뽕 50%</span>
+                </div>
+            </div>
+            <div class="total-votes">총 <span id="total-votes">0</span>표</div>
+        </section>
+
+        <!-- Recent Votes -->
+        <section class="recent-section">
+            <h3>📋 최근 투표</h3>
+            <div class="vote-list" id="vote-list">
+                <div class="empty-state">
+                    아직 투표가 없습니다.<br>첫 번째 투표자가 되어주세요!
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="vote-modal">
+            <div class="modal-header">
+                <div class="modal-icon" id="modal-icon">🍜</div>
+                <h2 class="modal-title" id="modal-title">짜장면에 투표</h2>
+            </div>
+            <div class="form-group">
+                <label for="voter-name">이름 (닉네임)</label>
+                <input type="text" id="voter-name" placeholder="이름을 입력하세요" maxlength="20">
+            </div>
+            <div class="form-group">
+                <label for="voter-comment">한마디 (선택)</label>
+                <textarea id="voter-comment" placeholder="왜 이 선택을 하셨나요?" maxlength="100"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-cancel" id="btn-cancel">취소</button>
+                <button class="btn btn-submit" id="btn-submit">투표하기</button>
+            </div>
         </div>
     </div>
 
-```
-<!-- Main Container -->
-<div class="container">
-    <!-- Header -->
-    <header>
-        <h1>Choice Vote</h1>
-        <p class="subtitle">당신의 선택을 들려주세요</p>
-    </header>
-
-    <!-- Vote Cards -->
-    <section class="vote-section">
-        <div class="vote-card jjajang" data-choice="jjajang">
-            <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&h=400&fit=crop" 
-                 alt="짜장면" 
-                 class="vote-icon">
-            <div class="vote-icon-fallback" style="display:none;">🍜</div>
-            <h2 class="vote-title">짜장면</h2>
-            <p class="vote-description">고소하고 진한 검은 맛</p>
-            <div class="vote-count" id="jjajang-count">0</div>
-            <div class="vote-percentage" id="jjajang-percentage">0%</div>
-        </div>
-
-        <div class="vote-card jjampong" data-choice="jjampong">
-            <img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=400&h=400&fit=crop" 
-                 alt="짬뽕" 
-                 class="vote-icon">
-            <div class="vote-icon-fallback" style="display:none;">🍲</div>
-            <h2 class="vote-title">짬뽕</h2>
-            <p class="vote-description">얼큰하고 시원한 빨간 맛</p>
-            <div class="vote-count" id="jjampong-count">0</div>
-            <div class="vote-percentage" id="jjampong-percentage">0%</div>
-        </div>
-    </section>
-
-    <!-- Progress Bar -->
-    <section class="progress-section">
-        <div class="progress-container">
-            <div class="progress-bar jjajang" id="jjajang-progress" style="width: 50%;">
-                <span>50%</span>
-            </div>
-            <div class="progress-bar jjampong" id="jjampong-progress" style="width: 50%;">
-                <span>50%</span>
-            </div>
-        </div>
-        <div class="progress-labels">
-            <span class="progress-label">🍜 짜장면</span>
-            <span class="progress-label">짬뽕 🍲</span>
-        </div>
-    </section>
-
-    <!-- Votes List -->
-    <section class="votes-section">
-        <h2 class="section-title">최근 투표 내역</h2>
-        <div class="votes-list" id="votes-list">
-            <div class="empty-state">
-                <div class="empty-icon">🗳️</div>
-                <p>아직 투표가 없습니다.<br>첫 번째 투표자가 되어주세요!</p>
-            </div>
-        </div>
-    </section>
-</div>
-
-<!-- Modal -->
-<div class="modal" id="vote-modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title" id="modal-title">투표하기</h3>
-            <button class="close-btn" onclick="closeModal()">×</button>
-        </div>
-        <form id="vote-form">
-            <div class="form-group">
-                <label for="voter-name">투표자 이름 *</label>
-                <input type="text" id="voter-name" required placeholder="이름을 입력하세요">
-            </div>
-            <div class="form-group">
-                <label for="voter-comment">한줄 코멘트</label>
-                <textarea id="voter-comment" placeholder="선택 이유를 들려주세요 (선택사항)"></textarea>
-            </div>
-            <div class="form-group">
-                <label style="color: var(--color-text-dim); font-size: 0.9rem; font-weight: 400;">
-                    📅 투표 날짜는 자동으로 기록됩니다
-                </label>
-            </div>
-            <button type="submit" class="submit-btn">투표하기</button>
-        </form>
-    </div>
-</div>
-
-<script>
-    // ==========================================
-    // Data Structure for Firebase Integration
-    // ==========================================
-    
-    /*
-    Firebase Data Structure:
-    
-    votes/ {
-        voteId: {
-            id: string (timestamp),
-            choice: 'jjajang' | 'jjampong',
-            voter: string,
-            comment: string,
-            timestamp: number,
-            date: string (ISO format)
-        }
-    }
-    
-    Future Firebase Methods:
-    - firebase.database().ref('votes').push(voteData)
-    - firebase.database().ref('votes').on('value', callback)
-    - firebase.database().ref('votes').orderByChild('timestamp')
-    */
-
-    // Current Implementation: LocalStorage
-    // This structure is compatible with Firebase
-    
-    class VoteManager {
-        constructor() {
-            console.log('VoteManager constructor called');
-            this.storageKey = 'choice_votes';
-            this.currentChoice = null;
-            this.votes = [];
-            this.init();
-        }
-
-        init() {
-            try {
-                console.log('Initializing VoteManager...');
-                this.loadVotes();
-                console.log('Votes loaded:', this.votes.length);
-                this.updateUI();
-                console.log('Vote Manager ready. Total votes:', this.votes.length);
-            } catch (error) {
-                console.error('Error initializing Vote Manager:', error);
+    <script>
+        // Vote Manager Class
+        class VoteManager {
+            constructor() {
                 this.votes = [];
+                this.currentChoice = null;
+                this.loadVotes();
+                this.bindEvents();
+                this.updateUI();
             }
-        }
 
-        // Get all votes from storage
-        getVotes() {
-            try {
-                const data = localStorage.getItem(this.storageKey);
-                return data ? JSON.parse(data) : [];
-            } catch (error) {
-                console.error('Error getting votes from storage:', error);
-                return [];
+            // LocalStorage에서 투표 데이터 로드
+            loadVotes() {
+                try {
+                    const saved = localStorage.getItem('choiceVotes');
+                    this.votes = saved ? JSON.parse(saved) : [];
+                } catch (e) {
+                    this.votes = [];
+                }
             }
-        }
 
-        // Save votes to storage
-        saveVotes(votes) {
-            try {
-                localStorage.setItem(this.storageKey, JSON.stringify(votes));
-                return true;
-            } catch (error) {
-                console.error('Error saving votes to storage:', error);
-                return false;
+            // LocalStorage에 투표 데이터 저장
+            saveVotes() {
+                try {
+                    localStorage.setItem('choiceVotes', JSON.stringify(this.votes));
+                } catch (e) {
+                    console.error('저장 실패:', e);
+                }
             }
-        }
 
-        // Load votes and update UI
-        loadVotes() {
-            this.votes = this.getVotes();
-        }
+            // 이벤트 바인딩
+            bindEvents() {
+                // 짜장면 카드 클릭
+                document.getElementById('card-jjajang').addEventListener('click', () => {
+                    this.openModal('jjajang');
+                });
 
-        // Add new vote
-        addVote(choice, voter, comment) {
-            try {
+                // 짬뽕 카드 클릭
+                document.getElementById('card-jjampong').addEventListener('click', () => {
+                    this.openModal('jjampong');
+                });
+
+                // 취소 버튼
+                document.getElementById('btn-cancel').addEventListener('click', () => {
+                    this.closeModal();
+                });
+
+                // 투표 버튼
+                document.getElementById('btn-submit').addEventListener('click', () => {
+                    this.submitVote();
+                });
+
+                // 오버레이 클릭시 닫기
+                document.getElementById('modal-overlay').addEventListener('click', (e) => {
+                    if (e.target.id === 'modal-overlay') {
+                        this.closeModal();
+                    }
+                });
+
+                // Enter 키로 투표
+                document.getElementById('voter-name').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.submitVote();
+                    }
+                });
+            }
+
+            // 모달 열기
+            openModal(choice) {
+                this.currentChoice = choice;
+                const modal = document.getElementById('vote-modal');
+                const overlay = document.getElementById('modal-overlay');
+                const icon = document.getElementById('modal-icon');
+                const title = document.getElementById('modal-title');
+
+                // 선택에 따른 스타일 변경
+                modal.className = 'modal ' + choice;
+                icon.textContent = choice === 'jjajang' ? '🍜' : '🍲';
+                title.textContent = choice === 'jjajang' ? '짜장면에 투표' : '짬뽕에 투표';
+
+                // 입력 필드 초기화
+                document.getElementById('voter-name').value = '';
+                document.getElementById('voter-comment').value = '';
+
+                // 모달 표시
+                overlay.classList.add('active');
+                
+                // 포커스
+                setTimeout(() => {
+                    document.getElementById('voter-name').focus();
+                }, 100);
+            }
+
+            // 모달 닫기
+            closeModal() {
+                document.getElementById('modal-overlay').classList.remove('active');
+                this.currentChoice = null;
+            }
+
+            // 투표 제출
+            submitVote() {
+                const name = document.getElementById('voter-name').value.trim();
+                const comment = document.getElementById('voter-comment').value.trim();
+
+                if (!name) {
+                    alert('이름을 입력해주세요!');
+                    document.getElementById('voter-name').focus();
+                    return;
+                }
+
+                if (!this.currentChoice) {
+                    return;
+                }
+
+                // 새 투표 추가
                 const vote = {
-                    id: Date.now().toString(),
-                    choice: choice,
-                    voter: voter,
-                    comment: comment,
-                    timestamp: Date.now(),
-                    date: new Date().toISOString()
+                    id: Date.now(),
+                    choice: this.currentChoice,
+                    name: name,
+                    comment: comment || '',
+                    timestamp: Date.now()
                 };
 
-                this.votes.unshift(vote); // Add to beginning
-                this.saveVotes(this.votes);
-                
-                console.log('Vote added:', vote);
-                
-                // Future Firebase implementation:
-                // firebase.database().ref('votes').push(vote);
-                
-                return vote;
-            } catch (error) {
-                console.error('Error adding vote:', error);
-                return null;
+                this.votes.unshift(vote);
+                this.saveVotes();
+                this.updateUI();
+                this.closeModal();
             }
-        }
 
-        // Get vote statistics
-        getStats() {
-            try {
+            // UI 업데이트
+            updateUI() {
                 const jjajangVotes = this.votes.filter(v => v.choice === 'jjajang').length;
                 const jjampongVotes = this.votes.filter(v => v.choice === 'jjampong').length;
                 const total = jjajangVotes + jjampongVotes;
 
-                return {
-                    jjajang: {
-                        count: jjajangVotes,
-                        percentage: total > 0 ? Math.round((jjajangVotes / total) * 100) : 50
-                    },
-                    jjampong: {
-                        count: jjampongVotes,
-                        percentage: total > 0 ? Math.round((jjampongVotes / total) * 100) : 50
-                    },
-                    total: total
-                };
-            } catch (error) {
-                console.error('Error calculating stats:', error);
-                return {
-                    jjajang: { count: 0, percentage: 50 },
-                    jjampong: { count: 0, percentage: 50 },
-                    total: 0
-                };
-            }
-        }
+                // 투표 수 표시
+                document.getElementById('jjajang-count').textContent = jjajangVotes;
+                document.getElementById('jjampong-count').textContent = jjampongVotes;
+                document.getElementById('total-votes').textContent = total;
 
-        // Update all UI elements
-        updateUI() {
-            try {
-                const stats = this.getStats();
-                
-                // Update counts
-                const jjajangCount = document.getElementById('jjajang-count');
-                const jjampongCount = document.getElementById('jjampong-count');
-                if (jjajangCount) jjajangCount.textContent = stats.jjajang.count;
-                if (jjampongCount) jjampongCount.textContent = stats.jjampong.count;
-                
-                // Update percentages
-                const jjajangPercentage = document.getElementById('jjajang-percentage');
-                const jjampongPercentage = document.getElementById('jjampong-percentage');
-                if (jjajangPercentage) jjajangPercentage.textContent = stats.jjajang.percentage + '%';
-                if (jjampongPercentage) jjampongPercentage.textContent = stats.jjampong.percentage + '%';
-                
-                // Update progress bars with animation
-                const jjajangProgress = document.getElementById('jjajang-progress');
-                const jjampongProgress = document.getElementById('jjampong-progress');
-                
-                if (jjajangProgress && jjampongProgress) {
-                    // Use setTimeout to trigger CSS transition
-                    setTimeout(() => {
-                        jjajangProgress.style.width = stats.jjajang.percentage + '%';
-                        jjampongProgress.style.width = stats.jjampong.percentage + '%';
-                        
-                        // Update progress bar text
-                        const jjajangSpan = jjajangProgress.querySelector('span');
-                        const jjampongSpan = jjampongProgress.querySelector('span');
-                        if (jjajangSpan) jjajangSpan.textContent = stats.jjajang.percentage + '%';
-                        if (jjampongSpan) jjampongSpan.textContent = stats.jjampong.percentage + '%';
-                    }, 50);
-                }
-                
-                // Update votes list
-                this.renderVotesList();
-            } catch (error) {
-                console.error('Error updating UI:', error);
-            }
-        }
+                // 퍼센트 계산
+                let jjajangPercent = total > 0 ? Math.round((jjajangVotes / total) * 100) : 50;
+                let jjampongPercent = total > 0 ? 100 - jjajangPercent : 50;
 
-        // Render votes list
-        renderVotesList() {
-            try {
-                const listContainer = document.getElementById('votes-list');
-                if (!listContainer) {
-                    console.error('Votes list container not found');
-                    return;
+                document.getElementById('jjajang-percentage').textContent = jjajangPercent + '%';
+                document.getElementById('jjampong-percentage').textContent = jjampongPercent + '%';
+
+                // 프로그레스 바
+                const progressJjajang = document.getElementById('progress-jjajang');
+                const progressJjampong = document.getElementById('progress-jjampong');
+
+                if (total === 0) {
+                    progressJjajang.style.width = '50%';
+                    progressJjampong.style.width = '50%';
+                    progressJjajang.querySelector('span').textContent = '짜장 50%';
+                    progressJjampong.querySelector('span').textContent = '짬뽕 50%';
+                } else {
+                    progressJjajang.style.width = jjajangPercent + '%';
+                    progressJjampong.style.width = jjampongPercent + '%';
+                    progressJjajang.querySelector('span').textContent = jjajangPercent >= 15 ? '짜장 ' + jjajangPercent + '%' : '';
+                    progressJjampong.querySelector('span').textContent = jjampongPercent >= 15 ? '짬뽕 ' + jjampongPercent + '%' : '';
                 }
+
+                // 최근 투표 목록
+                this.renderVoteList();
+            }
+
+            // 투표 목록 렌더링
+            renderVoteList() {
+                const container = document.getElementById('vote-list');
                 
                 if (this.votes.length === 0) {
-                    listContainer.innerHTML = `
+                    container.innerHTML = `
                         <div class="empty-state">
-                            <div class="empty-icon">🗳️</div>
-                            <p>아직 투표가 없습니다.<br>첫 번째 투표자가 되어주세요!</p>
+                            아직 투표가 없습니다.<br>첫 번째 투표자가 되어주세요!
                         </div>
                     `;
                     return;
                 }
 
-                listContainer.innerHTML = this.votes.map((vote, index) => {
-                    const date = new Date(vote.timestamp);
-                    const formattedDate = this.formatDate(date);
-                    const fullDate = date.toLocaleString('ko-KR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
-                    const choiceName = vote.choice === 'jjajang' ? '짜장면' : '짬뽕';
-                    const emoji = vote.choice === 'jjajang' ? '🍜' : '🍲';
+                const html = this.votes.slice(0, 20).map(vote => {
+                    const icon = vote.choice === 'jjajang' ? '🍜' : '🍲';
+                    const date = this.formatDate(vote.timestamp);
+                    const comment = vote.comment || '(코멘트 없음)';
                     
                     return `
-                        <div class="vote-item ${vote.choice}" style="animation-delay: ${index * 0.05}s">
-                            <div class="vote-item-header">
-                                <div class="voter-info">
-                                    <span class="voter-name">${this.escapeHtml(vote.voter)}</span>
-                                    <span class="vote-badge ${vote.choice}">${emoji} ${choiceName}</span>
-                                </div>
-                                <span class="vote-date" title="${fullDate}">${formattedDate}</span>
+                        <div class="vote-item ${vote.choice}">
+                            <span class="vote-item-icon">${icon}</span>
+                            <div class="vote-item-content">
+                                <div class="vote-item-name">${this.escapeHtml(vote.name)}</div>
+                                <div class="vote-item-comment">${this.escapeHtml(comment)}</div>
                             </div>
-                            ${vote.comment ? `<p class="vote-comment">"${this.escapeHtml(vote.comment)}"</p>` : '<p class="vote-comment" style="opacity: 0.5; font-style: italic;">코멘트 없음</p>'}
+                            <span class="vote-item-date">${date}</span>
                         </div>
                     `;
                 }).join('');
-                
-                console.log(`Rendered ${this.votes.length} votes`);
-            } catch (error) {
-                console.error('Error rendering votes list:', error);
-            }
-        }
 
-        // Format date
-        formatDate(date) {
-            try {
+                container.innerHTML = html;
+            }
+
+            // 날짜 포맷
+            formatDate(timestamp) {
+                const date = new Date(timestamp);
                 const now = new Date();
                 const diff = now - date;
-                const minutes = Math.floor(diff / 60000);
-                const hours = Math.floor(diff / 3600000);
-                const days = Math.floor(diff / 86400000);
 
-                if (minutes < 1) return '방금 전';
-                if (minutes < 60) return `${minutes}분 전`;
-                if (hours < 24) return `${hours}시간 전`;
-                if (days < 7) return `${days}일 전`;
+                if (diff < 60000) return '방금 전';
+                if (diff < 3600000) return Math.floor(diff / 60000) + '분 전';
+                if (diff < 86400000) return Math.floor(diff / 3600000) + '시간 전';
                 
-                return date.toLocaleDateString('ko-KR', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-            } catch (error) {
-                console.error('Error formatting date:', error);
-                return '날짜 미상';
+                return (date.getMonth() + 1) + '/' + date.getDate();
             }
-        }
 
-        // Escape HTML to prevent XSS
-        escapeHtml(text) {
-            try {
+            // HTML 이스케이프
+            escapeHtml(text) {
                 const div = document.createElement('div');
                 div.textContent = text;
                 return div.innerHTML;
-            } catch (error) {
-                console.error('Error escaping HTML:', error);
-                return '';
             }
         }
 
-        // Show success animation
-        showSuccess(choice) {
-            try {
-                const emoji = choice === 'jjajang' ? '🍜' : '🍲';
-                const animation = document.createElement('div');
-                animation.className = 'success-animation';
-                animation.textContent = emoji;
-                document.body.appendChild(animation);
-                
-                setTimeout(() => {
-                    if (animation.parentNode) {
-                        animation.remove();
-                    }
-                }, 600);
-            } catch (error) {
-                console.error('Error showing success animation:', error);
-            }
-        }
-    }
-
-    // Initialize vote manager after DOM is loaded
-    let voteManager;
-
-    // Wait for DOM to be fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('=================================');
-        console.log('DOM Content Loaded - Starting initialization');
-        console.log('=================================');
-        
-        try {
-            // Step 1: Initialize Vote Manager
-            console.log('Step 1: Initializing VoteManager...');
-            voteManager = new VoteManager();
-            console.log('✓ VoteManager initialized');
-            
-            // Step 2: Setup event listeners for vote cards
-            console.log('Step 2: Setting up vote card listeners...');
-            setupVoteCardListeners();
-            console.log('✓ Vote card listeners setup');
-            
-            // Step 3: Setup modal event listeners
-            console.log('Step 3: Setting up modal listeners...');
-            setupModalListeners();
-            console.log('✓ Modal listeners setup');
-            
-            // Step 4: Setup form submit listener
-            console.log('Step 4: Setting up form listener...');
-            setupFormListener();
-            console.log('✓ Form listener setup');
-            
-            console.log('=================================');
-            console.log('✓ All initialization complete!');
-            console.log('=================================');
-        } catch (error) {
-            console.error('=================================');
-            console.error('✗ Error during initialization:', error);
-            console.error('Stack:', error.stack);
-            console.error('=================================');
-            alert('초기화 중 오류가 발생했습니다. 페이지를 새로고침해주세요.');
-        }
-    });
-
-    // Setup vote card click listeners
-    function setupVoteCardListeners() {
-        const voteCards = document.querySelectorAll('.vote-card');
-        console.log('  → Found vote cards:', voteCards.length);
-        
-        if (voteCards.length === 0) {
-            console.error('  ✗ No vote cards found!');
-            return;
-        }
-        
-        voteCards.forEach((card, index) => {
-            const choice = card.getAttribute('data-choice');
-            console.log(`  → Setting up listener for card ${index + 1}:`, choice);
-            
-            card.addEventListener('click', function(e) {
-                // Prevent default behavior
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const choice = this.getAttribute('data-choice');
-                console.log('  ► Vote card clicked:', choice);
-                openModal(choice);
-            });
-            
-            // Add visual feedback
-            card.style.cursor = 'pointer';
-            
-            // Handle image loading
-            const img = card.querySelector('.vote-icon');
-            const fallback = card.querySelector('.vote-icon-fallback');
-            
-            if (img && fallback) {
-                img.addEventListener('error', function() {
-                    console.log('  → Image failed to load for:', choice, '- showing fallback');
-                    this.style.display = 'none';
-                    fallback.style.display = 'flex';
-                });
-                
-                img.addEventListener('load', function() {
-                    console.log('  → Image loaded successfully for:', choice);
-                });
-            }
+        // 앱 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            window.voteApp = new VoteManager();
         });
+
+        /*
+        ========================================
+        Firebase 연동 가이드 (향후 적용)
+        ========================================
         
-        console.log('  ✓ All vote card listeners registered');
-    }
-
-    // Setup modal listeners
-    function setupModalListeners() {
-        const modal = document.getElementById('vote-modal');
-        const closeBtn = document.querySelector('.close-btn');
+        1. Firebase 프로젝트 생성 후 웹 앱 추가
         
-        console.log('  → Modal element:', modal ? 'found' : 'NOT FOUND');
-        console.log('  → Close button:', closeBtn ? 'found' : 'NOT FOUND');
+        2. Firebase SDK 추가 (head 태그 내):
+           <script src="https://www.gstatic.com/firebasejs/9.x/firebase-app-compat.js"><\/script>
+           <script src="https://www.gstatic.com/firebasejs/9.x/firebase-database-compat.js"><\/script>
         
-        // Close button
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('  ► Close button clicked');
-                closeModal();
-            });
-            console.log('  ✓ Close button listener registered');
-        }
+        3. Firebase 초기화:
+           const firebaseConfig = {
+               apiKey: "YOUR_API_KEY",
+               authDomain: "YOUR_AUTH_DOMAIN",
+               databaseURL: "YOUR_DATABASE_URL",
+               projectId: "YOUR_PROJECT_ID",
+               storageBucket: "YOUR_STORAGE_BUCKET",
+               messagingSenderId: "YOUR_SENDER_ID",
+               appId: "YOUR_APP_ID"
+           };
+           firebase.initializeApp(firebaseConfig);
+           const database = firebase.database();
         
-        // Close on background click
-        if (modal) {
-            modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    console.log('  ► Modal background clicked');
-                    closeModal();
-                }
-            });
-            console.log('  ✓ Modal background listener registered');
-        }
+        4. 저장 메서드 변경:
+           // saveVotes() 대신:
+           database.ref('votes/' + vote.id).set(vote);
         
-        // Close on Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                const modal = document.getElementById('vote-modal');
-                if (modal && modal.classList.contains('active')) {
-                    console.log('  ► Escape key pressed');
-                    closeModal();
-                }
-            }
-        });
-        console.log('  ✓ Escape key listener registered');
-    }
-
-    // Setup form submit listener
-    function setupFormListener() {
-        const form = document.getElementById('vote-form');
-        console.log('  → Form element:', form ? 'found' : 'NOT FOUND');
+        5. 로드 메서드 변경:
+           // loadVotes() 대신:
+           database.ref('votes').on('value', (snapshot) => {
+               const votes = [];
+               snapshot.forEach((child) => {
+                   votes.push(child.val());
+               });
+               this.votes = votes.sort((a, b) => b.timestamp - a.timestamp);
+               this.updateUI();
+           });
         
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                console.log('  ► Form submitted');
-                submitVote();
-            });
-            console.log('  ✓ Form submit listener registered');
-        } else {
-            console.error('  ✗ Form element not found!');
-        }
-    }
-
-    // Modal functions
-    function openModal(choice) {
-        try {
-            console.log('Opening modal for:', choice);
-            
-            if (!voteManager) {
-                console.error('Vote Manager not initialized');
-                alert('시스템이 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요.');
-                return;
-            }
-            
-            voteManager.currentChoice = choice;
-            const modal = document.getElementById('vote-modal');
-            const modalTitle = document.getElementById('modal-title');
-            const choiceName = choice === 'jjajang' ? '짜장면' : '짬뽕';
-            
-            if (modal && modalTitle) {
-                modalTitle.textContent = `${choiceName} 투표하기`;
-                modalTitle.className = `modal-title ${choice}`;
-                modal.classList.add('active');
-                
-                const nameInput = document.getElementById('voter-name');
-                if (nameInput) {
-                    setTimeout(() => nameInput.focus(), 100);
-                }
-                
-                console.log('Modal opened successfully');
-            }
-        } catch (error) {
-            console.error('Error opening modal:', error);
-            alert('모달을 여는 중 오류가 발생했습니다.');
-        }
-    }
-
-    function closeModal() {
-        try {
-            const modal = document.getElementById('vote-modal');
-            const form = document.getElementById('vote-form');
-            
-            if (modal) {
-                modal.classList.remove('active');
-            }
-            if (form) {
-                form.reset();
-            }
-            if (voteManager) {
-                voteManager.currentChoice = null;
-            }
-            
-            console.log('Modal closed');
-        } catch (error) {
-            console.error('Error closing modal:', error);
-        }
-    }
-
-    function submitVote() {
-        try {
-            console.log('Submit vote called');
-            
-            if (!voteManager) {
-                alert('시스템 오류가 발생했습니다.');
-                return;
-            }
-            
-            const voterInput = document.getElementById('voter-name');
-            const commentInput = document.getElementById('voter-comment');
-            
-            if (!voterInput) {
-                console.error('Voter name input not found');
-                return;
-            }
-            
-            const voter = voterInput.value.trim();
-            const comment = commentInput ? commentInput.value.trim() : '';
-            
-            if (!voter) {
-                alert('이름을 입력해주세요.');
-                voterInput.focus();
-                return;
-            }
-
-            const choiceName = voteManager.currentChoice === 'jjajang' ? '짜장면' : '짬뽕';
-            
-            console.log('Adding vote:', {
-                choice: voteManager.currentChoice,
-                voter: voter,
-                comment: comment
-            });
-            
-            // Add vote
-            const vote = voteManager.addVote(voteManager.currentChoice, voter, comment);
-            
-            if (vote) {
-                voteManager.updateUI();
-                
-                // Show success animation
-                voteManager.showSuccess(voteManager.currentChoice);
-                
-                // Close modal first
-                closeModal();
-                
-                // Show success message
-                setTimeout(() => {
-                    alert(`✅ ${choiceName} 투표가 완료되었습니다!\n\n투표자: ${voter}\n날짜: ${new Date().toLocaleString('ko-KR')}`);
-                }, 300);
-                
-                console.log('Vote submitted successfully');
-            } else {
-                alert('투표 저장 중 오류가 발생했습니다.');
-            }
-        } catch (error) {
-            console.error('Error submitting vote:', error);
-            alert('투표 중 오류가 발생했습니다.');
-        }
-    }
-
-    // ==========================================
-    // Firebase Integration Guide (Future)
-    // ==========================================
-    
-    /*
-    Step 1: Include Firebase SDK
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-database.js"></script>
-
-    Step 2: Initialize Firebase
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        databaseURL: "YOUR_DATABASE_URL",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    Step 3: Replace LocalStorage methods
-
-    // Instead of: this.saveVotes(this.votes);
-    firebase.database().ref('votes/' + vote.id).set(vote);
-
-    // Instead of: this.getVotes();
-    firebase.database().ref('votes').on('value', (snapshot) => {
-        const votes = [];
-        snapshot.forEach((child) => {
-            votes.push(child.val());
-        });
-        this.votes = votes.sort((a, b) => b.timestamp - a.timestamp);
-        this.updateUI();
-    });
-
-    Step 4: Real-time updates
-    The Firebase 'on' listener will automatically update the UI 
-    when any client adds a new vote.
-    */
-</script>
-```
-
+        이렇게 하면 실시간 동기화가 자동으로 됩니다!
+        ========================================
+        */
+    </script>
 </body>
 </html>
