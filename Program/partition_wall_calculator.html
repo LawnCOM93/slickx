@@ -22,7 +22,13 @@
             --shadow: rgba(44, 24, 16, 0.1);
             --shadow-heavy: rgba(44, 24, 16, 0.2);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'IBM Plex Mono', monospace;
             background: linear-gradient(135deg, var(--paper) 0%, var(--cream) 100%);
@@ -35,93 +41,498 @@
             position: relative;
             overflow-x: hidden;
         }
-        @media (max-width: 768px) { body { padding: 0.75rem; align-items: flex-start; padding-top: 1rem; } }
-        body::before {
-            content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(139, 90, 60, 0.02) 2px, rgba(139, 90, 60, 0.02) 4px);
-            pointer-events: none; z-index: 1;
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 0.75rem;
+                align-items: flex-start;
+                padding-top: 1rem;
+            }
+            
+            input[type="number"] {
+                padding: 0.75rem 0.875rem;
+                padding-right: 3rem;
+                font-size: 1rem;
+            }
         }
-        .container { max-width: 1400px; width: 100%; position: relative; z-index: 2; }
-        header { text-align: center; margin-bottom: 2rem; }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(139, 90, 60, 0.02) 2px,
+                    rgba(139, 90, 60, 0.02) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                margin-bottom: 1rem;
+            }
+        }
+
         h1 {
             font-family: 'Syne', sans-serif;
             font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 800; color: var(--wood-dark);
-            letter-spacing: -0.02em; margin-bottom: 0.5rem;
-            position: relative; display: inline-block;
+            font-weight: 800;
+            color: var(--wood-dark);
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
         }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+        }
+
         h1::after {
-            content: ''; position: absolute; bottom: -8px; left: 0; width: 100%; height: 4px;
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 4px;
             background: linear-gradient(90deg, var(--accent-orange), var(--stud-green));
             border-radius: 2px;
+            animation: expandWidth 0.6s ease-out 0.3s both;
         }
-        .subtitle { font-size: 0.9rem; color: var(--wood-medium); font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; }
-        .main-content { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }
-        .main-content .card:nth-child(3) { grid-column: 1 / -1; }
-        @media (max-width: 968px) { .main-content { grid-template-columns: 1fr; } }
+
+        @keyframes expandWidth {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--wood-medium);
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .main-content .card:nth-child(3) {
+            grid-column: 1 / -1; /* 3번째 카드는 전체 너비 사용 */
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .main-content .card:nth-child(3) {
+                grid-column: 1;
+            }
+        }
+
         .card {
-            background: white; border-radius: 16px; padding: 1.75rem;
-            box-shadow: 0 4px 6px var(--shadow), 0 12px 24px var(--shadow-heavy);
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: 
+                0 4px 6px var(--shadow),
+                0 12px 24px var(--shadow-heavy);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: cardSlideIn 0.6s ease-out both;
         }
+        
+        @media (max-width: 768px) {
+            .card {
+                padding: 1.25rem;
+                border-radius: 12px;
+            }
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 8px 12px var(--shadow),
+                0 16px 32px var(--shadow-heavy);
+        }
+
         .card-title {
-            font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 700;
-            color: var(--wood-dark); margin-bottom: 1.25rem;
-            display: flex; align-items: center; gap: 0.5rem;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--wood-dark);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .card-title::before { content: ''; width: 4px; height: 24px; background: var(--accent-orange); border-radius: 2px; }
-        .input-group { margin-bottom: 1.25rem; }
-        label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--wood-medium); margin-bottom: 0.5rem; letter-spacing: 0.05em; text-transform: uppercase; }
-        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .input-wrapper { position: relative; }
+
+        .card-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--accent-orange);
+            border-radius: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--wood-medium);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
         input[type="number"] {
-            width: 100%; padding: 0.875rem 1rem; padding-right: 3rem;
-            border: 2px solid var(--paper); border-radius: 8px;
-            font-family: 'IBM Plex Mono', monospace; font-size: 1.125rem; font-weight: 500;
-            color: var(--wood-dark); background: var(--cream); transition: all 0.3s ease; outline: none;
+            width: 100%;
+            padding: 0.875rem 1rem;
+            padding-right: 3rem;
+            border: 2px solid var(--paper);
+            border-radius: 8px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--wood-dark);
+            background: var(--cream);
+            transition: all 0.3s ease;
+            outline: none;
         }
-        input[type="number"]:focus { border-color: var(--stud-green); background: white; }
-        input[type="number"].price-input { color: var(--bright-red); font-weight: 600; }
-        input[type="number"].price-input:focus { border-color: var(--bright-red); }
+        
+        input[type="number"].price-input {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--stud-green);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+        }
+        
+        input[type="number"].price-input:focus {
+            border-color: var(--bright-red);
+            box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.1);
+        }
+
         .unit {
-            position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
-            font-size: 0.875rem; color: var(--wood-medium); font-weight: 400; pointer-events: none;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.875rem;
+            color: var(--wood-medium);
+            font-weight: 400;
+            pointer-events: none;
         }
+
+        .dimension-label {
+            font-size: 0.75rem;
+            color: var(--wood-medium);
+            margin-bottom: 0.5rem;
+        }
+
         .result-card {
-            background: white; border-radius: 16px; padding: 2rem;
-            box-shadow: 0 4px 6px var(--shadow), 0 12px 24px var(--shadow-heavy);
-            border: 2px solid var(--paper); margin-bottom: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 
+                0 4px 6px var(--shadow),
+                0 12px 24px var(--shadow-heavy);
+            animation: cardSlideIn 0.6s ease-out 0.4s both;
+            border: 2px solid var(--paper);
+            margin-bottom: 1.5rem;
         }
-        .result-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
-        @media (max-width: 768px) { .result-summary { grid-template-columns: 1fr; } }
+
+        .result-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .result-summary {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
         .summary-item {
-            text-align: center; padding: 1.5rem; background: linear-gradient(135deg, var(--cream), var(--paper));
-            border-radius: 12px; border: 2px solid var(--paper);
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--cream), var(--paper));
+            border-radius: 12px;
+            border: 2px solid var(--paper);
+            transition: transform 0.3s ease;
         }
+
+        .summary-item:hover {
+            transform: translateY(-4px);
+        }
+
         .summary-value {
-            font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;
+            font-family: 'Syne', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
             background: linear-gradient(135deg, var(--accent-orange), var(--wood-dark));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .summary-value.green { background: linear-gradient(135deg, var(--stud-green), #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .summary-label { font-size: 0.85rem; color: var(--wood-medium); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
-        .visualization-container { background: var(--cream); border-radius: 12px; padding: 2rem; margin-top: 2rem; }
-        .viz-title { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--wood-dark); margin-bottom: 1.5rem; text-align: center; }
-        .wall-canvas { background: white; border-radius: 8px; box-shadow: 0 4px 12px var(--shadow); overflow-x: auto; padding: 3rem 2rem 2rem; }
-        .wall-visualization { position: relative; margin: 0 auto; border: 3px solid var(--wood-dark); border-radius: 4px; background: #fff; }
-        .plywood-panel { position: absolute; background: linear-gradient(135deg, var(--wood-light), var(--wood-medium)); border-right: 3px solid var(--wood-dark); display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .plywood-panel:last-child { border-right: none; }
-        .stud-line { position: absolute; z-index: 5; background: #22c55e; width: 6px; height: 100%; left: 50%; transform: translateX(-50%); box-shadow: 0 0 10px rgba(34,197,94,0.6); }
-        .dimension-marker { position: absolute; font-size: 0.8rem; color: var(--wood-medium); font-weight: 700; background: white; padding: 4px 8px; border-radius: 4px; }
-        .legend { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; padding: 1.25rem; background: var(--cream); border-radius: 8px; border-left: 4px solid var(--wood-medium); }
-        .legend-item { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--wood-dark); font-weight: 500; }
-        .legend-color { width: 32px; height: 32px; border-radius: 6px; box-shadow: 0 2px 4px var(--shadow); }
-        .material-list { background: white; border-radius: 16px; padding: 1.75rem; box-shadow: 0 4px 6px var(--shadow), 0 12px 24px var(--shadow-heavy); margin-bottom: 1.5rem; }
-        .material-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; margin-bottom: 0.75rem; background: var(--cream); border-radius: 8px; border-left: 4px solid var(--accent-orange); }
-        .material-item.stud { border-left-color: var(--stud-green); }
-        .material-name { font-weight: 600; color: var(--wood-dark); }
-        .material-spec { font-size: 0.85rem; color: var(--wood-medium); margin-top: 0.25rem; }
-        .material-quantity { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--accent-blue); }
-        footer { text-align: center; margin-top: 2rem; padding: 1rem; color: var(--wood-medium); font-size: 0.85rem; }
+
+        .summary-value.green {
+            background: linear-gradient(135deg, var(--stud-green), #16a34a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .summary-label {
+            font-size: 0.85rem;
+            color: var(--wood-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .visualization-container {
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .viz-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--wood-dark);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .wall-canvas {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px var(--shadow);
+            overflow-x: auto;
+            padding: 3rem 2rem 2rem 2rem;
+        }
+
+        .wall-visualization {
+            position: relative;
+            margin: 0 auto;
+            border: 3px solid var(--wood-dark);
+            border-radius: 4px;
+        }
+
+        .plywood-panel {
+            position: absolute;
+            background: linear-gradient(135deg, var(--wood-light), var(--wood-medium));
+            border-right: 3px solid var(--wood-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .plywood-panel:last-child {
+            border-right: none;
+        }
+
+        .plywood-panel:hover {
+            background: linear-gradient(135deg, #d4a574, #9d6843);
+            transform: scale(1.02);
+            z-index: 10;
+        }
+
+        .stud-line {
+            position: absolute;
+            z-index: 5;
+            transition: all 0.3s ease;
+        }
+
+        .dimension-marker {
+            position: absolute;
+            font-size: 0.7rem;
+            color: var(--wood-medium);
+            font-weight: 600;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            background: var(--cream);
+            border-radius: 8px;
+            border-left: 4px solid var(--wood-medium);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--wood-dark);
+            font-weight: 500;
+        }
+
+        .legend-color {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px var(--shadow);
+            flex-shrink: 0;
+        }
+
+        .material-list {
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: 
+                0 4px 6px var(--shadow),
+                0 12px 24px var(--shadow-heavy);
+            animation: cardSlideIn 0.6s ease-out 0.5s both;
+        }
+
+        .material-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: var(--cream);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-orange);
+            transition: all 0.3s ease;
+        }
+
+        .material-item:hover {
+            background: white;
+            transform: translateX(4px);
+        }
+
+        .material-item.stud {
+            border-left-color: var(--stud-green);
+        }
+
+        .material-name {
+            font-weight: 600;
+            color: var(--wood-dark);
+        }
+
+        .material-spec {
+            font-size: 0.85rem;
+            color: var(--wood-medium);
+            margin-top: 0.25rem;
+        }
+
+        .material-quantity {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            color: var(--wood-medium);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .wall-canvas {
+                padding: 2.5rem 1rem 1rem 1rem;
+            }
+            
+            .legend {
+                padding: 1rem;
+                gap: 0.65rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -131,240 +542,756 @@
             <p class="subtitle">Partition Wall Calculator</p>
         </header>
 
-        <!-- 입력 폼 생략 (위와 동일) -->
         <div class="main-content">
-            <!-- 기존 입력 카드 4개 그대로 복사해서 사용하세요 -->
-            <!-- (생략: wallWidth, wallHeight, studSize, studSpacing, plywoodWidth, plywoodHeight, 구매정보 등) -->
-            <!-- 아래에 그대로 붙여넣기 -->
+            <!-- 벽 사이즈 입력 -->
             <div class="card">
                 <h2 class="card-title">벽 사이즈</h2>
                 <div class="input-group">
                     <label>전체 벽 크기</label>
                     <div class="input-row">
-                        <div><div class="dimension-label">가로 (Width)</div><div class="input-wrapper"><input type="number" id="wallWidth" value="3600" min="100" oninput="calculate()"><span class="unit">mm</span></div></div>
-                        <div><div class="dimension-label">세로 (Height)</div><div class="input-wrapper"><input type="number" id="wallHeight" value="2700" min="100" oninput="calculate()"><span class="unit">mm</span></div></div>
+                        <div>
+                            <div class="dimension-label">가로 (Width)</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="wallWidth" value="3000" min="100" onfocus="this.select()" oninput="calculate()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="dimension-label">세로 (Height)</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="wallHeight" value="2500" min="100" onfocus="this.select()" oninput="calculate()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- 각재 규격 -->
             <div class="card">
                 <h2 class="card-title">각재(다루끼) 규격</h2>
                 <div class="input-group">
                     <label>각재 사이즈</label>
                     <div class="input-row">
-                        <div><div class="dimension-label">단면 (mm)</div><div class="input-wrapper"><input type="number" id="studSize" value="38" min="1" oninput="calculate()"><span class="unit">mm</span></div></div>
-                        <div><div class="dimension-label">길이 (mm)</div><div class="input-wrapper"><input type="number" id="studLength" value="3600" min="100" oninput="calculate()"><span class="unit">mm</span></div></div>
+                        <div>
+                            <div class="dimension-label">단면 (mm)</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="studSize" value="19" min="1" onfocus="this.select()" oninput="calculate()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="dimension-label">길이 (mm)</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="studLength" value="3600" min="100" onfocus="this.select()" oninput="calculate()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
                 <div class="input-group">
-                    <label>각재 간격 (on-center)</label>
-                    <div class="input-wrapper"><input type="number" id="studSpacing" value="400" min="50" oninput="calculate()"><span class="unit">mm</span></div>
+                    <label>각재 간격</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="studSpacing" value="300" min="50" onfocus="this.select()" oninput="calculate()">
+                        <span class="unit">mm</span>
+                    </div>
                 </div>
             </div>
+
+            <!-- 합판 규격 -->
             <div class="card">
                 <h2 class="card-title">합판 규격</h2>
                 <div class="input-group">
                     <label>합판 1장 크기</label>
                     <div class="input-row">
-                        <div><div class="dimension-label">가로 (Width)</div><div class="input-wrapper"><input type="number" id="plywoodWidth" value="1220" min="100" oninput="calculate()"><span class="unit">mm</span></div></div>
-                        <div><div class="dimension-label">세로 (Height)</div><div class="input-wrapper"><input type="number" id="plywoodHeight" value="2440" min="100" oninput="calculate()"><span class="unit">mm</span></div></div>
+                        <div>
+                            <div class="dimension-label">가로 (Width)</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="plywoodWidth" value="1220" min="100" onfocus="this.select()" oninput="calculate()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="dimension-label">세로 (Height)</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="plywoodHeight" value="2440" min="100" onfocus="this.select()" oninput="calculate()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- 구매 정보 -->
             <div class="card">
                 <h2 class="card-title">구매 정보</h2>
                 <div class="input-group">
                     <label>각재 구매 기준</label>
                     <div class="input-row">
-                        <div><div class="dimension-label">1단 기준 개수</div><div class="input-wrapper"><input type="number" id="studPerBundle" value="10" min="1" oninput="calculate()"><span class="unit">개</span></div></div>
-                        <div><div class="dimension-label">구매 단수</div><div class="input-wrapper"><input type="number" id="studBundles" value="0" readonly style="background:#f5f5f5;"><span class="unit">단</span></div></div>
+                        <div>
+                            <div class="dimension-label">1단 기준 각재 개수</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="studPerBundle" value="12" min="1" onfocus="this.select()" oninput="calculate()">
+                                <span class="unit">개</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="dimension-label">구매 단수 (자동계산)</div>
+                            <div class="input-wrapper" style="position: relative;">
+                                <input type="number" id="studBundles" value="1" min="1" readonly style="background: #f5f5f5; cursor: not-allowed;">
+                                <span class="unit">단</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
                 <div class="input-group">
                     <label>가격 정보</label>
                     <div class="input-row">
-                        <div><div class="dimension-label">각재 1단 가격</div><div class="input-wrapper"><input type="number" id="studBundlePrice" class="price-input" value="15000" oninput="calculate()"><span class="unit" style="color:var(--bright-red);">원</span></div></div>
-                        <div><div class="dimension-label">합판 1장 가격</div><div class="input-wrapper"><input type="number" id="plywoodPrice" class="price-input" value="28000" oninput="calculate()"><span class="unit" style="color:var(--bright-red);">원</span></div></div>
+                        <div>
+                            <div class="dimension-label">각재 1단 기준 가격</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="studBundlePrice" class="price-input" value="12000" min="0" onfocus="this.select()" oninput="calculate()">
+                                <span class="unit" style="color: var(--accent-blue);">원</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="dimension-label">합판 1장 기준 가격</div>
+                            <div class="input-wrapper">
+                                <input type="number" id="plywoodPrice" class="price-input" value="25000" min="0" onfocus="this.select()" oninput="calculate()">
+                                <span class="unit" style="color: var(--accent-blue);">원</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div style="background:linear-gradient(135deg,var(--cream),var(--paper));padding:1rem;border-radius:8px;margin-top:1rem;border:2px solid var(--paper);">
-                    <div style="display:grid;gap:0.75rem;">
-                        <div style="display:flex;justify-content:space-between;padding:0.5rem;background:white;border-radius:6px;"><span style="font-size:0.85rem;font-weight:600;color:var(--wood-medium);">필요한 각재</span><span id="requiredStuds" style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent-blue);">0개</span></div>
-                        <div style="display:flex;justify-content:space-between;padding:0.5rem;background:white;border-radius:6px;"><span style="font-size:0.85rem;font-weight:600;color:var(--wood-medium);">최종 구매 각재</span><span id="totalStudPurchase" style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent-blue);">0개</span></div>
-                        <div style="display:flex;justify-content:space-between;padding:0.5rem;background:white;border-radius:6px;"><span style="font-size:0.85rem;font-weight:600;color:var(--wood-medium);">각재 총금액</span><span id="totalStudCost" style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--bright-red);">0원</span></div>
-                        <div style="display:flex;justify-content:space-between;padding:0.5rem;background:white;border-radius:6px;"><span style="font-size:0.85rem;font-weight:600;color:var(--wood-medium);">합판 총금액</span><span id="totalPlywoodCost" style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--bright-red);">0원</span></div>
-                        <div style="display:flex;justify-content:space-between;padding:0.75rem;background:linear-gradient(135deg,var(--wood-dark),var(--wood-medium));border-radius:6px;"><span style="font-size:0.95rem;font-weight:700;color:white;">최종 합계</span><span id="totalCost" style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--bright-green);">0원</span></div>
+
+                <!-- 구매 정보 요약 -->
+                <div style="background: linear-gradient(135deg, var(--cream), var(--paper)); padding: 1rem; border-radius: 8px; margin-top: 1rem; border: 2px solid var(--paper);">
+                    <div style="display: grid; gap: 0.75rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: white; border-radius: 6px;">
+                            <span style="font-size: 0.85rem; font-weight: 600; color: var(--wood-medium);">필요한 각재</span>
+                            <span id="requiredStuds" style="font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--accent-blue);">10개</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: white; border-radius: 6px;">
+                            <span style="font-size: 0.85rem; font-weight: 600; color: var(--wood-medium);">최종 각재 구매</span>
+                            <span id="totalStudPurchase" style="font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--accent-blue);">12개</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: white; border-radius: 6px;">
+                            <span style="font-size: 0.85rem; font-weight: 600; color: var(--wood-medium);">구매 합판 장수</span>
+                            <span id="plywoodCount" style="font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--accent-blue);">1장</span>
+                        </div>                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: white; border-radius: 6px;">
+                            <span style="font-size: 0.85rem; font-weight: 600; color: var(--wood-medium);">각재 총금액</span>
+                            <span id="totalStudCost" style="font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--bright-red);">12,000원</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: white; border-radius: 6px;">
+                            <span style="font-size: 0.85rem; font-weight: 600; color: var(--wood-medium);">합판 총금액</span>
+                            <span id="totalPlywoodCost" style="font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--bright-red);">0원</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: linear-gradient(135deg, var(--wood-dark), var(--wood-medium)); border-radius: 6px; margin-top: 0.5rem;">
+                            <span style="font-size: 0.95rem; font-weight: 700; color: white;">최종 합계 금액</span>
+                            <span id="totalCost" style="font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--bright-green);">12,000원</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="result-card">
+        <!-- 결과 요약 -->
+        <div id="resultCard" class="result-card">
             <div class="result-summary">
+
                 <div class="summary-item">
-                    <div class="summary-value" id="plywoodCount">0</div>
-                    <div class="summary-label">총 합판 장수</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-value green" id="studCount">0</div>
-                    <div class="summary-label">총 각재 개수</div>
+                    <div id="studCount"></div>
+                    
                 </div>
             </div>
 
+            <!-- 시각화 -->
             <div class="visualization-container">
-                <div class="viz-title">가벽 구조 시각화</div>
+                <div class="viz-title">🏗️ 가벽 구조 시각화</div>
                 <div class="wall-canvas">
-                    <div id="wallVisualization" class="wall-visualization"></div>
+                    <div id="wallVisualization"></div>
+                    
                     <div class="legend">
-                        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;color:var(--wood-dark);margin-bottom:0.25rem;">구성 요소</div>
-                        <div class="legend-item"><div class="legend-color" style="background:linear-gradient(135deg,var(--wood-light),var(--wood-medium));"></div><span>메인 합판</span></div>
-                        <div class="legend-item"><div class="legend-color" style="background:linear-gradient(135deg,#ef4444,#dc2626);"></div><span>상단 조각 합판</span></div>
-                        <div class="legend-item"><div class="legend-color" style="background:#22c55e;"></div><span>각재 (on-center)</span></div>
+                        <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--wood-dark); margin-bottom: 0.25rem;">
+                            🎨 구성 요소
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, var(--wood-light), var(--wood-medium));"></div>
+                            <span>메인 합판</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, #ef4444, #dc2626);"></div>
+                            <span>상단 조각 합판</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(90deg, #22c55e, #3b82f6, #f59e0b, #ec4899, #8b5cf6, #14b8a6);"></div>
+                            <span>각재 (다루끼) - 색상별 구분</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- 자재 목록 -->
         <div class="material-list">
             <h2 class="card-title">필요 자재 목록</h2>
             <div class="material-item">
-                <div><div class="material-name">합판</div><div class="material-spec" id="plywoodSpec">1220 × 2440mm</div></div>
+                <div>
+                    <div class="material-name">합판</div>
+                    <div class="material-spec" id="plywoodSpec">1220 × 2440mm</div>
+                </div>
                 <div class="material-quantity" id="plywoodQty">0장</div>
             </div>
             <div class="material-item stud">
-                <div><div class="material-name">각재 (다루끼)</div><div class="material-spec" id="studSpec">38 × 38 × 3600mm</div></div>
+                <div>
+                    <div class="material-name">각재 (다루끼)</div>
+                    <div class="material-spec" id="studSpec">19 × 19 × 3600mm</div>
+                </div>
                 <div class="material-quantity" id="studQty">0개</div>
             </div>
         </div>
 
-        <footer>완벽한 가벽 설계, 지금 시작하세요!</footer>
+        <!-- 벽면 커버율
+        <!-- <div class="result-card">
+            <div class="result-summary" style="display: flex; justify-content: center;">
+                <div class="summary-item">
+                    <div class="summary-value" id="coveragePercent">0%</div>
+                    <div class="summary-label">벽면 커버율</div>
+                </div>
+            </div>
+        </div> --> -->
+
+        <!-- 계산식 상세 -->
+        <div class="result-card">
+            <div class="visualization-container" style="margin-bottom: 0;">
+                <div class="viz-title">📐 계산식 상세</div>
+                <div id="calculationDetail" style="background: white; padding: 1.5rem; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; line-height: 1.8; color: var(--wood-dark);"></div>
+            </div>
+        </div>
+
+        <footer>
+            Design inspired by modern carpentry & precision engineering
+        </footer>
     </div>
 
     <script>
         function calculate() {
-            const wallW = parseFloat(document.getElementById('wallWidth').value) || 0;
-            const wallH = parseFloat(document.getElementById('wallHeight').value) || 0;
-            const plyW = parseFloat(document.getElementById('plywoodWidth').value) || 1220;
-            const plyH = parseFloat(document.getElementById('plywoodHeight').value) || 2440;
-            const studSpacing = parseFloat(document.getElementById('studSpacing').value) || 400;
-            const studPerBundle = parseInt(document.getElementById('studPerBundle').value) || 10;
+            // 입력값 가져오기
+            const wallW = parseFloat(document.getElementById('wallWidth').value);
+            const wallH = parseFloat(document.getElementById('wallHeight').value);
+            const plyW = parseFloat(document.getElementById('plywoodWidth').value);
+            const plyH = parseFloat(document.getElementById('plywoodHeight').value);
+            const studSize = parseFloat(document.getElementById('studSize').value);
+            const studLength = parseFloat(document.getElementById('studLength').value);
+            const studSpacing = parseFloat(document.getElementById('studSpacing').value);
+            
+            // 구매 정보
+            const studPerBundle = parseInt(document.getElementById('studPerBundle').value) || 12;
             const studBundlePrice = parseFloat(document.getElementById('studBundlePrice').value) || 0;
             const plywoodPrice = parseFloat(document.getElementById('plywoodPrice').value) || 0;
 
-            if (!wallW || !wallH || !plyW || !plyH || !studSpacing) return;
+            // 유효성 검사
+            if (wallW <= 0 || wallH <= 0 || plyW <= 0 || plyH <= 0 || studSpacing <= 0) {
+                return;
+            }
 
-            const plywoodHorizontal = Math.ceil(wallW / plyW);
-            const studCount = Math.floor(wallW / studSpacing) + 1;
+            // 합판 수량 계산 (가로 방향으로 배치)
+            const plywoodCount = Math.ceil(wallW / plyW);
+
+            // 각재 수량 계산 (각재 두께 포함)
+            let studCount = 1; // 첫 각재
+            let currentPos = 0;
+            while (true) {
+                currentPos = currentPos + studSize + studSpacing;
+                if (currentPos <= wallW) {
+                    studCount++;
+                } else {
+                    break;
+                }
+            }
+
+            // 커버율 계산
+            const actualCoverage = (plywoodCount * plyW);
+            // const coveragePercent = Math.min(100, (actualCoverage / wallW * 100)).toFixed(1);
+
+            // 높이 계산
             const needTopStrip = wallH > plyH;
             const topStripHeight = needTopStrip ? wallH - plyH : 0;
-            const totalPlywoodSheets = needTopStrip ? plywoodHorizontal * 2 : plywoodHorizontal;
 
+            // 구매 단수 자동 계산 (필요한 각재 / 1단 기준 개수, 올림)
             const studBundles = Math.ceil(studCount / studPerBundle);
-            const totalStudCost = studBundles * studBundlePrice;
-            const totalPlywoodCost = totalPlywoodSheets * plywoodPrice;
-            const totalCost = totalStudCost + totalPlywoodCost;
+            
+            // 구매 정보 계산
+            const totalStudPurchase = studBundles * studPerBundle; // 최종 각재 구매 개수
+            const totalStudCost = studBundles * studBundlePrice; // 각재 총금액
+            const totalPlywoodCost = plywoodCount * plywoodPrice; // 합판 총금액
+            const totalCost = totalStudCost + totalPlywoodCost; // 최종 합계
 
-            // 결과 업데이트
-            document.getElementById('plywoodCount').textContent = totalPlywoodSheets + '장';
+            // 결과 표시
+            document.getElementById('plywoodCount').textContent = plywoodCount + '장';
             document.getElementById('studCount').textContent = studCount + '개';
-            document.getElementById('plywoodQty').textContent = totalPlywoodSheets + '장';
+            // document.getElementById('coveragePercent').textContent = coveragePercent + '%';
+
+            document.getElementById('plywoodQty').textContent = plywoodCount + '장';
             document.getElementById('studQty').textContent = studCount + '개';
+
+            // 구매 단수 표시 (readonly 필드 업데이트)
             document.getElementById('studBundles').value = studBundles;
-            document.getElementById('requiredStuds').textContent = studCount + '개';
-            document.getElementById('totalStudPurchase').textContent = (studBundles * studPerBundle) + '개';
+
+            // 구매 정보 표시
+            document.getElementById('requiredStuds').textContent = studCount.toLocaleString() + '개';
+            document.getElementById('totalStudPurchase').textContent = totalStudPurchase.toLocaleString() + '개';
             document.getElementById('totalStudCost').textContent = totalStudCost.toLocaleString() + '원';
             document.getElementById('totalPlywoodCost').textContent = totalPlywoodCost.toLocaleString() + '원';
             document.getElementById('totalCost').textContent = totalCost.toLocaleString() + '원';
-            document.getElementById('plywoodSpec').textContent = `${plyW} × ${plyH}mm`;
 
-            visualizeWall(wallW, wallH, plyW, plyH, plywoodHorizontal, studSpacing, studCount, needTopStrip, topStripHeight);
+            // 자재 스펙 표시
+            document.getElementById('plywoodSpec').textContent = `${plyW} × ${plyH}mm`;
+            document.getElementById('studSpec').textContent = `${studSize} × ${studSize} × ${studLength}mm`;
+
+            // 계산식 상세 표시
+            displayCalculationDetail(wallW, wallH, plyW, plyH, plywoodCount, studSpacing, studCount, needTopStrip, topStripHeight, studSize);
+
+            // 시각화
+            visualizeWall(wallW, wallH, plyW, plyH, plywoodCount, studSpacing, studCount, studSize);
         }
 
-        function visualizeWall(wallW, wallH, plyW, plyH, plywoodHorizontal, studSpacing, studCount, needTopStrip, topStripHeight) {
+        function displayCalculationDetail(wallW, wallH, plyW, plyH, plywoodCount, studSpacing, studCount, needTopStrip, topStripHeight, studSize) {
+            const detail = document.getElementById('calculationDetail');
+            
+            let html = '<div style="display: grid; gap: 1.5rem;">';
+            
+            // 1. 합판 가로 수량
+            html += `
+                <div>
+                    <div style="color: var(--accent-orange); font-weight: 700; margin-bottom: 0.5rem;">① 합판 수량 계산 (가로)</div>
+                    <div style="background: var(--cream); padding: 1rem; border-radius: 6px; border-left: 4px solid var(--accent-orange);">
+                        벽 가로: <strong>${wallW}mm</strong><br>
+                        합판 가로: <strong>${plyW}mm</strong><br>
+                        <br>
+                        필요 수량 = ⌈ ${wallW} ÷ ${plyW} ⌉ = ⌈ ${(wallW / plyW).toFixed(3)} ⌉ = <strong style="color: var(--accent-orange);">${plywoodCount}장</strong>
+                    </div>
+            `;
+            
+            // 합판 배치 상세
+            html += '<div style="margin-top: 0.5rem; padding-left: 1rem; font-size: 0.85rem; color: var(--wood-medium);">';
+            for (let i = 0; i < plywoodCount; i++) {
+                const start = i * plyW;
+                const end = Math.min((i + 1) * plyW, wallW);
+                const actualWidth = end - start;
+                html += `· 합판 #${i + 1}: ${start}mm ~ ${end}mm `;
+                if (actualWidth < plyW) {
+                    html += `(<strong>${actualWidth}mm만 사용</strong>)`;
+                } else {
+                    html += `(전체 사용)`;
+                }
+                html += '<br>';
+            }
+            html += '</div></div>';
+            
+            // 2. 높이 처리
+            html += `
+                <div>
+                    <div style="color: var(--accent-blue); font-weight: 700; margin-bottom: 0.5rem;">② 높이 처리</div>
+                    <div style="background: var(--cream); padding: 1rem; border-radius: 6px; border-left: 4px solid var(--accent-blue);">
+                        벽 높이: <strong>${wallH}mm</strong><br>
+                        합판 높이: <strong>${plyH}mm</strong><br>
+            `;
+            
+            if (needTopStrip) {
+                html += `<br>
+                        부족 높이: ${wallH} - ${plyH} = <strong style="color: var(--bright-red);">${topStripHeight}mm</strong><br>
+                        <br>
+                        <div style="background: rgba(248, 113, 113, 0.1); padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
+                        ⚠️ 상단에 <strong>${topStripHeight}mm 높이의 조각 합판</strong>이 필요합니다!<br>
+                        · 메인 합판: 0mm ~ ${plyH}mm (${plywoodCount}장)<br>
+                        · 상단 조각: ${plyH}mm ~ ${wallH}mm (${plywoodCount}장)
+                        </div>
+                `;
+            } else {
+                html += `<br>
+                        ✓ 합판 높이가 충분합니다 (여유: ${plyH - wallH}mm)
+                `;
+            }
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            // 3. 각재 수량
+            html += `
+                <div>
+                    <div style="color: var(--stud-green); font-weight: 700; margin-bottom: 0.5rem;">③ 각재(다루끼) 수량</div>
+                    <div style="background: var(--cream); padding: 1rem; border-radius: 6px; border-left: 4px solid var(--stud-green);">
+                        벽 가로: <strong>${wallW}mm</strong><br>
+                        각재 간격: <strong>${studSpacing}mm</strong><br>
+                        각재 두께: <strong>${studSize}mm</strong><br>
+                        <br>
+                        필요 수량 = ⌊ ${wallW} ÷ ${studSpacing} ⌋ + 1 = ${Math.floor(wallW / studSpacing)} + 1 = <strong style="color: var(--stud-green);">${studCount}개</strong>
+                    </div>
+            `;
+            
+            // 각재 위치 상세
+            html += '<div style="margin-top: 0.5rem; padding-left: 1rem; font-size: 0.85rem; color: var(--wood-medium);">';
+            html += '<strong>각재 위치 계산 (왼쪽 0mm 기준, 각재 두께 포함):</strong><br>';
+            html += '<div style="font-family: \'IBM Plex Mono\', monospace; line-height: 1.8; margin-top: 0.5rem;">';
+            
+            for (let i = 0; i < studCount && i < 5; i++) { // 처음 5개만 표시
+                const pos = i * studSpacing + i * studSize;
+                if (pos <= wallW) {
+                    if (i === 0) {
+                        html += `· 각재${i + 1}: <strong>0mm</strong> (시작점)<br>`;
+                    } else {
+                        const spacingPart = `${studSpacing}mm×${i}`;
+                        const studPart = `${studSize}mm×${i}`;
+                        const spacingTotal = i * studSpacing;
+                        const studTotal = i * studSize;
+                        html += `· 각재${i + 1}: ${spacingPart} + ${studPart} = ${spacingTotal}mm + ${studTotal}mm = <strong>${pos}mm</strong><br>`;
+                    }
+                }
+            }
+            
+            if (studCount > 5) {
+                html += `<span style="color: var(--accent-blue);">... (하단 목록에서 전체 확인)</span><br>`;
+            }
+            
+            html += '</div></div></div>';
+            
+            html += '</div>';
+            
+            detail.innerHTML = html;
+        }
+
+        function visualizeWall(wallW, wallH, plyW, plyH, plywoodCount, studSpacing, studCount, studSize) {
             const container = document.getElementById('wallVisualization');
             container.innerHTML = '';
-            container.style.width = '100%';
-            container.style.maxWidth = '1200px';
-            container.style.height = '450px';
-            container.style.background = 'white';
 
-            const scaleX = container.clientWidth / wallW;
-            const scaleY = 350 / wallH;
-            const scale = Math.min(scaleX * 0.9, scaleY);
+            // 각재 색상 팔레트 (구분하기 쉬운 다양한 색상)
+            const studColors = [
+                '#22c55e', // 녹색
+                '#3b82f6', // 파란색
+                '#f59e0b', // 주황색
+                '#ec4899', // 핑크색
+                '#8b5cf6', // 보라색
+                '#14b8a6', // 청록색
+                '#f97316', // 진한 주황
+                '#06b6d4', // 하늘색
+                '#84cc16', // 라임색
+                '#6366f1', // 인디고
+                '#ef4444', // 빨강
+                '#10b981', // 에메랄드
+            ];
+
+            // 반응형 스케일 계산
+            const maxWidth = Math.min(window.innerWidth - 100, 1200);
+            const maxHeight = 400;
+            const scale = Math.min(maxWidth / wallW, maxHeight / wallH);
 
             const visualW = wallW * scale;
             const visualH = wallH * scale;
 
-            container.style.height = (visualH + 100) + 'px';
+            // 벽 컨테이너 생성
+            const wall = document.createElement('div');
+            wall.className = 'wall-visualization';
+            wall.style.width = visualW + 'px';
+            wall.style.height = visualH + 'px';
+            wall.style.position = 'relative';
 
-            // 합판 배치
-            for (let i = 0; i < plywoodHorizontal; i++) {
+            // 높이 부족 여부 확인
+            const needTopStrip = wallH > plyH;
+            const topStripHeight = needTopStrip ? wallH - plyH : 0;
+            const mainPanelHeight = needTopStrip ? plyH : wallH;
+
+            // 메인 합판 패널 추가
+            for (let i = 0; i < plywoodCount; i++) {
+                const panel = document.createElement('div');
+                panel.className = 'plywood-panel';
+                
                 const left = i * plyW * scale;
                 const width = Math.min(plyW * scale, visualW - left);
+                const height = (mainPanelHeight / wallH) * visualH;
+                
+                panel.style.left = left + 'px';
+                panel.style.top = (topStripHeight * scale) + 'px';
+                panel.style.width = width + 'px';
+                panel.style.height = height + 'px';
+                
+                // 패널 번호 표시
+                const label = document.createElement('div');
+                label.style.fontSize = Math.max(12, visualW / 30) + 'px';
+                label.textContent = `합판 #${i + 1}`;
+                panel.appendChild(label);
+                
+                // 크기 정보
+                const sizeLabel = document.createElement('div');
+                sizeLabel.style.fontSize = Math.max(10, visualW / 40) + 'px';
+                sizeLabel.style.marginTop = '0.25rem';
+                sizeLabel.style.opacity = '0.8';
+                
+                // 마지막 패널이고 잘린 경우
+                if (i === plywoodCount - 1 && (i + 1) * plyW > wallW) {
+                    const cutWidth = wallW - (i * plyW);
+                    sizeLabel.textContent = `${cutWidth}×${Math.floor(mainPanelHeight)}mm`;
+                } else {
+                    sizeLabel.textContent = `${plyW}×${Math.floor(mainPanelHeight)}mm`;
+                }
+                panel.appendChild(sizeLabel);
+                
+                wall.appendChild(panel);
+            }
 
-                // 메인 합판
-                const main = document.createElement('div');
-                main.className = 'plywood-panel';
-                main.style.left = left + 'px';
-                main.style.top = needTopStrip ? (topStripHeight * scale) + 'px' : '50px';
-                main.style.width = width + 'px';
-                main.style.height = (needTopStrip ? plyH : wallH) * scale + 'px';
-                main.innerHTML = `<div>합판 #${i+1}</div><div style="font-size:0.8em;margin-top:4px;">${width/scale|0}×${(needTopStrip ? plyH : wallH)}mm</div>`;
-                container.appendChild(main);
+            // 상단 조각 합판 추가
+            if (needTopStrip) {
+                // 구분선 추가
+                const dividerLine = document.createElement('div');
+                dividerLine.style.position = 'absolute';
+                dividerLine.style.left = '0';
+                dividerLine.style.top = (topStripHeight * scale) + 'px';
+                dividerLine.style.width = visualW + 'px';
+                dividerLine.style.height = '2px';
+                dividerLine.style.background = 'var(--wood-dark)';
+                dividerLine.style.zIndex = '3';
+                dividerLine.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                wall.appendChild(dividerLine);
 
-                // 상단 조각
-                if (needTopStrip) {
-                    const top = document.createElement('div');
-                    top.className = 'plywood-panel';
-                    top.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
-                    top.style.left = left + 'px';
-                    top.style.top = '50px';
-                    top.style.width = width + 'px';
-                    top.style.height = topStripHeight * scale + 'px';
-                    top.innerHTML = `<div>#${i+1}-A</div><div style="font-size:0.8em;margin-top:4px;">${width/scale|0}×${topStripHeight}mm</div>`;
-                    container.appendChild(top);
+                for (let i = 0; i < plywoodCount; i++) {
+                    const topPanel = document.createElement('div');
+                    topPanel.className = 'plywood-panel';
+                    topPanel.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                    
+                    const left = i * plyW * scale;
+                    const width = Math.min(plyW * scale, visualW - left);
+                    const height = (topStripHeight / wallH) * visualH;
+                    
+                    topPanel.style.left = left + 'px';
+                    topPanel.style.top = '0';
+                    topPanel.style.width = width + 'px';
+                    topPanel.style.height = height + 'px';
+                    
+                    // 상단 패널 번호
+                    const label = document.createElement('div');
+                    label.style.fontSize = Math.max(10, visualW / 40) + 'px';
+                    label.textContent = `#${i + 1}-A`;
+                    topPanel.appendChild(label);
+                    
+                    // 크기 정보
+                    const sizeLabel = document.createElement('div');
+                    sizeLabel.style.fontSize = Math.max(8, visualW / 50) + 'px';
+                    sizeLabel.style.marginTop = '0.15rem';
+                    sizeLabel.style.opacity = '0.8';
+                    
+                    if (i === plywoodCount - 1 && (i + 1) * plyW > wallW) {
+                        const cutWidth = wallW - (i * plyW);
+                        sizeLabel.textContent = `${cutWidth}×${topStripHeight}mm`;
+                    } else {
+                        sizeLabel.textContent = `${plyW}×${topStripHeight}mm`;
+                    }
+                    topPanel.appendChild(sizeLabel);
+                    
+                    wall.appendChild(topPanel);
                 }
             }
 
-            // 각재
+            // 각재 라인 추가
+            const studDistances = []; // 각재 거리 정보 저장
             for (let i = 0; i < studCount; i++) {
-                const pos = i * studSpacing;
-                if (pos > wallW) break;
-                const stud = document.createElement('div');
-                stud.className = 'stud-line';
-                stud.style.left = (pos * scale) + 'px';
-                stud.style.top = '50px';
-                stud.style.height = visualH + 'px';
-                container.appendChild(stud);
-
-                const label = document.createElement('div');
-                label.className = 'dimension-marker';
-                label.style.left = (pos * scale) + 'px';
-                label.style.top = '30px';
-                label.style.transform = 'translateX(-50%)';
-                label.textContent = i + 1;
-                container.appendChild(label);
+                // 실제 각재 위치 = (간격 × 개수) + (각재두께 × 개수)
+                const studPos = i * studSpacing + i * studSize;
+                
+                // 색상 선택 (순환)
+                const studColor = studColors[i % studColors.length];
+                
+                if (studPos <= wallW) {
+                    const stud = document.createElement('div');
+                    stud.className = 'stud-line';
+                    stud.style.left = (studPos * scale) + 'px';
+                    stud.style.top = '0';
+                    stud.style.width = Math.max(2, studSize * scale) + 'px';
+                    stud.style.height = visualH + 'px';
+                    stud.style.background = studColor; // 고유 색상 적용
+                    stud.style.boxShadow = `0 0 8px ${studColor}80`; // 그림자도 같은 색
+                    stud.style.transition = 'all 0.3s ease';
+                    
+                    // 툴팁
+                    stud.title = `각재${i + 1}: ${studPos}mm`;
+                    
+                    // 호버 효과
+                    stud.addEventListener('mouseenter', () => {
+                        stud.style.boxShadow = `0 0 16px ${studColor}`;
+                        stud.style.transform = 'scaleX(1.5)';
+                    });
+                    
+                    stud.addEventListener('mouseleave', () => {
+                        stud.style.boxShadow = `0 0 8px ${studColor}80`;
+                        stud.style.transform = 'scaleX(1)';
+                    });
+                    
+                    wall.appendChild(stud);
+                    
+                    // 간단한 번호 라벨 (같은 색상)
+                    const numberLabel = document.createElement('div');
+                    numberLabel.style.position = 'absolute';
+                    numberLabel.style.left = (studPos * scale) + 'px';
+                    numberLabel.style.top = '-20px';
+                    numberLabel.style.transform = 'translateX(-50%)';
+                    numberLabel.style.fontSize = '0.7rem';
+                    numberLabel.style.fontWeight = '700';
+                    numberLabel.style.color = 'white';
+                    numberLabel.style.background = studColor; // 각재와 같은 색
+                    numberLabel.style.padding = '2px 8px';
+                    numberLabel.style.borderRadius = '12px';
+                    numberLabel.style.whiteSpace = 'nowrap';
+                    numberLabel.style.zIndex = '10';
+                    numberLabel.style.boxShadow = `0 2px 4px ${studColor}60`;
+                    numberLabel.textContent = `${i + 1}`;
+                    
+                    wall.appendChild(numberLabel);
+                    
+                    // 거리 정보 및 계산식 저장
+                    let formula = '';
+                    if (i === 0) {
+                        formula = '0mm (시작점)';
+                    } else {
+                        const spacingTotal = i * studSpacing;
+                        const studThicknessTotal = i * studSize;
+                        formula = `${studSpacing}mm×${i} + ${studSize}mm×${i} = ${spacingTotal}mm + ${studThicknessTotal}mm`;
+                    }
+                    
+                    studDistances.push({
+                        number: i + 1,
+                        distance: studPos,
+                        formula: formula,
+                        color: studColor // 색상 정보 저장
+                    });
+                }
             }
 
-            // 치수선
-            const dimH = document.createElement('div');
-            dimH.className = 'dimension-marker';
-            dimH.style.left = '10px';
-            dimH.style.top = '50px';
-            dimH.textContent = `← ${wallH}mm →`;
-            dimH.style.writingMode = 'vertical-rl';
-            container.appendChild(dimH);
+            // 치수 표시 (상단)
+            const topDim = document.createElement('div');
+            topDim.className = 'dimension-marker';
+            topDim.style.top = '-45px';
+            topDim.style.left = '0';
+            topDim.style.width = visualW + 'px';
+            topDim.style.textAlign = 'center';
+            topDim.style.fontWeight = '700';
+            topDim.style.fontSize = '0.9rem';
+            topDim.textContent = `전체 너비: ${wallW}mm`;
+            wall.appendChild(topDim);
 
-            const dimW = document.createElement('div');
-            dimW.className = 'dimension-marker';
-            dimW.style.left = '50%';
-            dimW.style.top = '10px';
-            dimW.style.transform = 'translateX(-50%)';
-            dimW.textContent = `↑ ${wallW}mm ↓`;
-            container.appendChild(dimW);
+            // 치수 표시 (왼쪽)
+            const leftDim = document.createElement('div');
+            leftDim.className = 'dimension-marker';
+            leftDim.style.left = '-80px';
+            leftDim.style.top = '50%';
+            leftDim.style.transform = 'translateY(-50%)';
+            leftDim.textContent = `높이: ${wallH}mm`;
+            wall.appendChild(leftDim);
+
+            // 높이 구성 표시 (오른쪽)
+            if (needTopStrip) {
+                const heightInfo = document.createElement('div');
+                heightInfo.className = 'dimension-marker';
+                heightInfo.style.right = '-120px';
+                heightInfo.style.top = '10px';
+                heightInfo.style.fontSize = '0.7rem';
+                heightInfo.style.lineHeight = '1.6';
+                heightInfo.innerHTML = `
+                    상단 조각: ${topStripHeight}mm<br>
+                    메인 합판: ${mainPanelHeight}mm
+                `;
+                wall.appendChild(heightInfo);
+            }
+
+            container.appendChild(wall);
+            
+            // 각재 거리 목록 추가
+            const studListContainer = document.createElement('div');
+            studListContainer.style.marginTop = '1.5rem';
+            studListContainer.style.padding = '1.5rem';
+            studListContainer.style.background = 'linear-gradient(135deg, #fafafa, #f5f5f5)';
+            studListContainer.style.borderRadius = '8px';
+            studListContainer.style.border = '2px solid #e5e5e5';
+            
+            const studListTitle = document.createElement('div');
+            studListTitle.style.fontFamily = "'Syne', sans-serif";
+            studListTitle.style.fontSize = '1rem';
+            studListTitle.style.fontWeight = '700';
+            studListTitle.style.color = 'var(--wood-dark)';
+            studListTitle.style.marginBottom = '1rem';
+            studListTitle.style.display = 'flex';
+            studListTitle.style.alignItems = 'center';
+            studListTitle.style.gap = '0.5rem';
+            studListTitle.innerHTML = '📏 각재 위치 상세 (왼쪽 0mm 기준)';
+            studListContainer.appendChild(studListTitle);
+            
+            const studListContent = document.createElement('div');
+            studListContent.style.display = 'grid';
+            studListContent.style.gridTemplateColumns = 'repeat(auto-fill, minmax(200px, 1fr))';
+            studListContent.style.gap = '0.75rem';
+            
+            studDistances.forEach(stud => {
+                const item = document.createElement('div');
+                item.style.background = 'white';
+                item.style.padding = '0.75rem 0.9rem';
+                item.style.borderRadius = '6px';
+                item.style.border = `2px solid ${stud.color}`;
+                item.style.fontSize = '0.85rem';
+                item.style.fontWeight = '600';
+                item.style.color = 'var(--wood-dark)';
+                item.style.transition = 'all 0.2s ease';
+                item.style.cursor = 'default';
+                
+                item.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                        <span style="color: ${stud.color}; font-size: 0.9rem;">각재${stud.number}</span>
+                        <span style="font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 1rem; color: var(--wood-dark);">${stud.distance}mm</span>
+                    </div>
+                    <div style="font-size: 0.7rem; color: var(--wood-medium); font-family: 'IBM Plex Mono', monospace; font-weight: 400;">
+                        ${stud.formula}
+                    </div>
+                `;
+                
+                // 호버 효과
+                item.addEventListener('mouseenter', () => {
+                    item.style.background = stud.color;
+                    item.style.transform = 'translateY(-2px)';
+                    item.style.boxShadow = `0 4px 8px ${stud.color}60`;
+                    const allText = item.querySelectorAll('span, div');
+                    allText.forEach(el => el.style.color = 'white');
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    item.style.background = 'white';
+                    item.style.transform = 'translateY(0)';
+                    item.style.boxShadow = 'none';
+                    // 원래 색상 복원
+                    const spans = item.querySelectorAll('span');
+                    if (spans[0]) spans[0].style.color = stud.color;
+                    if (spans[1]) spans[1].style.color = 'var(--wood-dark)';
+                    const divs = item.querySelectorAll('div');
+                    if (divs[1]) divs[1].style.color = 'var(--wood-medium)';
+                });
+                
+                studListContent.appendChild(item);
+            });
+            
+            studListContainer.appendChild(studListContent);
+            container.appendChild(studListContainer);
         }
 
-        document.addEventListener('DOMContentLoaded', calculate);
-        window.addEventListener('resize', () => setTimeout(calculate, 100));
+        // 페이지 로드 시 초기 계산
+        document.addEventListener('DOMContentLoaded', function() {
+            calculate();
+        });
+
+        // 창 크기 변경 시 재계산
+        window.addEventListener('resize', function() {
+            calculate();
+        });
     </script>
 </body>
 </html>
