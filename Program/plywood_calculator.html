@@ -881,23 +881,23 @@
         /**
          * 에러 메시지 표시
          */
-        // function showError(message) {
-        //     const resultCard = document.getElementById('resultCard');
-        //     const visualization = document.getElementById('visualization');
+        function showError(message) {
+            const resultCard = document.getElementById('resultCard');
+            const visualization = document.getElementById('visualization');
             
-        //     resultCard.classList.remove('hidden');
-        //     visualization.innerHTML = `
-        //         <div style="text-align: center; padding: 2rem;">
-        //             <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
-        //             <div style="color: var(--accent-orange); font-weight: 600; font-size: 1rem; line-height: 1.6;">
-        //                 ${message}
-        //             </div>
-        //             <div style="color: var(--wood-medium); font-size: 0.85rem; margin-top: 0.5rem;">
-        //                 합판 크기를 늘리거나 재단 크기를 줄여주세요.
-        //             </div>
-        //         </div>
-        //     `;
-        // }
+            resultCard.classList.remove('hidden');
+            visualization.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                    <div style="color: var(--accent-orange); font-weight: 600; font-size: 1rem; line-height: 1.6;">
+                        ${message}
+                    </div>
+                    <div style="color: var(--wood-medium); font-size: 0.85rem; margin-top: 0.5rem;">
+                        합판 크기를 늘리거나 재단 크기를 줄여주세요.
+                    </div>
+                </div>
+            `;
+        }
 
         /**
          * 최적 배치 계산 함수
@@ -925,12 +925,17 @@
             // 더 많이 들어가는 배치 선택
             let bestLayout = layout1.piecesPerSheet >= layout2.piecesPerSheet ? layout1 : layout2;
 
-            // 재단 불가능한 경우
+            // 재단 불가능한 경우 (이론적으로는 autoCalculate에서 걸러지지만)
             if (bestLayout.piecesPerSheet === 0) {
-                document.getElementById('resultCard').classList.add('hidden');
-                alert(`재단 크기(${cutW}×${cutH})가 합판(${sheetW}×${sheetH})보다 커서 재단이 불가능합니다!`);
+                showError(`재단 크기(${cutW}×${cutH}mm)가 합판(${sheetW}×${sheetH}mm)보다 커서 재단이 불가능합니다.`);
                 return;
-            }
+            }            
+            // // 재단 불가능한 경우
+            // if (bestLayout.piecesPerSheet === 0) {
+            //     document.getElementById('resultCard').classList.add('hidden');
+            //     alert(`재단 크기(${cutW}×${cutH})가 합판(${sheetW}×${sheetH})보다 커서 재단이 불가능합니다!`);
+            //     return;
+            // }
 
             // 필요한 합판 수 계산
             const requiredBoards = Math.ceil(quantity / bestLayout.piecesPerSheet);
@@ -956,7 +961,7 @@
 
             document.getElementById('layoutPattern').textContent = 
                 `${bestLayout.cols}열 × ${bestLayout.rows}행 (${bestLayout.orientation === 'normal' ? cutW + '×' + cutH : cutH + '×' + cutW})`;
-            
+            1210
             document.getElementById('piecesPerSheet').textContent = bestLayout.piecesPerSheet;
             // document.getElementById('requiredPieces').textContent = quantity;
             document.getElementById('totalPieces').textContent = totalPieces;
