@@ -3,598 +3,486 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Choice Vote - 투표 시스템</title>
-    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>VoteGram - 투표 SNS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
 ```
     :root {
-        --option-a-color: #6366f1;
-        --option-a-light: #818cf8;
-        --option-a-glow: rgba(99, 102, 241, 0.3);
-        --option-b-color: #ec4899;
-        --option-b-light: #f472b6;
-        --option-b-glow: rgba(236, 72, 153, 0.3);
-        --bg-dark: #0a0a0f;
-        --bg-card: #16161f;
-        --bg-sidebar: #111118;
-        --text-primary: #ffffff;
-        --text-secondary: #a0a0b0;
-        --border-color: rgba(255,255,255,0.08);
-        --like-color: #ef4444;
-        --star-color: #fbbf24;
+        --primary: #5865F2;
+        --primary-light: #7983F5;
+        --secondary: #EB459E;
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --bg-card: #ffffff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #65676b;
+        --text-muted: #8e8e93;
+        --border-color: #e4e6eb;
+        --like-color: #ed4956;
+        --star-color: #ffc107;
+        --success: #00a400;
+        --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+        --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+        --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+        --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     body {
-        font-family: 'Noto Sans KR', sans-serif;
-        background: var(--bg-dark);
+        font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--bg-secondary);
         color: var(--text-primary);
         min-height: 100vh;
-        overflow: hidden;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
     }
 
-    /* Main Layout */
-    .app-container {
-        display: flex;
-        height: 100vh;
+    /* App Container */
+    .app {
+        max-width: 480px;
+        margin: 0 auto;
+        min-height: 100vh;
+        background: var(--bg-secondary);
+        position: relative;
     }
 
-    /* Sidebar */
-    .sidebar {
-        width: 280px;
-        background: var(--bg-sidebar);
-        border-right: 1px solid var(--border-color);
-        display: flex;
-        flex-direction: column;
-        flex-shrink: 0;
-    }
-
-    .sidebar-header {
-        padding: 20px;
+    /* Header - Instagram Style */
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 54px;
+        background: var(--bg-primary);
         border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        z-index: 100;
     }
 
-    .sidebar-header h1 {
-        font-family: 'Black Han Sans', sans-serif;
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .header-logo {
         font-size: 1.4rem;
-        background: linear-gradient(135deg, var(--option-a-light), var(--option-b-light));
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        margin-bottom: 15px;
     }
 
-    .btn-new-vote {
-        width: 100%;
-        padding: 12px;
-        background: linear-gradient(135deg, var(--option-a-color), var(--option-b-color));
-        border: none;
-        border-radius: 10px;
-        color: white;
-        font-size: 0.95rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
+    .header-icons {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
+        gap: 16px;
     }
 
-    .btn-new-vote:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
-    }
-
-    .vote-list {
-        flex: 1;
-        overflow-y: auto;
-        padding: 10px;
-    }
-
-    .vote-list-item {
-        padding: 15px;
-        background: var(--bg-card);
-        border-radius: 12px;
-        margin-bottom: 10px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-
-    .vote-list-item:hover {
-        border-color: var(--option-a-color);
-    }
-
-    .vote-list-item.active {
-        border-color: var(--option-a-light);
-        background: rgba(99, 102, 241, 0.1);
-    }
-
-    .vote-list-title {
-        font-weight: 600;
-        font-size: 0.95rem;
-        margin-bottom: 8px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .vote-list-options {
-        display: flex;
-        gap: 8px;
-        font-size: 0.75rem;
-        color: var(--text-secondary);
-    }
-
-    .vote-list-options span {
-        padding: 3px 8px;
-        background: rgba(255,255,255,0.05);
-        border-radius: 4px;
-    }
-
-    .vote-list-stats {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 10px;
-        font-size: 0.75rem;
-        color: var(--text-secondary);
-    }
-
-    .empty-list {
-        text-align: center;
-        padding: 40px 20px;
-        color: var(--text-secondary);
-    }
-
-    .empty-list-icon {
-        font-size: 3rem;
-        margin-bottom: 15px;
-        opacity: 0.5;
-    }
-
-    /* Main Content */
-    .main-content {
-        flex: 1;
-        overflow-y: auto;
-        padding: 25px;
-    }
-
-    .content-wrapper {
-        max-width: 900px;
-        margin: 0 auto;
-    }
-
-    /* Vote Header */
-    .vote-header {
-        text-align: center;
-        margin-bottom: 25px;
-    }
-
-    .vote-question {
-        font-family: 'Black Han Sans', sans-serif;
-        font-size: clamp(1.5rem, 4vw, 2rem);
-        margin-bottom: 10px;
-        color: var(--text-primary);
-    }
-
-    .vote-date {
-        font-size: 0.85rem;
-        color: var(--text-secondary);
-    }
-
-    /* Vote Cards */
-    .vote-cards-wrapper {
-        position: relative;
-        margin-bottom: 25px;
-    }
-
-    .vote-cards {
-        display: flex;
-        gap: 15px;
-    }
-
-    .vote-card {
-        flex: 1;
-        background: var(--bg-card);
-        border-radius: 16px;
-        padding: 25px 20px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-
-    .vote-card.option-a:hover {
-        border-color: var(--option-a-color);
-        transform: translateY(-3px);
-    }
-
-    .vote-card.option-b:hover {
-        border-color: var(--option-b-color);
-        transform: translateY(-3px);
-    }
-
-    .vote-card-icon {
-        font-size: 3.5rem;
-        margin-bottom: 12px;
-        display: block;
-    }
-
-    .vote-card-title {
-        font-family: 'Black Han Sans', sans-serif;
-        font-size: 1.5rem;
-        margin-bottom: 15px;
-    }
-
-    .vote-card.option-a .vote-card-title {
-        color: var(--option-a-light);
-    }
-
-    .vote-card.option-b .vote-card-title {
-        color: var(--option-b-light);
-    }
-
-    .vote-card-count {
-        font-size: 2.5rem;
-        font-weight: 700;
-        line-height: 1;
-    }
-
-    .vote-card.option-a .vote-card-count {
-        color: var(--option-a-light);
-    }
-
-    .vote-card.option-b .vote-card-count {
-        color: var(--option-b-light);
-    }
-
-    .vote-card-percent {
-        font-size: 1rem;
-        color: var(--text-secondary);
-        margin-top: 5px;
-    }
-
-    .vote-card-hint {
-        font-size: 0.75rem;
-        color: var(--text-secondary);
-        margin-top: 12px;
-        opacity: 0.7;
-    }
-
-    .vs-badge {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        width: 50px;
-        height: 50px;
-        background: linear-gradient(135deg, var(--option-a-color), var(--option-b-color));
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: 'Black Han Sans', sans-serif;
-        font-size: 1rem;
-        color: white;
-        z-index: 10;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    }
-
-    /* Progress Bar */
-    .progress-section {
-        margin-bottom: 30px;
-    }
-
-    .progress-bar {
-        height: 40px;
-        background: var(--bg-card);
-        border-radius: 20px;
-        overflow: hidden;
-        display: flex;
-    }
-
-    .progress-fill {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transition: width 0.5s ease;
-    }
-
-    .progress-fill.option-a {
-        background: linear-gradient(90deg, var(--option-a-color), var(--option-a-light));
-    }
-
-    .progress-fill.option-b {
-        background: linear-gradient(90deg, var(--option-b-light), var(--option-b-color));
-    }
-
-    .total-votes {
-        text-align: center;
-        margin-top: 12px;
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-    }
-
-    /* Comments Section */
-    .comments-section {
-        display: flex;
-        gap: 20px;
-    }
-
-    .comments-column {
-        flex: 1;
-        background: var(--bg-card);
-        border-radius: 16px;
-        padding: 20px;
-        min-height: 300px;
-    }
-
-    .comments-column.option-a {
-        border-top: 3px solid var(--option-a-color);
-    }
-
-    .comments-column.option-b {
-        border-top: 3px solid var(--option-b-color);
-    }
-
-    .comments-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 15px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .comments-header-icon {
-        font-size: 1.5rem;
-    }
-
-    .comments-header-title {
-        font-family: 'Black Han Sans', sans-serif;
-        font-size: 1.1rem;
-    }
-
-    .comments-column.option-a .comments-header-title {
-        color: var(--option-a-light);
-    }
-
-    .comments-column.option-b .comments-header-title {
-        color: var(--option-b-light);
-    }
-
-    .comments-header-count {
-        margin-left: auto;
-        font-size: 0.85rem;
-        color: var(--text-secondary);
-    }
-
-    .comments-list {
-        max-height: 400px;
-        overflow-y: auto;
-    }
-
-    /* Comment Item - 업그레이드 */
-    .comment-item {
-        padding: 15px;
-        background: rgba(255,255,255,0.03);
-        border-radius: 12px;
-        margin-bottom: 12px;
-        transition: all 0.2s ease;
-    }
-
-    .comment-item:hover {
-        background: rgba(255,255,255,0.05);
-    }
-
-    .comment-item:last-child {
-        margin-bottom: 0;
-    }
-
-    .comment-header {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 10px;
-    }
-
-    /* 프로필 아바타 */
-    .comment-avatar {
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
+    .header-icon {
+        width: 24px;
+        height: 24px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1.3rem;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        width: 8px;
+        height: 8px;
+        background: var(--like-color);
+        border-radius: 50%;
+    }
+
+    /* Main Feed */
+    .feed {
+        padding-top: 54px;
+        padding-bottom: calc(70px + var(--safe-bottom));
+        min-height: 100vh;
+    }
+
+    /* Poll Card - Facebook/Instagram Style */
+    .poll-card {
+        background: var(--bg-card);
+        margin-bottom: 8px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .poll-header {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        gap: 12px;
+    }
+
+    .poll-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: white;
         flex-shrink: 0;
+    }
+
+    .poll-author-info {
+        flex: 1;
+    }
+
+    .poll-author {
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .poll-time {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+
+    .poll-menu {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 8px;
+    }
+
+    .poll-question {
+        padding: 0 16px 12px;
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+
+    /* Vote Options - Modern Card Style */
+    .vote-options {
+        display: flex;
+        gap: 8px;
+        padding: 0 16px 16px;
+    }
+
+    .vote-option {
+        flex: 1;
+        background: var(--bg-secondary);
+        border-radius: 16px;
+        padding: 20px 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
         position: relative;
         overflow: hidden;
     }
 
-    .comment-avatar img {
-        width: 100%;
+    .vote-option.option-a:hover,
+    .vote-option.option-a:active {
+        border-color: var(--primary);
+        background: rgba(88, 101, 242, 0.08);
+    }
+
+    .vote-option.option-b:hover,
+    .vote-option.option-b:active {
+        border-color: var(--secondary);
+        background: rgba(235, 69, 158, 0.08);
+    }
+
+    .vote-option-icon {
+        font-size: 2.5rem;
+        margin-bottom: 8px;
+    }
+
+    .vote-option-name {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 8px;
+    }
+
+    .vote-option.option-a .vote-option-name {
+        color: var(--primary);
+    }
+
+    .vote-option.option-b .vote-option-name {
+        color: var(--secondary);
+    }
+
+    .vote-option-stats {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+    }
+
+    .vote-count {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .vote-percent {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    /* Progress Bar */
+    .poll-progress {
+        padding: 0 16px 12px;
+    }
+
+    .progress-bar {
+        height: 6px;
+        background: var(--bg-secondary);
+        border-radius: 3px;
+        overflow: hidden;
+        display: flex;
+    }
+
+    .progress-a {
         height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
+        background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        transition: width 0.5s ease;
     }
 
-    .comments-column.option-a .comment-avatar {
-        background: linear-gradient(135deg, var(--option-a-color), var(--option-a-light));
+    .progress-b {
+        height: 100%;
+        background: linear-gradient(90deg, var(--secondary), #f472b6);
+        transition: width 0.5s ease;
     }
 
-    .comments-column.option-b .comment-avatar {
-        background: linear-gradient(135deg, var(--option-b-color), var(--option-b-light));
+    .poll-total {
+        text-align: center;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        padding: 8px 0;
     }
 
-    .comment-info {
+    /* Action Buttons - Instagram Style */
+    .poll-actions {
+        display: flex;
+        padding: 0 8px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .action-btn {
         flex: 1;
-        min-width: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 12px;
+        background: none;
+        border: none;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .action-btn:active {
+        transform: scale(0.95);
+    }
+
+    .action-btn .icon {
+        font-size: 1.3rem;
+    }
+
+    /* Comments Section */
+    .comments-section {
+        padding: 0 16px 16px;
+    }
+
+    .comments-toggle {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        padding: 8px 0;
+        cursor: pointer;
+    }
+
+    .comments-list {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .comments-list.expanded {
+        max-height: 1000px;
+    }
+
+    /* Comment Item - SNS Style */
+    .comment {
+        display: flex;
+        gap: 10px;
+        padding: 10px 0;
+    }
+
+    .comment-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+
+    .comment.option-a .comment-avatar {
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    }
+
+    .comment.option-b .comment-avatar {
+        background: linear-gradient(135deg, var(--secondary), #f472b6);
+    }
+
+    .comment-content {
+        flex: 1;
+    }
+
+    .comment-bubble {
+        background: var(--bg-secondary);
+        border-radius: 18px;
+        padding: 10px 14px;
+        display: inline-block;
+        max-width: 100%;
     }
 
     .comment-name {
         font-weight: 600;
-        font-size: 0.95rem;
-        margin-bottom: 2px;
+        font-size: 0.85rem;
+        margin-right: 6px;
     }
 
-    .comments-column.option-a .comment-name {
-        color: var(--option-a-light);
+    .comment.option-a .comment-name {
+        color: var(--primary);
     }
 
-    .comments-column.option-b .comment-name {
-        color: var(--option-b-light);
-    }
-
-    .comment-date {
-        font-size: 0.75rem;
-        color: var(--text-secondary);
-        opacity: 0.7;
+    .comment.option-b .comment-name {
+        color: var(--secondary);
     }
 
     .comment-text {
         font-size: 0.9rem;
-        color: var(--text-secondary);
-        margin-bottom: 12px;
-        line-height: 1.5;
+        color: var(--text-primary);
+        word-break: break-word;
     }
 
-    /* 좋아요 & 별점 영역 */
-    .comment-actions {
+    .comment-meta {
         display: flex;
         align-items: center;
-        gap: 20px;
-        padding-top: 10px;
-        border-top: 1px solid rgba(255,255,255,0.05);
+        gap: 16px;
+        padding: 4px 14px;
+        font-size: 0.75rem;
+        color: var(--text-muted);
     }
 
-    /* 좋아요 버튼 */
-    .like-btn {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        background: none;
-        border: none;
-        color: var(--text-secondary);
-        font-size: 0.85rem;
+    .comment-action {
         cursor: pointer;
-        padding: 6px 12px;
-        border-radius: 20px;
-        transition: all 0.2s ease;
+        font-weight: 500;
     }
 
-    .like-btn:hover {
-        background: rgba(239, 68, 68, 0.1);
+    .comment-action:hover {
+        text-decoration: underline;
+    }
+
+    .comment-action.liked {
         color: var(--like-color);
     }
 
-    .like-btn.liked {
-        color: var(--like-color);
-    }
-
-    .like-btn .like-icon {
-        font-size: 1.1rem;
-        transition: transform 0.2s ease;
-    }
-
-    .like-btn:hover .like-icon,
-    .like-btn.liked .like-icon {
-        transform: scale(1.2);
-    }
-
-    /* 별점 */
-    .rating-section {
+    /* Star Rating */
+    .comment-rating {
         display: flex;
         align-items: center;
-        gap: 8px;
-    }
-
-    .rating-label {
-        font-size: 0.8rem;
-        color: var(--text-secondary);
-    }
-
-    .star-rating {
-        display: flex;
         gap: 2px;
     }
 
-    .star-btn {
-        background: none;
-        border: none;
-        font-size: 1.1rem;
-        cursor: pointer;
-        padding: 2px;
-        transition: all 0.15s ease;
-        color: rgba(255,255,255,0.2);
-    }
-
-    .star-btn:hover {
-        transform: scale(1.2);
-    }
-
-    .star-btn.filled {
-        color: var(--star-color);
-    }
-
-    .avg-rating {
+    .star {
+        color: #ddd;
         font-size: 0.8rem;
+        cursor: pointer;
+    }
+
+    .star.filled {
         color: var(--star-color);
-        margin-left: 5px;
+    }
+
+    .rating-avg {
+        font-size: 0.75rem;
+        color: var(--star-color);
+        margin-left: 4px;
         font-weight: 600;
     }
 
-    .empty-comments {
-        text-align: center;
-        padding: 40px 20px;
-        color: var(--text-secondary);
-        font-size: 0.9rem;
+    /* Bottom Tab Bar - Instagram Style */
+    .tab-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: calc(56px + var(--safe-bottom));
+        padding-bottom: var(--safe-bottom);
+        background: var(--bg-primary);
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        z-index: 100;
     }
 
-    /* Welcome Screen */
-    .welcome-screen {
+    .tab-item {
+        flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100%;
-        text-align: center;
-        padding: 40px;
-    }
-
-    .welcome-icon {
-        font-size: 5rem;
-        margin-bottom: 20px;
-    }
-
-    .welcome-title {
-        font-family: 'Black Han Sans', sans-serif;
-        font-size: 2rem;
-        margin-bottom: 15px;
-        background: linear-gradient(135deg, var(--option-a-light), var(--option-b-light));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .welcome-text {
+        padding: 8px 0;
+        cursor: pointer;
         color: var(--text-secondary);
-        font-size: 1rem;
-        margin-bottom: 30px;
+        transition: color 0.2s ease;
     }
 
-    /* Modal */
+    .tab-item.active {
+        color: var(--text-primary);
+    }
+
+    .tab-item .icon {
+        font-size: 1.5rem;
+        margin-bottom: 2px;
+    }
+
+    .tab-item .label {
+        font-size: 0.65rem;
+        font-weight: 500;
+    }
+
+    .tab-create {
+        width: 44px;
+        height: 32px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    /* Modal - Full Screen Mobile Style */
     .modal-overlay {
         display: none;
         position: fixed;
@@ -602,11 +490,10 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0,0,0,0.85);
-        z-index: 1000;
-        align-items: center;
+        background: rgba(0,0,0,0.5);
+        z-index: 200;
+        align-items: flex-end;
         justify-content: center;
-        padding: 20px;
     }
 
     .modal-overlay.active {
@@ -614,115 +501,104 @@
     }
 
     .modal {
-        background: #1e1e2a;
-        border-radius: 20px;
-        padding: 30px;
         width: 100%;
-        max-width: 450px;
-        animation: modalIn 0.3s ease;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        max-width: 480px;
+        max-height: 90vh;
+        background: var(--bg-primary);
+        border-radius: 20px 20px 0 0;
+        animation: slideUp 0.3s ease;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
 
-    @keyframes modalIn {
+    @keyframes slideUp {
         from {
-            opacity: 0;
-            transform: scale(0.9) translateY(20px);
+            transform: translateY(100%);
         }
         to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
+            transform: translateY(0);
         }
     }
 
     .modal-header {
-        text-align: center;
-        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px;
+        border-bottom: 1px solid var(--border-color);
     }
 
-    .modal-icon {
-        font-size: 3.5rem;
-        margin-bottom: 10px;
+    .modal-close {
+        font-size: 1.5rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 4px;
     }
 
     .modal-title {
-        font-family: 'Black Han Sans', sans-serif;
-        font-size: 1.4rem;
+        font-weight: 600;
+        font-size: 1rem;
     }
 
-    .modal.option-a .modal-title {
-        color: var(--option-a-light);
+    .modal-submit {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
     }
 
-    .modal.option-b .modal-title {
-        color: var(--option-b-light);
+    .modal-submit:disabled {
+        opacity: 0.5;
     }
 
-    .modal.new-vote .modal-title {
-        background: linear-gradient(135deg, var(--option-a-light), var(--option-b-light));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+    .modal-body {
+        padding: 16px;
+        overflow-y: auto;
+        flex: 1;
     }
 
     .form-group {
-        margin-bottom: 18px;
+        margin-bottom: 20px;
     }
 
-    .form-group label {
+    .form-label {
         display: block;
-        margin-bottom: 8px;
         font-weight: 600;
-        color: #e0e0e8;
         font-size: 0.9rem;
+        color: var(--text-primary);
+        margin-bottom: 8px;
     }
 
-    .form-group input,
-    .form-group textarea {
+    .form-input {
         width: 100%;
-        padding: 14px;
-        border: 2px solid rgba(255,255,255,0.2);
+        padding: 14px 16px;
+        border: 1px solid var(--border-color);
         border-radius: 12px;
-        background: rgba(255,255,255,0.15);
-        color: #ffffff;
         font-size: 1rem;
-        font-family: inherit;
-        transition: all 0.3s ease;
-        -webkit-appearance: none;
-        appearance: none;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        transition: all 0.2s ease;
     }
 
-    .form-group input::placeholder,
-    .form-group textarea::placeholder {
-        color: rgba(255,255,255,0.5);
+    .form-input::placeholder {
+        color: var(--text-muted);
     }
 
-    .form-group input:focus,
-    .form-group textarea:focus {
+    .form-input:focus {
         outline: none;
-        border-color: var(--option-a-light);
-        background: rgba(255,255,255,0.2);
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        border-color: var(--primary);
+        background: var(--bg-primary);
+        box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.1);
     }
 
-    .form-group textarea {
+    textarea.form-input {
         resize: none;
-        height: 70px;
-    }
-
-    /* 모바일 입력 필드 개선 */
-    @media (max-width: 768px) {
-        .form-group input,
-        .form-group textarea {
-            font-size: 16px; /* iOS 확대 방지 */
-            padding: 16px;
-            background: rgba(255,255,255,0.2);
-            border-color: rgba(255,255,255,0.3);
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            background: rgba(255,255,255,0.25);
-        }
+        min-height: 80px;
     }
 
     .form-row {
@@ -734,734 +610,592 @@
         flex: 1;
     }
 
-    .emoji-picker {
-        display: flex;
+    /* Avatar Picker Grid */
+    .avatar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
         gap: 8px;
-        flex-wrap: wrap;
-        background: rgba(255,255,255,0.05);
-        padding: 10px;
-        border-radius: 10px;
     }
 
-    .emoji-btn {
-        width: 40px;
-        height: 40px;
-        border: 2px solid rgba(255,255,255,0.2);
-        border-radius: 10px;
-        background: rgba(255,255,255,0.1);
-        font-size: 1.3rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .emoji-btn:hover {
-        border-color: rgba(255,255,255,0.4);
-        background: rgba(255,255,255,0.15);
-    }
-
-    .emoji-btn.selected {
-        border-color: var(--option-a-light);
-        background: rgba(99, 102, 241, 0.3);
-        box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
-    }
-
-    /* 아바타 선택 */
-    .avatar-picker {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        background: rgba(255,255,255,0.05);
-        padding: 12px;
-        border-radius: 12px;
-    }
-
-    .avatar-btn {
-        width: 45px;
-        height: 45px;
-        border: 2px solid rgba(255,255,255,0.2);
+    .avatar-option {
+        aspect-ratio: 1;
         border-radius: 50%;
-        background: rgba(255,255,255,0.1);
-        font-size: 1.4rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
+        border: 2px solid var(--border-color);
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: var(--bg-secondary);
     }
 
-    .avatar-btn:hover {
-        border-color: rgba(255,255,255,0.4);
+    .avatar-option:hover {
+        border-color: var(--primary);
+    }
+
+    .avatar-option.selected {
+        border-color: var(--primary);
+        background: rgba(88, 101, 242, 0.1);
         transform: scale(1.1);
-        background: rgba(255,255,255,0.15);
     }
 
-    .avatar-btn.selected {
-        border-color: var(--option-a-light);
-        background: rgba(99, 102, 241, 0.3);
-        transform: scale(1.1);
-        box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+    /* Emoji Picker */
+    .emoji-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
     }
 
-    .modal-buttons {
+    .emoji-option {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        border: 2px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: var(--bg-secondary);
+    }
+
+    .emoji-option:hover {
+        border-color: var(--primary);
+    }
+
+    .emoji-option.selected {
+        border-color: var(--primary);
+        background: rgba(88, 101, 242, 0.1);
+    }
+
+    /* Vote Choice in Modal */
+    .vote-choice-section {
         display: flex;
         gap: 12px;
-        margin-top: 25px;
+        margin-bottom: 20px;
     }
 
-    .btn {
+    .vote-choice-btn {
         flex: 1;
-        padding: 14px;
-        border: none;
-        border-radius: 12px;
-        font-size: 1rem;
-        font-weight: 600;
+        padding: 20px;
+        border-radius: 16px;
+        border: 2px solid var(--border-color);
+        background: var(--bg-secondary);
+        text-align: center;
         cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .vote-choice-btn.option-a.selected {
+        border-color: var(--primary);
+        background: rgba(88, 101, 242, 0.1);
+    }
+
+    .vote-choice-btn.option-b.selected {
+        border-color: var(--secondary);
+        background: rgba(235, 69, 158, 0.1);
+    }
+
+    .vote-choice-icon {
+        font-size: 2rem;
+        margin-bottom: 8px;
+    }
+
+    .vote-choice-name {
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    /* Toast Notification */
+    .toast {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: var(--text-primary);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        z-index: 300;
+        opacity: 0;
         transition: all 0.3s ease;
     }
 
-    .btn-cancel {
-        background: rgba(255,255,255,0.15);
-        color: #e0e0e8;
-        border: 1px solid rgba(255,255,255,0.2);
+    .toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
     }
 
-    .btn-cancel:hover {
-        background: rgba(255,255,255,0.25);
-    }
-
-    .btn-submit {
-        color: white;
-    }
-
-    .modal.option-a .btn-submit {
-        background: linear-gradient(135deg, var(--option-a-color), var(--option-a-light));
-    }
-
-    .modal.option-b .btn-submit {
-        background: linear-gradient(135deg, var(--option-b-color), var(--option-b-light));
-    }
-
-    .modal.new-vote .btn-submit {
-        background: linear-gradient(135deg, var(--option-a-color), var(--option-b-color));
-    }
-
-    .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-    }
-
-    .btn-delete {
-        background: rgba(220, 38, 38, 0.2);
-        color: #ef4444;
-    }
-
-    .btn-delete:hover {
-        background: rgba(220, 38, 38, 0.3);
-    }
-
-    /* Mobile Toggle */
-    .mobile-toggle {
-        display: none;
+    /* Like Animation */
+    .like-animation {
         position: fixed;
-        bottom: 20px;
-        left: 20px;
-        width: 56px;
-        height: 56px;
-        background: linear-gradient(135deg, var(--option-a-color), var(--option-b-color));
-        border: none;
-        border-radius: 50%;
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-        z-index: 100;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        pointer-events: none;
+        z-index: 1000;
+        font-size: 80px;
+        animation: likePopUp 0.8s ease forwards;
     }
 
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-        width: 6px;
+    @keyframes likePopUp {
+        0% {
+            transform: scale(0);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0;
+        }
     }
 
-    ::-webkit-scrollbar-track {
-        background: transparent;
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
     }
 
-    ::-webkit-scrollbar-thumb {
-        background: rgba(255,255,255,0.2);
-        border-radius: 3px;
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 16px;
+    }
+
+    .empty-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .empty-text {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+    /* Pull to Refresh Indicator */
+    .pull-indicator {
+        text-align: center;
+        padding: 16px;
+        color: var(--text-muted);
+        font-size: 0.85rem;
     }
 
     /* Responsive */
-    @media (max-width: 768px) {
-        .sidebar {
-            position: fixed;
-            left: -280px;
-            top: 0;
-            bottom: 0;
-            z-index: 200;
-            transition: left 0.3s ease;
+    @media (min-width: 481px) {
+        .header, .tab-bar {
+            max-width: 480px;
+            left: 50%;
+            transform: translateX(-50%);
         }
-
-        .sidebar.open {
-            left: 0;
-        }
-
-        .sidebar-backdrop {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 150;
-        }
-
-        .sidebar-backdrop.open {
-            display: block;
-        }
-
-        .mobile-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .main-content {
-            padding: 20px 15px;
-        }
-
-        .vote-cards {
-            flex-direction: row;
-            gap: 10px;
-        }
-
-        .vote-card {
-            padding: 20px 15px;
-        }
-
-        .vote-card-icon {
-            font-size: 2.5rem;
-        }
-
-        .vote-card-title {
-            font-size: 1.2rem;
-        }
-
-        .vote-card-count {
-            font-size: 2rem;
-        }
-
-        .comments-section {
-            flex-direction: column;
-        }
-
-        .comments-column {
-            min-height: 200px;
-        }
-
-        .comment-actions {
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-    }
-
-    /* 애니메이션 */
-    @keyframes likePopUp {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.4); }
-        100% { transform: scale(1); }
-    }
-
-    .like-btn.animate .like-icon {
-        animation: likePopUp 0.3s ease;
-    }
-
-    @keyframes starFill {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.3); }
-        100% { transform: scale(1); }
-    }
-
-    .star-btn.animate {
-        animation: starFill 0.2s ease;
     }
 </style>
 ```
 
 </head>
 <body>
-    <div class="app-container">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h1>🗳️ Choice Vote</h1>
-                <button class="btn-new-vote" id="btn-new-vote">
-                    <span>➕</span> 신규 투표 만들기
-                </button>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <span class="header-logo">VoteGram</span>
             </div>
-            <div class="vote-list" id="vote-list"></div>
-        </aside>
+            <div class="header-icons">
+                <div class="header-icon">❤️</div>
+                <div class="header-icon">
+                    💬
+                    <span class="notification-badge"></span>
+                </div>
+            </div>
+        </header>
 
 ```
-    <!-- Mobile Backdrop -->
-    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+    <!-- Feed -->
+    <main class="feed" id="feed">
+        <!-- Polls will be rendered here -->
+    </main>
 
-    <!-- Main Content -->
-    <main class="main-content" id="main-content"></main>
+    <!-- Bottom Tab Bar -->
+    <nav class="tab-bar">
+        <div class="tab-item active" data-tab="home">
+            <span class="icon">🏠</span>
+            <span class="label">홈</span>
+        </div>
+        <div class="tab-item" data-tab="search">
+            <span class="icon">🔍</span>
+            <span class="label">검색</span>
+        </div>
+        <div class="tab-item" data-tab="create" id="btn-create">
+            <div class="tab-create">+</div>
+        </div>
+        <div class="tab-item" data-tab="activity">
+            <span class="icon">🔔</span>
+            <span class="label">활동</span>
+        </div>
+        <div class="tab-item" data-tab="profile">
+            <span class="icon">👤</span>
+            <span class="label">프로필</span>
+        </div>
+    </nav>
+</div>
 
-    <!-- Mobile Toggle Button -->
-    <button class="mobile-toggle" id="mobile-toggle">📋</button>
+<!-- Create Poll Modal -->
+<div class="modal-overlay" id="create-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="modal-close" id="create-close">✕</span>
+            <span class="modal-title">새 투표 만들기</span>
+            <button class="modal-submit" id="create-submit">공유</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">질문</label>
+                <input type="text" class="form-input" id="poll-question" placeholder="무엇이 더 좋을까요?">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">선택지 A</label>
+                    <input type="text" class="form-input" id="poll-option-a" placeholder="첫 번째 옵션">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">선택지 B</label>
+                    <input type="text" class="form-input" id="poll-option-b" placeholder="두 번째 옵션">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">이모지 선택</label>
+                <div class="form-row">
+                    <div class="emoji-grid" id="emoji-a">
+                        <div class="emoji-option selected" data-emoji="🍜">🍜</div>
+                        <div class="emoji-option" data-emoji="🏖️">🏖️</div>
+                        <div class="emoji-option" data-emoji="☕">☕</div>
+                        <div class="emoji-option" data-emoji="🐶">🐶</div>
+                        <div class="emoji-option" data-emoji="🍕">🍕</div>
+                        <div class="emoji-option" data-emoji="🎮">🎮</div>
+                    </div>
+                    <div class="emoji-grid" id="emoji-b">
+                        <div class="emoji-option selected" data-emoji="🍲">🍲</div>
+                        <div class="emoji-option" data-emoji="⛰️">⛰️</div>
+                        <div class="emoji-option" data-emoji="🍵">🍵</div>
+                        <div class="emoji-option" data-emoji="🐱">🐱</div>
+                        <div class="emoji-option" data-emoji="🍔">🍔</div>
+                        <div class="emoji-option" data-emoji="📚">📚</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Vote Modal -->
-<div class="modal-overlay" id="vote-modal-overlay">
-    <div class="modal" id="vote-modal">
+<div class="modal-overlay" id="vote-modal">
+    <div class="modal">
         <div class="modal-header">
-            <div class="modal-icon" id="vote-modal-icon">🗳️</div>
-            <h2 class="modal-title" id="vote-modal-title">투표하기</h2>
+            <span class="modal-close" id="vote-close">✕</span>
+            <span class="modal-title">투표하기</span>
+            <button class="modal-submit" id="vote-submit">완료</button>
         </div>
-        <div class="form-group">
-            <label for="voter-name">이름 (닉네임)</label>
-            <input type="text" id="voter-name" placeholder="이름을 입력하세요" maxlength="20">
-        </div>
-        <div class="form-group">
-            <label>프로필 아이콘 선택</label>
-            <div class="avatar-picker" id="avatar-picker">
-                <button type="button" class="avatar-btn selected" data-avatar="😀">😀</button>
-                <button type="button" class="avatar-btn" data-avatar="😎">😎</button>
-                <button type="button" class="avatar-btn" data-avatar="🤓">🤓</button>
-                <button type="button" class="avatar-btn" data-avatar="😊">😊</button>
-                <button type="button" class="avatar-btn" data-avatar="🥳">🥳</button>
-                <button type="button" class="avatar-btn" data-avatar="😇">😇</button>
-                <button type="button" class="avatar-btn" data-avatar="🤗">🤗</button>
-                <button type="button" class="avatar-btn" data-avatar="🧑‍💻">🧑‍💻</button>
-                <button type="button" class="avatar-btn" data-avatar="👨‍🎨">👨‍🎨</button>
-                <button type="button" class="avatar-btn" data-avatar="👩‍🚀">👩‍🚀</button>
-                <button type="button" class="avatar-btn" data-avatar="🦊">🦊</button>
-                <button type="button" class="avatar-btn" data-avatar="🐻">🐻</button>
-                <button type="button" class="avatar-btn" data-avatar="🐰">🐰</button>
-                <button type="button" class="avatar-btn" data-avatar="🦁">🦁</button>
-                <button type="button" class="avatar-btn" data-avatar="🐸">🐸</button>
+        <div class="modal-body">
+            <div class="vote-choice-section" id="vote-choices">
+                <!-- Rendered dynamically -->
             </div>
-        </div>
-        <div class="form-group">
-            <label for="voter-comment">한마디 (선택)</label>
-            <textarea id="voter-comment" placeholder="왜 이 선택을 하셨나요?" maxlength="100"></textarea>
-        </div>
-        <div class="modal-buttons">
-            <button class="btn btn-cancel" id="vote-cancel">취소</button>
-            <button class="btn btn-submit" id="vote-submit">투표하기</button>
+            <div class="form-group">
+                <label class="form-label">닉네임</label>
+                <input type="text" class="form-input" id="voter-name" placeholder="이름을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label class="form-label">프로필 선택</label>
+                <div class="avatar-grid" id="avatar-grid">
+                    <div class="avatar-option selected" data-avatar="😀">😀</div>
+                    <div class="avatar-option" data-avatar="😎">😎</div>
+                    <div class="avatar-option" data-avatar="🤓">🤓</div>
+                    <div class="avatar-option" data-avatar="😊">😊</div>
+                    <div class="avatar-option" data-avatar="🥳">🥳</div>
+                    <div class="avatar-option" data-avatar="🤗">🤗</div>
+                    <div class="avatar-option" data-avatar="🧑‍💻">🧑‍💻</div>
+                    <div class="avatar-option" data-avatar="🦊">🦊</div>
+                    <div class="avatar-option" data-avatar="🐻">🐻</div>
+                    <div class="avatar-option" data-avatar="🐰">🐰</div>
+                    <div class="avatar-option" data-avatar="🦁">🦁</div>
+                    <div class="avatar-option" data-avatar="🐸">🐸</div>
+                    <div class="avatar-option" data-avatar="🐼">🐼</div>
+                    <div class="avatar-option" data-avatar="🦄">🦄</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">한마디 (선택)</label>
+                <textarea class="form-input" id="voter-comment" placeholder="왜 이 선택을 하셨나요?"></textarea>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- New Vote Modal -->
-<div class="modal-overlay" id="new-vote-modal-overlay">
-    <div class="modal new-vote" id="new-vote-modal">
-        <div class="modal-header">
-            <div class="modal-icon">🗳️</div>
-            <h2 class="modal-title">신규 투표 만들기</h2>
-        </div>
-        <div class="form-group">
-            <label for="vote-question">질문</label>
-            <input type="text" id="vote-question" placeholder="예: 당신은 어디를 좋아합니까?" maxlength="50">
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="option-a-name">선택지 A</label>
-                <input type="text" id="option-a-name" placeholder="예: 바다" maxlength="20">
-            </div>
-            <div class="form-group">
-                <label for="option-b-name">선택지 B</label>
-                <input type="text" id="option-b-name" placeholder="예: 산" maxlength="20">
-            </div>
-        </div>
-        <div class="form-group">
-            <label>아이콘 선택 (A / B)</label>
-            <div class="form-row">
-                <div class="emoji-picker" id="emoji-picker-a">
-                    <button type="button" class="emoji-btn selected" data-emoji="🏖️">🏖️</button>
-                    <button type="button" class="emoji-btn" data-emoji="🌊">🌊</button>
-                    <button type="button" class="emoji-btn" data-emoji="🍜">🍜</button>
-                    <button type="button" class="emoji-btn" data-emoji="☕">☕</button>
-                    <button type="button" class="emoji-btn" data-emoji="🐶">🐶</button>
-                    <button type="button" class="emoji-btn" data-emoji="🍕">🍕</button>
-                </div>
-                <div class="emoji-picker" id="emoji-picker-b">
-                    <button type="button" class="emoji-btn selected" data-emoji="⛰️">⛰️</button>
-                    <button type="button" class="emoji-btn" data-emoji="🏔️">🏔️</button>
-                    <button type="button" class="emoji-btn" data-emoji="🍲">🍲</button>
-                    <button type="button" class="emoji-btn" data-emoji="🍵">🍵</button>
-                    <button type="button" class="emoji-btn" data-emoji="🐱">🐱</button>
-                    <button type="button" class="emoji-btn" data-emoji="🍔">🍔</button>
-                </div>
-            </div>
-        </div>
-        <div class="modal-buttons">
-            <button class="btn btn-cancel" id="new-vote-cancel">취소</button>
-            <button class="btn btn-submit" id="new-vote-submit">만들기</button>
-        </div>
-    </div>
-</div>
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <script>
     // ============================================
-    // Vote System App with Likes & Ratings
+    // VoteGram - SNS Style Voting App
     // ============================================
-    class VoteApp {
+    class VoteGram {
         constructor() {
             this.polls = [];
             this.currentPollId = null;
-            this.currentVoteOption = null;
-            this.selectedEmojiA = '🏖️';
-            this.selectedEmojiB = '⛰️';
+            this.selectedOption = null;
             this.selectedAvatar = '😀';
+            this.selectedEmojiA = '🍜';
+            this.selectedEmojiB = '🍲';
             
             this.loadData();
             this.bindEvents();
             this.render();
             
             if (this.polls.length === 0) {
-                this.createDefaultPolls();
+                this.createSamplePolls();
             }
         }
 
-        createDefaultPolls() {
-            const defaultPolls = [
+        createSamplePolls() {
+            this.polls = [
                 {
                     id: Date.now(),
-                    question: '짜장면 vs 짬뽕',
+                    question: '짜장면 vs 짬뽕, 당신의 선택은?',
                     optionA: { name: '짜장면', icon: '🍜' },
                     optionB: { name: '짬뽕', icon: '🍲' },
+                    author: 'VoteGram',
+                    authorAvatar: '🗳️',
                     votes: [
-                        { id: 1, option: 'a', name: '맛집탐험가', avatar: '😎', comment: '역시 짜장면이 최고!', timestamp: Date.now() - 3600000, likes: 5, ratings: [5, 4, 5] },
-                        { id: 2, option: 'b', name: '매운맛마니아', avatar: '🔥', comment: '얼큰한 짬뽕이 진리', timestamp: Date.now() - 7200000, likes: 3, ratings: [4, 5] },
-                        { id: 3, option: 'a', name: '검은콩사랑', avatar: '🐻', comment: '춘장의 고소함~', timestamp: Date.now() - 10800000, likes: 2, ratings: [5] }
+                        { id: 1, option: 'a', name: '맛집탐험가', avatar: '😎', comment: '역시 짜장면이 최고!', timestamp: Date.now() - 3600000, likes: 12, liked: false, ratings: [5, 4, 5] },
+                        { id: 2, option: 'b', name: '매운맛러버', avatar: '🔥', comment: '얼큰한 짬뽕이 진리죠', timestamp: Date.now() - 7200000, likes: 8, liked: false, ratings: [5, 5] },
+                        { id: 3, option: 'a', name: '검정콩파', avatar: '🐻', comment: '춘장의 깊은 맛~', timestamp: Date.now() - 10800000, likes: 5, liked: false, ratings: [4, 5] }
                     ],
-                    createdAt: Date.now()
+                    createdAt: Date.now() - 86400000
                 },
                 {
                     id: Date.now() + 1,
-                    question: '당신은 어디를 좋아합니까?',
+                    question: '휴가지로 어디가 좋을까요?',
                     optionA: { name: '바다', icon: '🏖️' },
                     optionB: { name: '산', icon: '⛰️' },
-                    votes: [],
-                    createdAt: Date.now() + 1
+                    author: 'TravelLover',
+                    authorAvatar: '✈️',
+                    votes: [
+                        { id: 4, option: 'a', name: '서퍼보이', avatar: '🏄', comment: '파도소리 최고!', timestamp: Date.now() - 1800000, likes: 7, liked: false, ratings: [5] },
+                        { id: 5, option: 'b', name: '등산러', avatar: '🥾', comment: '정상에서 보는 풍경이란...', timestamp: Date.now() - 3600000, likes: 9, liked: false, ratings: [5, 4] }
+                    ],
+                    createdAt: Date.now() - 43200000
                 }
             ];
-            
-            this.polls = defaultPolls;
-            this.currentPollId = defaultPolls[0].id;
             this.saveData();
             this.render();
         }
 
         loadData() {
             try {
-                const saved = localStorage.getItem('voteAppDataV2');
+                const saved = localStorage.getItem('voteGramData');
                 if (saved) {
-                    const data = JSON.parse(saved);
-                    this.polls = data.polls || [];
-                    this.currentPollId = data.currentPollId || null;
+                    this.polls = JSON.parse(saved);
                 }
             } catch (e) {
-                console.error('데이터 로드 실패:', e);
+                console.error('Load error:', e);
             }
         }
 
         saveData() {
             try {
-                localStorage.setItem('voteAppDataV2', JSON.stringify({
-                    polls: this.polls,
-                    currentPollId: this.currentPollId
-                }));
+                localStorage.setItem('voteGramData', JSON.stringify(this.polls));
             } catch (e) {
-                console.error('데이터 저장 실패:', e);
+                console.error('Save error:', e);
             }
         }
 
         bindEvents() {
-            // 신규 투표 버튼
-            document.getElementById('btn-new-vote').addEventListener('click', () => {
-                this.openNewVoteModal();
+            // Create button
+            document.getElementById('btn-create').addEventListener('click', () => {
+                this.openCreateModal();
             });
 
-            // 신규 투표 모달
-            document.getElementById('new-vote-cancel').addEventListener('click', () => {
-                this.closeNewVoteModal();
+            // Create modal
+            document.getElementById('create-close').addEventListener('click', () => {
+                this.closeModal('create-modal');
             });
             
-            document.getElementById('new-vote-submit').addEventListener('click', () => {
-                this.createNewPoll();
-            });
-            
-            document.getElementById('new-vote-modal-overlay').addEventListener('click', (e) => {
-                if (e.target.id === 'new-vote-modal-overlay') this.closeNewVoteModal();
+            document.getElementById('create-submit').addEventListener('click', () => {
+                this.createPoll();
             });
 
-            // 이모지 선택
-            document.getElementById('emoji-picker-a').addEventListener('click', (e) => {
-                if (e.target.classList.contains('emoji-btn')) {
-                    document.querySelectorAll('#emoji-picker-a .emoji-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('create-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'create-modal') this.closeModal('create-modal');
+            });
+
+            // Emoji selection
+            document.getElementById('emoji-a').addEventListener('click', (e) => {
+                if (e.target.classList.contains('emoji-option')) {
+                    document.querySelectorAll('#emoji-a .emoji-option').forEach(el => el.classList.remove('selected'));
                     e.target.classList.add('selected');
                     this.selectedEmojiA = e.target.dataset.emoji;
                 }
             });
-            
-            document.getElementById('emoji-picker-b').addEventListener('click', (e) => {
-                if (e.target.classList.contains('emoji-btn')) {
-                    document.querySelectorAll('#emoji-picker-b .emoji-btn').forEach(btn => btn.classList.remove('selected'));
+
+            document.getElementById('emoji-b').addEventListener('click', (e) => {
+                if (e.target.classList.contains('emoji-option')) {
+                    document.querySelectorAll('#emoji-b .emoji-option').forEach(el => el.classList.remove('selected'));
                     e.target.classList.add('selected');
                     this.selectedEmojiB = e.target.dataset.emoji;
                 }
             });
 
-            // 아바타 선택
-            document.getElementById('avatar-picker').addEventListener('click', (e) => {
-                if (e.target.classList.contains('avatar-btn')) {
-                    document.querySelectorAll('#avatar-picker .avatar-btn').forEach(btn => btn.classList.remove('selected'));
+            // Vote modal
+            document.getElementById('vote-close').addEventListener('click', () => {
+                this.closeModal('vote-modal');
+            });
+
+            document.getElementById('vote-submit').addEventListener('click', () => {
+                this.submitVote();
+            });
+
+            document.getElementById('vote-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'vote-modal') this.closeModal('vote-modal');
+            });
+
+            // Avatar selection
+            document.getElementById('avatar-grid').addEventListener('click', (e) => {
+                if (e.target.classList.contains('avatar-option')) {
+                    document.querySelectorAll('#avatar-grid .avatar-option').forEach(el => el.classList.remove('selected'));
                     e.target.classList.add('selected');
                     this.selectedAvatar = e.target.dataset.avatar;
                 }
             });
 
-            // 투표 모달
-            document.getElementById('vote-cancel').addEventListener('click', () => {
-                this.closeVoteModal();
-            });
-            
-            document.getElementById('vote-submit').addEventListener('click', () => {
-                this.submitVote();
-            });
-            
-            document.getElementById('vote-modal-overlay').addEventListener('click', (e) => {
-                if (e.target.id === 'vote-modal-overlay') this.closeVoteModal();
-            });
-
-            document.getElementById('voter-name').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') this.submitVote();
-            });
-
-            // 모바일 토글
-            document.getElementById('mobile-toggle').addEventListener('click', () => {
-                document.getElementById('sidebar').classList.toggle('open');
-                document.getElementById('sidebar-backdrop').classList.toggle('open');
-            });
-
-            document.getElementById('sidebar-backdrop').addEventListener('click', () => {
-                document.getElementById('sidebar').classList.remove('open');
-                document.getElementById('sidebar-backdrop').classList.remove('open');
-            });
-        }
-
-        render() {
-            this.renderPollList();
-            this.renderMainContent();
-        }
-
-        renderPollList() {
-            const container = document.getElementById('vote-list');
-            
-            if (this.polls.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-list">
-                        <div class="empty-list-icon">📭</div>
-                        <p>아직 투표가 없습니다.<br>첫 번째 투표를 만들어보세요!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = this.polls.map(poll => {
-                const votesA = poll.votes.filter(v => v.option === 'a').length;
-                const votesB = poll.votes.filter(v => v.option === 'b').length;
-                const total = votesA + votesB;
-                const isActive = poll.id === this.currentPollId;
-                
-                return `
-                    <div class="vote-list-item ${isActive ? 'active' : ''}" data-poll-id="${poll.id}">
-                        <div class="vote-list-title">${this.escapeHtml(poll.question)}</div>
-                        <div class="vote-list-options">
-                            <span>${poll.optionA.icon} ${this.escapeHtml(poll.optionA.name)}</span>
-                            <span>${poll.optionB.icon} ${this.escapeHtml(poll.optionB.name)}</span>
-                        </div>
-                        <div class="vote-list-stats">
-                            <span>총 ${total}표</span>
-                            <span>${this.formatDate(poll.createdAt)}</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            container.querySelectorAll('.vote-list-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    this.selectPoll(parseInt(item.dataset.pollId));
+            // Tab bar
+            document.querySelectorAll('.tab-item:not([data-tab="create"])').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    if (tab.dataset.tab === 'home') {
+                        this.render();
+                    }
                 });
             });
         }
 
-        renderMainContent() {
-            const container = document.getElementById('main-content');
-            const poll = this.polls.find(p => p.id === this.currentPollId);
-
-            if (!poll) {
-                container.innerHTML = `
-                    <div class="welcome-screen">
-                        <div class="welcome-icon">🗳️</div>
-                        <h2 class="welcome-title">Choice Vote</h2>
-                        <p class="welcome-text">좌측 목록에서 투표를 선택하거나<br>새로운 투표를 만들어보세요!</p>
-                        <button class="btn-new-vote" onclick="voteApp.openNewVoteModal()">
-                            <span>➕</span> 신규 투표 만들기
-                        </button>
+        render() {
+            const feed = document.getElementById('feed');
+            
+            if (this.polls.length === 0) {
+                feed.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🗳️</div>
+                        <div class="empty-title">아직 투표가 없어요</div>
+                        <div class="empty-text">첫 번째 투표를 만들어보세요!</div>
                     </div>
                 `;
                 return;
             }
 
+            feed.innerHTML = this.polls.map(poll => this.renderPollCard(poll)).join('');
+            this.bindPollEvents();
+        }
+
+        renderPollCard(poll) {
             const votesA = poll.votes.filter(v => v.option === 'a');
             const votesB = poll.votes.filter(v => v.option === 'b');
             const total = votesA.length + votesB.length;
             const percentA = total > 0 ? Math.round((votesA.length / total) * 100) : 50;
             const percentB = total > 0 ? 100 - percentA : 50;
 
-            container.innerHTML = `
-                <div class="content-wrapper">
-                    <header class="vote-header">
-                        <h1 class="vote-question">${this.escapeHtml(poll.question)}</h1>
-                        <p class="vote-date">생성일: ${this.formatDateFull(poll.createdAt)}</p>
-                    </header>
-
-                    <div class="vote-cards-wrapper">
-                        <section class="vote-cards">
-                            <div class="vote-card option-a" data-option="a">
-                                <span class="vote-card-icon">${poll.optionA.icon}</span>
-                                <h2 class="vote-card-title">${this.escapeHtml(poll.optionA.name)}</h2>
-                                <div class="vote-card-count">${votesA.length}</div>
-                                <div class="vote-card-percent">${percentA}%</div>
-                                <div class="vote-card-hint">👆 터치하여 투표</div>
-                            </div>
-                            <div class="vote-card option-b" data-option="b">
-                                <span class="vote-card-icon">${poll.optionB.icon}</span>
-                                <h2 class="vote-card-title">${this.escapeHtml(poll.optionB.name)}</h2>
-                                <div class="vote-card-count">${votesB.length}</div>
-                                <div class="vote-card-percent">${percentB}%</div>
-                                <div class="vote-card-hint">👆 터치하여 투표</div>
-                            </div>
-                        </section>
-                        <div class="vs-badge">VS</div>
+            return `
+                <article class="poll-card" data-poll-id="${poll.id}">
+                    <div class="poll-header">
+                        <div class="poll-avatar">${poll.authorAvatar || '🗳️'}</div>
+                        <div class="poll-author-info">
+                            <div class="poll-author">${this.escapeHtml(poll.author || 'VoteGram')}</div>
+                            <div class="poll-time">${this.formatTime(poll.createdAt)}</div>
+                        </div>
+                        <div class="poll-menu" data-action="menu" data-poll-id="${poll.id}">⋯</div>
                     </div>
 
-                    <section class="progress-section">
+                    <div class="poll-question">${this.escapeHtml(poll.question)}</div>
+
+                    <div class="vote-options">
+                        <div class="vote-option option-a" data-poll-id="${poll.id}" data-option="a">
+                            <div class="vote-option-icon">${poll.optionA.icon}</div>
+                            <div class="vote-option-name">${this.escapeHtml(poll.optionA.name)}</div>
+                            <div class="vote-option-stats">
+                                <div class="vote-count">${votesA.length}</div>
+                                <div class="vote-percent">${percentA}%</div>
+                            </div>
+                        </div>
+                        <div class="vote-option option-b" data-poll-id="${poll.id}" data-option="b">
+                            <div class="vote-option-icon">${poll.optionB.icon}</div>
+                            <div class="vote-option-name">${this.escapeHtml(poll.optionB.name)}</div>
+                            <div class="vote-option-stats">
+                                <div class="vote-count">${votesB.length}</div>
+                                <div class="vote-percent">${percentB}%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="poll-progress">
                         <div class="progress-bar">
-                            <div class="progress-fill option-a" style="width: ${percentA}%;">
-                                ${percentA >= 15 ? poll.optionA.name + ' ' + percentA + '%' : ''}
-                            </div>
-                            <div class="progress-fill option-b" style="width: ${percentB}%;">
-                                ${percentB >= 15 ? poll.optionB.name + ' ' + percentB + '%' : ''}
-                            </div>
+                            <div class="progress-a" style="width: ${percentA}%"></div>
+                            <div class="progress-b" style="width: ${percentB}%"></div>
                         </div>
-                        <div class="total-votes">총 <strong>${total}</strong>표</div>
-                    </section>
+                        <div class="poll-total">총 ${total}명 참여</div>
+                    </div>
 
-                    <section class="comments-section">
-                        <div class="comments-column option-a">
-                            <div class="comments-header">
-                                <span class="comments-header-icon">${poll.optionA.icon}</span>
-                                <span class="comments-header-title">${this.escapeHtml(poll.optionA.name)} 의견</span>
-                                <span class="comments-header-count">${votesA.length}명</span>
-                            </div>
-                            <div class="comments-list">
-                                ${this.renderComments(votesA, 'a')}
-                            </div>
-                        </div>
-                        <div class="comments-column option-b">
-                            <div class="comments-header">
-                                <span class="comments-header-icon">${poll.optionB.icon}</span>
-                                <span class="comments-header-title">${this.escapeHtml(poll.optionB.name)} 의견</span>
-                                <span class="comments-header-count">${votesB.length}명</span>
-                            </div>
-                            <div class="comments-list">
-                                ${this.renderComments(votesB, 'b')}
-                            </div>
-                        </div>
-                    </section>
-
-                    <div style="margin-top: 30px; text-align: center;">
-                        <button class="btn btn-delete" onclick="voteApp.deletePoll(${poll.id})" style="padding: 12px 30px;">
-                            🗑️ 이 투표 삭제
+                    <div class="poll-actions">
+                        <button class="action-btn" data-action="vote" data-poll-id="${poll.id}">
+                            <span class="icon">🗳️</span>
+                            <span>투표하기</span>
+                        </button>
+                        <button class="action-btn" data-action="share" data-poll-id="${poll.id}">
+                            <span class="icon">📤</span>
+                            <span>공유</span>
                         </button>
                     </div>
-                </div>
+
+                    <div class="comments-section">
+                        <div class="comments-toggle" data-poll-id="${poll.id}">
+                            ${poll.votes.length > 0 ? `댓글 ${poll.votes.length}개 모두 보기` : '아직 댓글이 없습니다'}
+                        </div>
+                        <div class="comments-list" id="comments-${poll.id}">
+                            ${this.renderComments(poll.votes)}
+                        </div>
+                    </div>
+                </article>
             `;
-
-            // 투표 카드 클릭
-            container.querySelectorAll('.vote-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    this.openVoteModal(card.dataset.option);
-                });
-            });
-
-            // 좋아요 버튼 클릭
-            container.querySelectorAll('.like-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.toggleLike(parseInt(btn.dataset.voteId));
-                    btn.classList.add('animate');
-                    setTimeout(() => btn.classList.remove('animate'), 300);
-                });
-            });
-
-            // 별점 클릭
-            container.querySelectorAll('.star-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.addRating(parseInt(btn.dataset.voteId), parseInt(btn.dataset.star));
-                    btn.classList.add('animate');
-                    setTimeout(() => btn.classList.remove('animate'), 200);
-                });
-            });
         }
 
-        renderComments(votes, option) {
-            if (votes.length === 0) {
-                return '<div class="empty-comments">아직 의견이 없습니다</div>';
-            }
-
+        renderComments(votes) {
+            if (votes.length === 0) return '';
+            
             return votes.map(v => {
                 const avgRating = v.ratings && v.ratings.length > 0 
-                    ? (v.ratings.reduce((a, b) => a + b, 0) / v.ratings.length).toFixed(1)
+                    ? (v.ratings.reduce((a, b) => a + b, 0) / v.ratings.length).toFixed(1) 
                     : null;
                 
                 return `
-                    <div class="comment-item">
-                        <div class="comment-header">
-                            <div class="comment-avatar">
-                                ${v.profileImage 
-                                    ? `<img src="${v.profileImage}" alt="프로필">` 
-                                    : (v.avatar || '😀')}
+                    <div class="comment option-${v.option}">
+                        <div class="comment-avatar">${v.avatar}</div>
+                        <div class="comment-content">
+                            <div class="comment-bubble">
+                                <span class="comment-name">${this.escapeHtml(v.name)}</span>
+                                <span class="comment-text">${this.escapeHtml(v.comment || '')}</span>
                             </div>
-                            <div class="comment-info">
-                                <div class="comment-name">${this.escapeHtml(v.name)}</div>
-                                <div class="comment-date">${this.formatDate(v.timestamp)}</div>
-                            </div>
-                        </div>
-                        <div class="comment-text">${this.escapeHtml(v.comment || '(코멘트 없음)')}</div>
-                        <div class="comment-actions">
-                            <button class="like-btn ${v.liked ? 'liked' : ''}" data-vote-id="${v.id}">
-                                <span class="like-icon">${v.liked ? '❤️' : '🤍'}</span>
-                                <span class="like-count">${v.likes || 0}</span>
-                            </button>
-                            <div class="rating-section">
-                                <span class="rating-label">평가:</span>
-                                <div class="star-rating">
-                                    ${[1,2,3,4,5].map(star => `
-                                        <button class="star-btn ${avgRating && star <= Math.round(avgRating) ? 'filled' : ''}" 
-                                                data-vote-id="${v.id}" 
-                                                data-star="${star}">★</button>
+                            <div class="comment-meta">
+                                <span class="comment-time">${this.formatTime(v.timestamp)}</span>
+                                <span class="comment-action ${v.liked ? 'liked' : ''}" data-vote-id="${v.id}" data-action="like">
+                                    좋아요 ${v.likes || 0}
+                                </span>
+                                <div class="comment-rating">
+                                    ${[1,2,3,4,5].map(s => `
+                                        <span class="star ${avgRating && s <= Math.round(avgRating) ? 'filled' : ''}" 
+                                              data-vote-id="${v.id}" data-star="${s}">★</span>
                                     `).join('')}
+                                    ${avgRating ? `<span class="rating-avg">${avgRating}</span>` : ''}
                                 </div>
-                                ${avgRating ? `<span class="avg-rating">${avgRating}</span>` : ''}
                             </div>
                         </div>
                     </div>
@@ -1469,127 +1203,131 @@
             }).join('');
         }
 
-        toggleLike(voteId) {
-            const poll = this.polls.find(p => p.id === this.currentPollId);
-            if (!poll) return;
+        bindPollEvents() {
+            // Vote options click
+            document.querySelectorAll('.vote-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    this.openVoteModal(parseInt(opt.dataset.pollId), opt.dataset.option);
+                });
+            });
 
-            const vote = poll.votes.find(v => v.id === voteId);
-            if (!vote) return;
+            // Action buttons
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const action = btn.dataset.action;
+                    const pollId = parseInt(btn.dataset.pollId);
+                    
+                    if (action === 'vote') {
+                        this.openVoteModal(pollId);
+                    } else if (action === 'share') {
+                        this.sharePoll(pollId);
+                    }
+                });
+            });
 
-            if (!vote.likes) vote.likes = 0;
-            
-            if (vote.liked) {
-                vote.likes--;
-                vote.liked = false;
-            } else {
-                vote.likes++;
-                vote.liked = true;
-            }
+            // Comments toggle
+            document.querySelectorAll('.comments-toggle').forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const pollId = toggle.dataset.pollId;
+                    const list = document.getElementById(`comments-${pollId}`);
+                    list.classList.toggle('expanded');
+                    toggle.textContent = list.classList.contains('expanded') ? '댓글 숨기기' : `댓글 ${this.polls.find(p => p.id == pollId)?.votes.length || 0}개 모두 보기`;
+                });
+            });
 
-            this.saveData();
-            this.render();
+            // Like buttons
+            document.querySelectorAll('.comment-action[data-action="like"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    this.toggleLike(parseInt(btn.dataset.voteId));
+                });
+            });
+
+            // Star ratings
+            document.querySelectorAll('.star').forEach(star => {
+                star.addEventListener('click', () => {
+                    this.addRating(parseInt(star.dataset.voteId), parseInt(star.dataset.star));
+                });
+            });
+
+            // Poll menu
+            document.querySelectorAll('[data-action="menu"]').forEach(menu => {
+                menu.addEventListener('click', () => {
+                    if (confirm('이 투표를 삭제하시겠습니까?')) {
+                        this.deletePoll(parseInt(menu.dataset.pollId));
+                    }
+                });
+            });
         }
 
-        addRating(voteId, star) {
-            const poll = this.polls.find(p => p.id === this.currentPollId);
-            if (!poll) return;
-
-            const vote = poll.votes.find(v => v.id === voteId);
-            if (!vote) return;
-
-            if (!vote.ratings) vote.ratings = [];
-            vote.ratings.push(star);
-
-            this.saveData();
-            this.render();
+        openCreateModal() {
+            document.getElementById('poll-question').value = '';
+            document.getElementById('poll-option-a').value = '';
+            document.getElementById('poll-option-b').value = '';
+            document.getElementById('create-modal').classList.add('active');
         }
 
-        selectPoll(pollId) {
+        openVoteModal(pollId, option = null) {
             this.currentPollId = pollId;
-            this.saveData();
-            this.render();
+            this.selectedOption = option;
             
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebar-backdrop').classList.remove('open');
+            const poll = this.polls.find(p => p.id === pollId);
+            if (!poll) return;
+
+            const choices = document.getElementById('vote-choices');
+            choices.innerHTML = `
+                <div class="vote-choice-btn option-a ${option === 'a' ? 'selected' : ''}" data-option="a">
+                    <div class="vote-choice-icon">${poll.optionA.icon}</div>
+                    <div class="vote-choice-name">${this.escapeHtml(poll.optionA.name)}</div>
+                </div>
+                <div class="vote-choice-btn option-b ${option === 'b' ? 'selected' : ''}" data-option="b">
+                    <div class="vote-choice-icon">${poll.optionB.icon}</div>
+                    <div class="vote-choice-name">${this.escapeHtml(poll.optionB.name)}</div>
+                </div>
+            `;
+
+            choices.querySelectorAll('.vote-choice-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    choices.querySelectorAll('.vote-choice-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    this.selectedOption = btn.dataset.option;
+                });
+            });
+
+            document.getElementById('voter-name').value = '';
+            document.getElementById('voter-comment').value = '';
+            document.getElementById('vote-modal').classList.add('active');
         }
 
-        openNewVoteModal() {
-            document.getElementById('vote-question').value = '';
-            document.getElementById('option-a-name').value = '';
-            document.getElementById('option-b-name').value = '';
-            document.getElementById('new-vote-modal-overlay').classList.add('active');
-            setTimeout(() => document.getElementById('vote-question').focus(), 100);
+        closeModal(id) {
+            document.getElementById(id).classList.remove('active');
         }
 
-        closeNewVoteModal() {
-            document.getElementById('new-vote-modal-overlay').classList.remove('active');
-        }
+        createPoll() {
+            const question = document.getElementById('poll-question').value.trim();
+            const optionA = document.getElementById('poll-option-a').value.trim();
+            const optionB = document.getElementById('poll-option-b').value.trim();
 
-        createNewPoll() {
-            const question = document.getElementById('vote-question').value.trim();
-            const optionAName = document.getElementById('option-a-name').value.trim();
-            const optionBName = document.getElementById('option-b-name').value.trim();
-
-            if (!question) {
-                alert('질문을 입력해주세요!');
-                return;
-            }
-            if (!optionAName || !optionBName) {
-                alert('두 가지 선택지를 모두 입력해주세요!');
+            if (!question || !optionA || !optionB) {
+                this.showToast('모든 항목을 입력해주세요');
                 return;
             }
 
             const newPoll = {
                 id: Date.now(),
-                question: question,
-                optionA: { name: optionAName, icon: this.selectedEmojiA },
-                optionB: { name: optionBName, icon: this.selectedEmojiB },
+                question,
+                optionA: { name: optionA, icon: this.selectedEmojiA },
+                optionB: { name: optionB, icon: this.selectedEmojiB },
+                author: 'You',
+                authorAvatar: '👤',
                 votes: [],
                 createdAt: Date.now()
             };
 
             this.polls.unshift(newPoll);
-            this.currentPollId = newPoll.id;
             this.saveData();
-            this.closeNewVoteModal();
+            this.closeModal('create-modal');
             this.render();
-        }
-
-        deletePoll(pollId) {
-            if (!confirm('정말 이 투표를 삭제하시겠습니까?')) return;
-            
-            this.polls = this.polls.filter(p => p.id !== pollId);
-            this.currentPollId = this.polls.length > 0 ? this.polls[0].id : null;
-            this.saveData();
-            this.render();
-        }
-
-        openVoteModal(option) {
-            const poll = this.polls.find(p => p.id === this.currentPollId);
-            if (!poll) return;
-
-            this.currentVoteOption = option;
-            const modal = document.getElementById('vote-modal');
-            const optionData = option === 'a' ? poll.optionA : poll.optionB;
-            
-            modal.className = 'modal option-' + option;
-            document.getElementById('vote-modal-icon').textContent = optionData.icon;
-            document.getElementById('vote-modal-title').textContent = optionData.name + '에 투표';
-            document.getElementById('voter-name').value = '';
-            document.getElementById('voter-comment').value = '';
-            
-            // 아바타 선택 초기화
-            document.querySelectorAll('#avatar-picker .avatar-btn').forEach(btn => btn.classList.remove('selected'));
-            document.querySelector('#avatar-picker .avatar-btn').classList.add('selected');
-            this.selectedAvatar = '😀';
-            
-            document.getElementById('vote-modal-overlay').classList.add('active');
-            setTimeout(() => document.getElementById('voter-name').focus(), 100);
-        }
-
-        closeVoteModal() {
-            document.getElementById('vote-modal-overlay').classList.remove('active');
-            this.currentVoteOption = null;
+            this.showToast('투표가 생성되었습니다! 🎉');
         }
 
         submitVote() {
@@ -1597,20 +1335,24 @@
             const comment = document.getElementById('voter-comment').value.trim();
 
             if (!name) {
-                alert('이름을 입력해주세요!');
+                this.showToast('이름을 입력해주세요');
+                return;
+            }
+
+            if (!this.selectedOption) {
+                this.showToast('선택지를 선택해주세요');
                 return;
             }
 
             const poll = this.polls.find(p => p.id === this.currentPollId);
-            if (!poll || !this.currentVoteOption) return;
+            if (!poll) return;
 
             poll.votes.unshift({
                 id: Date.now(),
-                option: this.currentVoteOption,
-                name: name,
+                option: this.selectedOption,
+                name,
                 avatar: this.selectedAvatar,
-                profileImage: null, // 향후 프로필 이미지 URL
-                comment: comment,
+                comment,
                 timestamp: Date.now(),
                 likes: 0,
                 liked: false,
@@ -1618,24 +1360,90 @@
             });
 
             this.saveData();
-            this.closeVoteModal();
+            this.closeModal('vote-modal');
             this.render();
+            this.showToast('투표 완료! 🗳️');
         }
 
-        formatDate(timestamp) {
-            const date = new Date(timestamp);
-            const now = new Date();
-            const diff = now - date;
-
-            if (diff < 60000) return '방금 전';
-            if (diff < 3600000) return Math.floor(diff / 60000) + '분 전';
-            if (diff < 86400000) return Math.floor(diff / 3600000) + '시간 전';
-            return (date.getMonth() + 1) + '/' + date.getDate();
+        toggleLike(voteId) {
+            for (const poll of this.polls) {
+                const vote = poll.votes.find(v => v.id === voteId);
+                if (vote) {
+                    vote.liked = !vote.liked;
+                    vote.likes = (vote.likes || 0) + (vote.liked ? 1 : -1);
+                    this.saveData();
+                    this.render();
+                    if (vote.liked) {
+                        this.showLikeAnimation();
+                    }
+                    break;
+                }
+            }
         }
 
-        formatDateFull(timestamp) {
-            const date = new Date(timestamp);
-            return `${date.getFullYear()}. ${date.getMonth() + 1}. ${date.getDate()}`;
+        addRating(voteId, star) {
+            for (const poll of this.polls) {
+                const vote = poll.votes.find(v => v.id === voteId);
+                if (vote) {
+                    if (!vote.ratings) vote.ratings = [];
+                    vote.ratings.push(star);
+                    this.saveData();
+                    this.render();
+                    this.showToast(`${star}점을 주셨습니다 ⭐`);
+                    break;
+                }
+            }
+        }
+
+        deletePoll(pollId) {
+            this.polls = this.polls.filter(p => p.id !== pollId);
+            this.saveData();
+            this.render();
+            this.showToast('투표가 삭제되었습니다');
+        }
+
+        sharePoll(pollId) {
+            const poll = this.polls.find(p => p.id === pollId);
+            if (poll && navigator.share) {
+                navigator.share({
+                    title: 'VoteGram',
+                    text: poll.question,
+                    url: window.location.href
+                });
+            } else {
+                this.showToast('링크가 복사되었습니다! 📋');
+            }
+        }
+
+        showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        showLikeAnimation() {
+            const heart = document.createElement('div');
+            heart.className = 'like-animation';
+            heart.textContent = '❤️';
+            heart.style.left = '50%';
+            heart.style.top = '50%';
+            heart.style.transform = 'translate(-50%, -50%)';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 800);
+        }
+
+        formatTime(timestamp) {
+            const diff = Date.now() - timestamp;
+            const mins = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (mins < 1) return '방금 전';
+            if (mins < 60) return `${mins}분 전`;
+            if (hours < 24) return `${hours}시간 전`;
+            if (days < 7) return `${days}일 전`;
+            return new Date(timestamp).toLocaleDateString('ko-KR');
         }
 
         escapeHtml(text) {
@@ -1645,10 +1453,9 @@
         }
     }
 
-    // 앱 초기화
-    let voteApp;
+    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-        voteApp = new VoteApp();
+        window.voteGram = new VoteGram();
     });
 </script>
 ```
