@@ -78,7 +78,7 @@
         left: 0;
         right: 0;
         height: 60px;
-        background: var(--card-bg);
+        background: #FFFFFF;
         border-bottom: 2px solid var(--border-light);
         display: flex;
         align-items: center;
@@ -121,13 +121,13 @@
         cursor: pointer;
         position: relative;
         border-radius: 50%;
-        background: var(--bg-secondary);
+        background: #F8F9FA;
         transition: all 0.3s ease;
     }
 
     .header-icon:active {
         transform: scale(0.95);
-        background: var(--bg-tertiary);
+        background: #E5E5E5;
     }
 
     .notification-badge {
@@ -138,7 +138,7 @@
         height: 10px;
         background: var(--accent);
         border-radius: 50%;
-        border: 2px solid var(--card-bg);
+        border: 2px solid #FFFFFF;
         animation: pulse 2s ease infinite;
     }
 
@@ -148,7 +148,7 @@
         top: 60px;
         left: 0;
         right: 0;
-        background: var(--card-bg);
+        background: #FFFFFF;
         border-bottom: 1px solid var(--border-light);
         padding: 12px 16px;
         display: flex;
@@ -166,7 +166,7 @@
         flex-shrink: 0;
         padding: 10px 20px;
         border-radius: 25px;
-        background: var(--bg-secondary);
+        background: #F8F9FA;
         border: 2px solid var(--border-medium);
         font-size: 0.9rem;
         font-weight: 700;
@@ -227,7 +227,7 @@
 
     /* Poll Card */
     .poll-card {
-        background: var(--card-bg);
+        background: #FFFFFF;
         margin: 0 16px 16px;
         border-radius: 20px;
         border: 2px solid var(--border-light);
@@ -247,7 +247,7 @@
         padding: 16px 20px;
         gap: 12px;
         border-bottom: 1px solid var(--border-light);
-        background: var(--bg-secondary);
+        background: #F8F9FA;
     }
 
     .poll-avatar {
@@ -260,7 +260,7 @@
         justify-content: center;
         font-size: 1.4rem;
         flex-shrink: 0;
-        border: 3px solid var(--card-bg);
+        border: 3px solid #FFFFFF;
     }
 
     .poll-author-info {
@@ -336,7 +336,7 @@
 
     .vote-option {
         flex: 1;
-        background: var(--bg-secondary);
+        background: #F8F9FA;
         border-radius: 20px;
         padding: 24px 16px;
         text-align: center;
@@ -406,7 +406,7 @@
 
     .progress-bar {
         height: 8px;
-        background: var(--bg-tertiary);
+        background: #F0F2F5;
         border-radius: 10px;
         overflow: hidden;
         display: flex;
@@ -446,7 +446,7 @@
         justify-content: center;
         gap: 8px;
         padding: 14px;
-        background: var(--bg-secondary);
+        background: #F8F9FA;
         border: 2px solid var(--border-medium);
         border-radius: 16px;
         font-size: 0.95rem;
@@ -458,7 +458,7 @@
 
     .action-btn:active {
         transform: scale(0.98);
-        background: var(--bg-tertiary);
+        background: #E5E5E5;
     }
 
     .action-btn .icon {
@@ -476,7 +476,7 @@
     .reaction-btn {
         padding: 8px 16px;
         border-radius: 20px;
-        background: var(--bg-secondary);
+        background: #F8F9FA;
         border: 2px solid var(--border-medium);
         display: flex;
         align-items: center;
@@ -488,7 +488,7 @@
 
     .reaction-btn:active {
         transform: scale(0.95);
-        background: var(--bg-tertiary);
+        background: #E5E5E5;
     }
 
     .reaction-btn.active {
@@ -553,7 +553,7 @@
         justify-content: center;
         font-size: 1.1rem;
         flex-shrink: 0;
-        border: 2px solid var(--card-bg);
+        border: 2px solid #FFFFFF;
     }
 
     .comment.option-a .comment-avatar {
@@ -566,6 +566,15 @@
 
     .comment-content {
         flex: 1;
+    }
+
+    .comment-bubble {
+        background: #F8F9FA;
+        border-radius: 20px;
+        padding: 12px 16px;
+        display: inline-block;
+        max-width: 100%;
+        border: 1px solid var(--border-light);
     }
 
     .comment-header {
@@ -637,7 +646,7 @@
     .comment-input-section {
         padding: 16px 20px;
         border-top: 1px solid var(--border-light);
-        background: var(--bg-secondary);
+        background: #F8F9FA;
         display: none;
     }
 
@@ -654,7 +663,7 @@
     .comment-input {
         flex: 1;
         padding: 12px 16px;
-        background: var(--card-bg);
+        background: #FFFFFF;
         border: 2px solid var(--border-medium);
         border-radius: 20px;
         color: var(--text-primary);
@@ -690,7 +699,7 @@
         right: 0;
         height: calc(70px + var(--safe-bottom));
         padding-bottom: var(--safe-bottom);
-        background: var(--card-bg);
+        background: #FFFFFF;
         border-top: 2px solid var(--border-light);
         display: flex;
         align-items: center;
@@ -751,7 +760,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.75);
         z-index: 200;
         align-items: flex-end;
         justify-content: center;
@@ -765,14 +774,14 @@
         width: 100%;
         max-width: 480px;
         max-height: 90vh;
-        background: var(--card-bg);
+        background: #FFFFFF;
         border-radius: 28px 28px 0 0;
         border: 2px solid var(--border-light);
         animation: slideUp 0.3s ease;
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        box-shadow: var(--shadow-lg);
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
     }
 
     @keyframes slideUp {
@@ -786,7 +795,7 @@
         justify-content: space-between;
         padding: 20px;
         border-bottom: 2px solid var(--border-light);
-        background: var(--bg-secondary);
+        background: #F8F9FA;
     }
 
     .modal-close {
@@ -799,7 +808,7 @@
     }
 
     .modal-close:active {
-        background: var(--bg-tertiary);
+        background: #E5E5E5;
         transform: rotate(90deg);
     }
 
@@ -834,7 +843,7 @@
     /* Vote Modal Bottom Button */
     .vote-bottom-btn {
         padding: 20px;
-        background: var(--bg-secondary);
+        background: #F8F9FA;
         border-top: 2px solid var(--border-light);
     }
 
@@ -865,6 +874,7 @@
         padding: 24px;
         overflow-y: auto;
         flex: 1;
+        background: #FFFFFF;
     }
 
     .form-group {
@@ -885,7 +895,7 @@
         border: 2px solid var(--border-medium);
         border-radius: 16px;
         font-size: 1rem;
-        background: var(--card-bg);
+        background: #FFFFFF;
         color: var(--text-primary);
         transition: all 0.3s ease;
     }
@@ -897,6 +907,7 @@
     .form-input:focus {
         outline: none;
         border-color: var(--primary);
+        background: #FFFFFF;
     }
 
     textarea.form-input {
@@ -924,7 +935,7 @@
         padding: 16px;
         border-radius: 16px;
         border: 2px solid var(--border-medium);
-        background: var(--bg-secondary);
+        background: #F8F9FA;
         text-align: center;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -972,7 +983,7 @@
         font-size: 1.6rem;
         cursor: pointer;
         transition: all 0.3s ease;
-        background: var(--bg-secondary);
+        background: #F8F9FA;
     }
 
     .emoji-option:active {
@@ -995,7 +1006,7 @@
         padding: 24px;
         border-radius: 20px;
         border: 3px solid var(--border-medium);
-        background: var(--bg-secondary);
+        background: #F8F9FA;
         text-align: center;
         cursor: pointer;
         transition: all 0.3s ease;
