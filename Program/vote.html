@@ -751,7 +751,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.5);
         z-index: 200;
         align-items: flex-end;
         justify-content: center;
@@ -765,14 +765,14 @@
         width: 100%;
         max-width: 480px;
         max-height: 90vh;
-        background: #FFFFFF;
+        background: var(--card-bg);
         border-radius: 28px 28px 0 0;
         border: 2px solid var(--border-light);
         animation: slideUp 0.3s ease;
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+        box-shadow: var(--shadow-lg);
     }
 
     @keyframes slideUp {
@@ -786,12 +786,12 @@
         justify-content: space-between;
         padding: 20px;
         border-bottom: 2px solid var(--border-light);
-        background: #F8F9FA;
+        background: var(--bg-secondary);
     }
 
     .modal-close {
         font-size: 1.6rem;
-        color: var(--text-secondary);
+        color: var(--text-muted);
         cursor: pointer;
         padding: 8px;
         border-radius: 50%;
@@ -806,30 +806,65 @@
     .modal-title {
         font-weight: 700;
         font-size: 1.1rem;
-        color: #1A1A1A;
+        color: var(--text-primary);
     }
 
     .modal-submit {
         background: linear-gradient(135deg, var(--primary), var(--secondary));
         color: white;
         border: none;
-        padding: 10px 24px;
+        padding: 12px 28px;
         border-radius: 12px;
         font-weight: 700;
-        font-size: 0.95rem;
+        font-size: 1rem;
         cursor: pointer;
         transition: all 0.3s ease;
+        box-shadow: var(--shadow-md);
     }
 
     .modal-submit:active {
         transform: scale(0.95);
     }
 
+    .modal-submit:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Vote Modal Bottom Button */
+    .vote-bottom-btn {
+        padding: 20px;
+        background: var(--bg-secondary);
+        border-top: 2px solid var(--border-light);
+    }
+
+    .vote-submit-main {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 16px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-md);
+    }
+
+    .vote-submit-main:active {
+        transform: scale(0.98);
+    }
+
+    .vote-submit-main:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
     .modal-body {
         padding: 24px;
         overflow-y: auto;
         flex: 1;
-        background: #FFFFFF;
     }
 
     .form-group {
@@ -840,7 +875,7 @@
         display: block;
         font-weight: 700;
         font-size: 0.95rem;
-        color: #1A1A1A;
+        color: var(--text-primary);
         margin-bottom: 10px;
     }
 
@@ -850,13 +885,13 @@
         border: 2px solid var(--border-medium);
         border-radius: 16px;
         font-size: 1rem;
-        background: #FFFFFF;
-        color: #1A1A1A;
+        background: var(--card-bg);
+        color: var(--text-primary);
         transition: all 0.3s ease;
     }
 
     .form-input::placeholder {
-        color: #8B8B8B;
+        color: var(--text-muted);
     }
 
     .form-input:focus {
@@ -889,7 +924,7 @@
         padding: 16px;
         border-radius: 16px;
         border: 2px solid var(--border-medium);
-        background: #F8F9FA;
+        background: var(--bg-secondary);
         text-align: center;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -904,19 +939,19 @@
 
     .category-select-btn.selected.lifestyle {
         border-color: var(--accent);
-        background: #FFE5E5;
+        background: rgba(255, 107, 107, 0.15);
         color: var(--accent);
     }
 
     .category-select-btn.selected.hobby {
         border-color: var(--secondary);
-        background: #E0F7FA;
+        background: rgba(0, 206, 209, 0.15);
         color: var(--secondary);
     }
 
     .category-select-btn.selected.custom {
         border-color: #FFB347;
-        background: #FFF3E0;
+        background: rgba(255, 179, 71, 0.15);
         color: #FF9800;
     }
 
@@ -937,7 +972,7 @@
         font-size: 1.6rem;
         cursor: pointer;
         transition: all 0.3s ease;
-        background: #F8F9FA;
+        background: var(--bg-secondary);
     }
 
     .emoji-option:active {
@@ -946,7 +981,7 @@
 
     .emoji-option.selected {
         border-color: var(--primary);
-        background: #FFE5F4;
+        background: rgba(255, 20, 147, 0.15);
     }
 
     .vote-choice-section {
@@ -960,7 +995,7 @@
         padding: 24px;
         border-radius: 20px;
         border: 3px solid var(--border-medium);
-        background: #F8F9FA;
+        background: var(--bg-secondary);
         text-align: center;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -972,12 +1007,12 @@
 
     .vote-choice-btn.option-a.selected {
         border-color: var(--primary);
-        background: #FFE5F4;
+        background: rgba(255, 20, 147, 0.15);
     }
 
     .vote-choice-btn.option-b.selected {
         border-color: var(--secondary);
-        background: #E0F7FA;
+        background: rgba(0, 206, 209, 0.15);
     }
 
     .vote-choice-icon {
@@ -988,7 +1023,7 @@
     .vote-choice-name {
         font-weight: 700;
         font-size: 1.1rem;
-        color: #1A1A1A;
+        color: var(--text-primary);
     }
 
     .toast {
@@ -1114,7 +1149,7 @@
         <div class="modal-header">
             <span class="modal-close" id="create-close">✕</span>
             <span class="modal-title">새 투표 만들기</span>
-            <button class="modal-submit" id="create-submit">공유</button>
+            <span style="width: 80px;"></span>
         </div>
         <div class="modal-body">
             <div class="form-group">
@@ -1132,16 +1167,16 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label">질문 (모두가 흥미를 느낄 주제를 올려보세요!)</label>
+                <label class="form-label">질문 * (모두가 흥미를 느낄 주제를 올려보세요!)</label>
                 <input type="text" class="form-input" id="poll-question" placeholder="예: 주말에 뭐하는게 더 좋을까요?">
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">선택지 A</label>
+                    <label class="form-label">선택지 A *</label>
                     <input type="text" class="form-input" id="poll-option-a" placeholder="첫 번째 옵션">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">선택지 B</label>
+                    <label class="form-label">선택지 B *</label>
                     <input type="text" class="form-input" id="poll-option-b" placeholder="두 번째 옵션">
                 </div>
             </div>
@@ -1167,9 +1202,12 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label">작성자 이름</label>
+                <label class="form-label">작성자 이름 *</label>
                 <input type="text" class="form-input" id="poll-author" placeholder="당신의 닉네임을 입력하세요">
             </div>
+        </div>
+        <div class="vote-bottom-btn">
+            <button class="vote-submit-main" id="create-submit-main">투표 생성하기 🎉</button>
         </div>
     </div>
 </div>
@@ -1179,18 +1217,21 @@
         <div class="modal-header">
             <span class="modal-close" id="vote-close">✕</span>
             <span class="modal-title">투표하기</span>
-            <button class="modal-submit" id="vote-submit">완료</button>
+            <span style="width: 80px;"></span>
         </div>
         <div class="modal-body">
             <div class="vote-choice-section" id="vote-choices"></div>
             <div class="form-group">
-                <label class="form-label">닉네임</label>
-                <input type="text" class="form-input" id="voter-name" placeholder="이름을 입력하세요">
+                <label class="form-label">닉네임 *</label>
+                <input type="text" class="form-input" id="voter-name" placeholder="이름을 입력하세요 (필수)">
             </div>
             <div class="form-group">
                 <label class="form-label">이 선택을 한 이유는? (선택)</label>
                 <textarea class="form-input" id="voter-comment" placeholder="다른 사람들과 생각을 공유해보세요!"></textarea>
             </div>
+        </div>
+        <div class="vote-bottom-btn">
+            <button class="vote-submit-main" id="vote-submit-main">투표 완료하기 ✨</button>
         </div>
     </div>
 </div>
@@ -1300,7 +1341,7 @@
                 this.closeModal('create-modal');
             });
             
-            document.getElementById('create-submit').addEventListener('click', () => {
+            document.getElementById('create-submit-main').addEventListener('click', () => {
                 this.createPoll();
             });
 
@@ -1336,7 +1377,7 @@
                 this.closeModal('vote-modal');
             });
 
-            document.getElementById('vote-submit').addEventListener('click', () => {
+            document.getElementById('vote-submit-main').addEventListener('click', () => {
                 this.submitVote();
             });
 
@@ -1721,8 +1762,18 @@
             const optionB = document.getElementById('poll-option-b').value.trim();
             const author = document.getElementById('poll-author').value.trim();
 
-            if (!question || !optionA || !optionB || !author) {
-                this.showToast('모든 항목을 입력해주세요');
+            if (!question) {
+                this.showToast('⚠️ 질문을 입력해주세요!');
+                return;
+            }
+
+            if (!optionA || !optionB) {
+                this.showToast('⚠️ 두 가지 선택지를 모두 입력해주세요!');
+                return;
+            }
+
+            if (!author) {
+                this.showToast('⚠️ 작성자 이름을 입력해주세요!');
                 return;
             }
 
@@ -1745,20 +1796,20 @@
             this.saveData();
             this.closeModal('create-modal');
             this.render();
-            this.showToast('🎉 투표가 생성되었습니다!');
+            this.showToast('🎉 투표가 생성되었습니다! 사람들의 참여를 기다려보세요!');
         }
 
         submitVote() {
             const name = document.getElementById('voter-name').value.trim();
             const comment = document.getElementById('voter-comment').value.trim();
 
-            if (!name) {
-                this.showToast('이름을 입력해주세요');
+            if (!this.selectedOption) {
+                this.showToast('⚠️ 선택지를 먼저 선택해주세요!');
                 return;
             }
 
-            if (!this.selectedOption) {
-                this.showToast('선택지를 선택해주세요');
+            if (!name) {
+                this.showToast('⚠️ 닉네임을 입력해주세요!');
                 return;
             }
 
@@ -1781,7 +1832,7 @@
             this.saveData();
             this.closeModal('vote-modal');
             this.render();
-            this.showToast('✨ 투표 완료!');
+            this.showToast('✨ 투표가 완료되었습니다! 다른 사람들의 의견도 확인해보세요!');
         }
 
         toggleLike(voteId) {
