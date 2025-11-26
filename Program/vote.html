@@ -37,27 +37,14 @@
         --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
     @keyframes pulse {
         0%, 100% { transform: scale(1); }
         50% { transform: scale(1.05); }
     }
 
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-5px); }
-    }
-
     body {
         font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
-        background: linear-gradient(135deg, #FFE5F4 0%, #E0F7FA 50%, #F3E5F5 100%);
-        background-size: 400% 400%;
-        animation: gradientShift 20s ease infinite;
+        background: #F0F2F5;
         color: var(--text-primary);
         min-height: 100vh;
         overflow-x: hidden;
@@ -181,9 +168,9 @@
     }
 
     .category-chip.active {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        background: var(--primary);
         color: white;
-        border-color: transparent;
+        border-color: var(--primary);
         box-shadow: var(--shadow-md);
     }
 
@@ -191,7 +178,7 @@
     .trending-banner {
         margin: 120px 16px 20px;
         padding: 20px;
-        background: linear-gradient(135deg, rgba(255, 20, 147, 0.1), rgba(0, 206, 209, 0.1));
+        background: #FFFFFF;
         border: 2px solid var(--primary);
         border-radius: 20px;
         box-shadow: var(--shadow-md);
@@ -209,7 +196,6 @@
 
     .trending-icon {
         font-size: 1.4rem;
-        animation: float 2s ease infinite;
     }
 
     .trending-text {
@@ -254,7 +240,7 @@
         width: 48px;
         height: 48px;
         border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        background: var(--primary);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -291,18 +277,18 @@
     }
 
     .poll-category-badge.lifestyle {
-        background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+        background: var(--accent);
         color: white;
     }
 
     .poll-category-badge.hobby {
-        background: linear-gradient(135deg, #00CED1, #5FD3D5);
+        background: var(--secondary);
         color: white;
     }
 
     .poll-category-badge.custom {
-        background: linear-gradient(135deg, #FFB347, #FFCC5C);
-        color: var(--text-primary);
+        background: #FFB347;
+        color: white;
     }
 
     .poll-menu {
@@ -414,13 +400,13 @@
 
     .progress-a {
         height: 100%;
-        background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+        background: var(--primary);
         transition: width 0.5s ease;
     }
 
     .progress-b {
         height: 100%;
-        background: linear-gradient(90deg, var(--secondary), var(--secondary-dark));
+        background: var(--secondary);
         transition: width 0.5s ease;
     }
 
@@ -557,11 +543,11 @@
     }
 
     .comment.option-a .comment-avatar {
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        background: var(--primary);
     }
 
     .comment.option-b .comment-avatar {
-        background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+        background: var(--secondary);
     }
 
     .comment-content {
@@ -678,7 +664,7 @@
 
     .comment-submit {
         padding: 12px 20px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        background: var(--primary);
         border: none;
         border-radius: 20px;
         color: white;
@@ -689,6 +675,7 @@
 
     .comment-submit:active {
         transform: scale(0.95);
+        background: var(--primary-dark);
     }
 
     /* Bottom Tab Bar */
@@ -819,7 +806,7 @@
     }
 
     .modal-submit {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        background: var(--primary);
         color: white;
         border: none;
         padding: 12px 28px;
@@ -833,6 +820,7 @@
 
     .modal-submit:active {
         transform: scale(0.95);
+        background: var(--primary-dark);
     }
 
     .modal-submit:disabled {
@@ -850,7 +838,7 @@
     .vote-submit-main {
         width: 100%;
         padding: 16px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        background: var(--primary);
         color: white;
         border: none;
         border-radius: 16px;
@@ -863,6 +851,7 @@
 
     .vote-submit-main:active {
         transform: scale(0.98);
+        background: var(--primary-dark);
     }
 
     .vote-submit-main:disabled {
@@ -1388,12 +1377,17 @@
                 this.closeModal('vote-modal');
             });
 
-            document.getElementById('vote-submit-main').addEventListener('click', () => {
+            document.getElementById('vote-submit-main').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('투표 완료 버튼 클릭됨'); // 디버깅용
                 this.submitVote();
             });
 
             document.getElementById('vote-modal').addEventListener('click', (e) => {
-                if (e.target.id === 'vote-modal') this.closeModal('vote-modal');
+                if (e.target.id === 'vote-modal') {
+                    this.closeModal('vote-modal');
+                }
             });
 
             document.querySelectorAll('.category-chip').forEach(chip => {
@@ -1732,12 +1726,14 @@
         }
 
         openVoteModal(pollId, option = null) {
+            // 상태 초기화
             this.currentPollId = pollId;
             this.selectedOption = option;
             
             const poll = this.polls.find(p => p.id === pollId);
             if (!poll) return;
 
+            // 투표 선택지 렌더링
             const choices = document.getElementById('vote-choices');
             choices.innerHTML = `
                 <div class="vote-choice-btn option-a ${option === 'a' ? 'selected' : ''}" data-option="a">
@@ -1750,21 +1746,45 @@
                 </div>
             `;
 
-            choices.querySelectorAll('.vote-choice-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    choices.querySelectorAll('.vote-choice-btn').forEach(b => b.classList.remove('selected'));
+            // 선택지 클릭 이벤트 바인딩
+            const choiceBtns = choices.querySelectorAll('.vote-choice-btn');
+            choiceBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    choiceBtns.forEach(b => b.classList.remove('selected'));
                     btn.classList.add('selected');
                     this.selectedOption = btn.dataset.option;
+                    console.log('선택됨:', this.selectedOption); // 디버깅용
                 });
             });
 
+            // 입력 필드 초기화
             document.getElementById('voter-name').value = '';
             document.getElementById('voter-comment').value = '';
+            
+            // 모달 열기
             document.getElementById('vote-modal').classList.add('active');
         }
 
         closeModal(id) {
             document.getElementById(id).classList.remove('active');
+            
+            // 투표 모달을 닫을 때 상태 초기화
+            if (id === 'vote-modal') {
+                this.currentPollId = null;
+                this.selectedOption = null;
+                document.getElementById('voter-name').value = '';
+                document.getElementById('voter-comment').value = '';
+            }
+            
+            // 생성 모달을 닫을 때 상태 초기화
+            if (id === 'create-modal') {
+                document.getElementById('poll-question').value = '';
+                document.getElementById('poll-option-a').value = '';
+                document.getElementById('poll-option-b').value = '';
+                document.getElementById('poll-author').value = '';
+            }
         }
 
         createPoll() {
@@ -1811,6 +1831,9 @@
         }
 
         submitVote() {
+            console.log('submitVote 호출됨'); // 디버깅용
+            console.log('선택된 옵션:', this.selectedOption); // 디버깅용
+            
             const name = document.getElementById('voter-name').value.trim();
             const comment = document.getElementById('voter-comment').value.trim();
 
@@ -1825,7 +1848,10 @@
             }
 
             const poll = this.polls.find(p => p.id === this.currentPollId);
-            if (!poll) return;
+            if (!poll) {
+                console.error('투표를 찾을 수 없습니다:', this.currentPollId);
+                return;
+            }
 
             const randomAvatar = this.avatarOptions[Math.floor(Math.random() * this.avatarOptions.length)];
 
@@ -1839,6 +1865,8 @@
                 likes: 0,
                 reactions: {}
             });
+
+            console.log('투표 저장됨:', poll.votes[0]); // 디버깅용
 
             this.saveData();
             this.closeModal('vote-modal');
