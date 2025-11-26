@@ -610,36 +610,6 @@
         flex: 1;
     }
 
-    /* Avatar Picker Grid */
-    .avatar-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 8px;
-    }
-
-    .avatar-option {
-        aspect-ratio: 1;
-        border-radius: 50%;
-        border: 2px solid var(--border-color);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.4rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        background: var(--bg-secondary);
-    }
-
-    .avatar-option:hover {
-        border-color: var(--primary);
-    }
-
-    .avatar-option.selected {
-        border-color: var(--primary);
-        background: rgba(88, 101, 242, 0.1);
-        transform: scale(1.1);
-    }
-
     /* Emoji Picker */
     .emoji-grid {
         display: flex;
@@ -906,25 +876,6 @@
                 <input type="text" class="form-input" id="voter-name" placeholder="이름을 입력하세요">
             </div>
             <div class="form-group">
-                <label class="form-label">프로필 선택</label>
-                <div class="avatar-grid" id="avatar-grid">
-                    <div class="avatar-option selected" data-avatar="😀">😀</div>
-                    <div class="avatar-option" data-avatar="😎">😎</div>
-                    <div class="avatar-option" data-avatar="🤓">🤓</div>
-                    <div class="avatar-option" data-avatar="😊">😊</div>
-                    <div class="avatar-option" data-avatar="🥳">🥳</div>
-                    <div class="avatar-option" data-avatar="🤗">🤗</div>
-                    <div class="avatar-option" data-avatar="🧑‍💻">🧑‍💻</div>
-                    <div class="avatar-option" data-avatar="🦊">🦊</div>
-                    <div class="avatar-option" data-avatar="🐻">🐻</div>
-                    <div class="avatar-option" data-avatar="🐰">🐰</div>
-                    <div class="avatar-option" data-avatar="🦁">🦁</div>
-                    <div class="avatar-option" data-avatar="🐸">🐸</div>
-                    <div class="avatar-option" data-avatar="🐼">🐼</div>
-                    <div class="avatar-option" data-avatar="🦄">🦄</div>
-                </div>
-            </div>
-            <div class="form-group">
                 <label class="form-label">한마디 (선택)</label>
                 <textarea class="form-input" id="voter-comment" placeholder="왜 이 선택을 하셨나요?"></textarea>
             </div>
@@ -947,6 +898,7 @@
             this.selectedAvatar = '😀';
             this.selectedEmojiA = '🍜';
             this.selectedEmojiB = '🍲';
+            this.avatarOptions = ['😀', '😎', '🤓', '😊', '🥳', '🤗', '🧑‍💻', '🦊', '🐻', '🐰', '🦁', '🐸', '🐼', '🦄'];
             
             this.loadData();
             this.bindEvents();
@@ -1059,14 +1011,7 @@
                 if (e.target.id === 'vote-modal') this.closeModal('vote-modal');
             });
 
-            // Avatar selection
-            document.getElementById('avatar-grid').addEventListener('click', (e) => {
-                if (e.target.classList.contains('avatar-option')) {
-                    document.querySelectorAll('#avatar-grid .avatar-option').forEach(el => el.classList.remove('selected'));
-                    e.target.classList.add('selected');
-                    this.selectedAvatar = e.target.dataset.avatar;
-                }
-            });
+
 
             // Tab bar
             document.querySelectorAll('.tab-item:not([data-tab="create"])').forEach(tab => {
@@ -1347,11 +1292,14 @@
             const poll = this.polls.find(p => p.id === this.currentPollId);
             if (!poll) return;
 
+            // 랜덤 아바타 선택
+            const randomAvatar = this.avatarOptions[Math.floor(Math.random() * this.avatarOptions.length)];
+
             poll.votes.unshift({
                 id: Date.now(),
                 option: this.selectedOption,
                 name,
-                avatar: this.selectedAvatar,
+                avatar: randomAvatar,
                 comment,
                 timestamp: Date.now(),
                 likes: 0,
