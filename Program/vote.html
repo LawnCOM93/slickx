@@ -614,12 +614,13 @@
     }
 
     .modal {
-        background: var(--bg-card);
+        background: #1e1e2a;
         border-radius: 20px;
         padding: 30px;
         width: 100%;
         max-width: 450px;
         animation: modalIn 0.3s ease;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     }
 
     @keyframes modalIn {
@@ -670,8 +671,8 @@
     .form-group label {
         display: block;
         margin-bottom: 8px;
-        font-weight: 500;
-        color: var(--text-secondary);
+        font-weight: 600;
+        color: #e0e0e8;
         font-size: 0.9rem;
     }
 
@@ -679,24 +680,49 @@
     .form-group textarea {
         width: 100%;
         padding: 14px;
-        border: 2px solid rgba(255,255,255,0.1);
+        border: 2px solid rgba(255,255,255,0.2);
         border-radius: 12px;
-        background: rgba(255,255,255,0.05);
-        color: var(--text-primary);
+        background: rgba(255,255,255,0.15);
+        color: #ffffff;
         font-size: 1rem;
         font-family: inherit;
-        transition: border-color 0.3s ease;
+        transition: all 0.3s ease;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+        color: rgba(255,255,255,0.5);
     }
 
     .form-group input:focus,
     .form-group textarea:focus {
         outline: none;
-        border-color: rgba(255,255,255,0.3);
+        border-color: var(--option-a-light);
+        background: rgba(255,255,255,0.2);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
     }
 
     .form-group textarea {
         resize: none;
         height: 70px;
+    }
+
+    /* 모바일 입력 필드 개선 */
+    @media (max-width: 768px) {
+        .form-group input,
+        .form-group textarea {
+            font-size: 16px; /* iOS 확대 방지 */
+            padding: 16px;
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            background: rgba(255,255,255,0.25);
+        }
     }
 
     .form-row {
@@ -712,26 +738,31 @@
         display: flex;
         gap: 8px;
         flex-wrap: wrap;
+        background: rgba(255,255,255,0.05);
+        padding: 10px;
+        border-radius: 10px;
     }
 
     .emoji-btn {
         width: 40px;
         height: 40px;
-        border: 2px solid rgba(255,255,255,0.1);
+        border: 2px solid rgba(255,255,255,0.2);
         border-radius: 10px;
-        background: rgba(255,255,255,0.05);
+        background: rgba(255,255,255,0.1);
         font-size: 1.3rem;
         cursor: pointer;
         transition: all 0.2s ease;
     }
 
     .emoji-btn:hover {
-        border-color: rgba(255,255,255,0.3);
+        border-color: rgba(255,255,255,0.4);
+        background: rgba(255,255,255,0.15);
     }
 
     .emoji-btn.selected {
         border-color: var(--option-a-light);
-        background: rgba(99, 102, 241, 0.2);
+        background: rgba(99, 102, 241, 0.3);
+        box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
     }
 
     /* 아바타 선택 */
@@ -739,14 +770,17 @@
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
+        background: rgba(255,255,255,0.05);
+        padding: 12px;
+        border-radius: 12px;
     }
 
     .avatar-btn {
         width: 45px;
         height: 45px;
-        border: 2px solid rgba(255,255,255,0.1);
+        border: 2px solid rgba(255,255,255,0.2);
         border-radius: 50%;
-        background: rgba(255,255,255,0.05);
+        background: rgba(255,255,255,0.1);
         font-size: 1.4rem;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -756,14 +790,16 @@
     }
 
     .avatar-btn:hover {
-        border-color: rgba(255,255,255,0.3);
+        border-color: rgba(255,255,255,0.4);
         transform: scale(1.1);
+        background: rgba(255,255,255,0.15);
     }
 
     .avatar-btn.selected {
         border-color: var(--option-a-light);
-        background: rgba(99, 102, 241, 0.2);
+        background: rgba(99, 102, 241, 0.3);
         transform: scale(1.1);
+        box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
     }
 
     .modal-buttons {
@@ -784,12 +820,13 @@
     }
 
     .btn-cancel {
-        background: rgba(255,255,255,0.1);
-        color: var(--text-secondary);
+        background: rgba(255,255,255,0.15);
+        color: #e0e0e8;
+        border: 1px solid rgba(255,255,255,0.2);
     }
 
     .btn-cancel:hover {
-        background: rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.25);
     }
 
     .btn-submit {
