@@ -751,7 +751,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.7);
         z-index: 200;
         align-items: flex-end;
         justify-content: center;
@@ -765,14 +765,14 @@
         width: 100%;
         max-width: 480px;
         max-height: 90vh;
-        background: var(--card-bg);
+        background: #FFFFFF;
         border-radius: 28px 28px 0 0;
         border: 2px solid var(--border-light);
         animation: slideUp 0.3s ease;
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        box-shadow: var(--shadow-lg);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
     }
 
     @keyframes slideUp {
@@ -786,12 +786,12 @@
         justify-content: space-between;
         padding: 20px;
         border-bottom: 2px solid var(--border-light);
-        background: var(--bg-secondary);
+        background: #F8F9FA;
     }
 
     .modal-close {
         font-size: 1.6rem;
-        color: var(--text-muted);
+        color: var(--text-secondary);
         cursor: pointer;
         padding: 8px;
         border-radius: 50%;
@@ -806,7 +806,7 @@
     .modal-title {
         font-weight: 700;
         font-size: 1.1rem;
-        color: var(--text-primary);
+        color: #1A1A1A;
     }
 
     .modal-submit {
@@ -829,6 +829,7 @@
         padding: 24px;
         overflow-y: auto;
         flex: 1;
+        background: #FFFFFF;
     }
 
     .form-group {
@@ -839,7 +840,7 @@
         display: block;
         font-weight: 700;
         font-size: 0.95rem;
-        color: var(--text-primary);
+        color: #1A1A1A;
         margin-bottom: 10px;
     }
 
@@ -849,13 +850,13 @@
         border: 2px solid var(--border-medium);
         border-radius: 16px;
         font-size: 1rem;
-        background: var(--card-bg);
-        color: var(--text-primary);
+        background: #FFFFFF;
+        color: #1A1A1A;
         transition: all 0.3s ease;
     }
 
     .form-input::placeholder {
-        color: var(--text-muted);
+        color: #8B8B8B;
     }
 
     .form-input:focus {
@@ -888,7 +889,7 @@
         padding: 16px;
         border-radius: 16px;
         border: 2px solid var(--border-medium);
-        background: var(--bg-secondary);
+        background: #F8F9FA;
         text-align: center;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -903,19 +904,19 @@
 
     .category-select-btn.selected.lifestyle {
         border-color: var(--accent);
-        background: rgba(255, 107, 107, 0.15);
+        background: #FFE5E5;
         color: var(--accent);
     }
 
     .category-select-btn.selected.hobby {
         border-color: var(--secondary);
-        background: rgba(0, 206, 209, 0.15);
+        background: #E0F7FA;
         color: var(--secondary);
     }
 
     .category-select-btn.selected.custom {
         border-color: #FFB347;
-        background: rgba(255, 179, 71, 0.15);
+        background: #FFF3E0;
         color: #FF9800;
     }
 
@@ -936,7 +937,7 @@
         font-size: 1.6rem;
         cursor: pointer;
         transition: all 0.3s ease;
-        background: var(--bg-secondary);
+        background: #F8F9FA;
     }
 
     .emoji-option:active {
@@ -945,7 +946,7 @@
 
     .emoji-option.selected {
         border-color: var(--primary);
-        background: rgba(255, 20, 147, 0.15);
+        background: #FFE5F4;
     }
 
     .vote-choice-section {
@@ -959,7 +960,7 @@
         padding: 24px;
         border-radius: 20px;
         border: 3px solid var(--border-medium);
-        background: var(--bg-secondary);
+        background: #F8F9FA;
         text-align: center;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -971,12 +972,12 @@
 
     .vote-choice-btn.option-a.selected {
         border-color: var(--primary);
-        background: rgba(255, 20, 147, 0.15);
+        background: #FFE5F4;
     }
 
     .vote-choice-btn.option-b.selected {
         border-color: var(--secondary);
-        background: rgba(0, 206, 209, 0.15);
+        background: #E0F7FA;
     }
 
     .vote-choice-icon {
@@ -987,7 +988,7 @@
     .vote-choice-name {
         font-weight: 700;
         font-size: 1.1rem;
-        color: var(--text-primary);
+        color: #1A1A1A;
     }
 
     .toast {
