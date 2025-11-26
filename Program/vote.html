@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>VoteGram - 투표 SNS</title>
+    <title>LifeVote - 라이프스타일 투표 SNS</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -16,9 +16,10 @@
 
 ```
     :root {
-        --primary: #5865F2;
-        --primary-light: #7983F5;
-        --secondary: #EB459E;
+        --primary: #FF6B6B;
+        --primary-light: #FF8787;
+        --secondary: #4ECDC4;
+        --accent: #FFE66D;
         --bg-primary: #ffffff;
         --bg-secondary: #f8f9fa;
         --bg-card: #ffffff;
@@ -44,7 +45,6 @@
         -webkit-font-smoothing: antialiased;
     }
 
-    /* App Container */
     .app {
         max-width: 480px;
         margin: 0 auto;
@@ -53,7 +53,7 @@
         position: relative;
     }
 
-    /* Header - Instagram Style */
+    /* Header */
     .header {
         position: fixed;
         top: 0;
@@ -110,14 +110,57 @@
         border-radius: 50%;
     }
 
-    /* Main Feed */
+    /* Category Filter */
+    .category-filter {
+        position: fixed;
+        top: 54px;
+        left: 0;
+        right: 0;
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border-color);
+        padding: 12px 16px;
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        z-index: 99;
+        scrollbar-width: none;
+    }
+
+    .category-filter::-webkit-scrollbar {
+        display: none;
+    }
+
+    .category-chip {
+        flex-shrink: 0;
+        padding: 8px 16px;
+        border-radius: 20px;
+        background: var(--bg-secondary);
+        border: 2px solid transparent;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .category-chip:hover {
+        background: rgba(255, 107, 107, 0.1);
+    }
+
+    .category-chip.active {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border-color: transparent;
+    }
+
+    /* Feed */
     .feed {
-        padding-top: 54px;
+        padding-top: 110px;
         padding-bottom: calc(70px + var(--safe-bottom));
         min-height: 100vh;
     }
 
-    /* Poll Card - Facebook/Instagram Style */
+    /* Poll Card */
     .poll-card {
         background: var(--bg-card);
         margin-bottom: 8px;
@@ -153,9 +196,34 @@
         font-size: 0.95rem;
     }
 
-    .poll-time {
+    .poll-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         font-size: 0.8rem;
         color: var(--text-muted);
+    }
+
+    .poll-category-badge {
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .poll-category-badge.lifestyle {
+        background: rgba(255, 107, 107, 0.15);
+        color: #FF6B6B;
+    }
+
+    .poll-category-badge.hobby {
+        background: rgba(78, 205, 196, 0.15);
+        color: #4ECDC4;
+    }
+
+    .poll-category-badge.custom {
+        background: rgba(255, 230, 109, 0.15);
+        color: #F4A261;
     }
 
     .poll-menu {
@@ -172,7 +240,7 @@
         line-height: 1.4;
     }
 
-    /* Vote Options - Modern Card Style */
+    /* Vote Options */
     .vote-options {
         display: flex;
         gap: 8px;
@@ -195,13 +263,13 @@
     .vote-option.option-a:hover,
     .vote-option.option-a:active {
         border-color: var(--primary);
-        background: rgba(88, 101, 242, 0.08);
+        background: rgba(255, 107, 107, 0.08);
     }
 
     .vote-option.option-b:hover,
     .vote-option.option-b:active {
         border-color: var(--secondary);
-        background: rgba(235, 69, 158, 0.08);
+        background: rgba(78, 205, 196, 0.08);
     }
 
     .vote-option-icon {
@@ -261,7 +329,7 @@
 
     .progress-b {
         height: 100%;
-        background: linear-gradient(90deg, var(--secondary), #f472b6);
+        background: linear-gradient(90deg, var(--secondary), #95E1D3);
         transition: width 0.5s ease;
     }
 
@@ -272,7 +340,7 @@
         padding: 8px 0;
     }
 
-    /* Action Buttons - Instagram Style */
+    /* Action Buttons */
     .poll-actions {
         display: flex;
         padding: 0 8px;
@@ -324,7 +392,6 @@
         max-height: 1000px;
     }
 
-    /* Comment Item - SNS Style */
     .comment {
         display: flex;
         gap: 10px;
@@ -347,7 +414,7 @@
     }
 
     .comment.option-b .comment-avatar {
-        background: linear-gradient(135deg, var(--secondary), #f472b6);
+        background: linear-gradient(135deg, var(--secondary), #95E1D3);
     }
 
     .comment-content {
@@ -404,7 +471,6 @@
         color: var(--like-color);
     }
 
-    /* Star Rating */
     .comment-rating {
         display: flex;
         align-items: center;
@@ -428,7 +494,7 @@
         font-weight: 600;
     }
 
-    /* Bottom Tab Bar - Instagram Style */
+    /* Bottom Tab Bar */
     .tab-bar {
         position: fixed;
         bottom: 0;
@@ -482,7 +548,7 @@
         font-size: 1.5rem;
     }
 
-    /* Modal - Full Screen Mobile Style */
+    /* Modal */
     .modal-overlay {
         display: none;
         position: fixed;
@@ -593,7 +659,7 @@
         outline: none;
         border-color: var(--primary);
         background: var(--bg-primary);
-        box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.1);
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
     }
 
     textarea.form-input {
@@ -610,7 +676,45 @@
         flex: 1;
     }
 
-    /* Emoji Picker */
+    /* Category Selection */
+    .category-selection {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .category-select-btn {
+        flex: 1;
+        padding: 12px;
+        border-radius: 12px;
+        border: 2px solid var(--border-color);
+        background: var(--bg-secondary);
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .category-select-btn.selected.lifestyle {
+        border-color: #FF6B6B;
+        background: rgba(255, 107, 107, 0.15);
+        color: #FF6B6B;
+    }
+
+    .category-select-btn.selected.hobby {
+        border-color: #4ECDC4;
+        background: rgba(78, 205, 196, 0.15);
+        color: #4ECDC4;
+    }
+
+    .category-select-btn.selected.custom {
+        border-color: #F4A261;
+        background: rgba(255, 230, 109, 0.15);
+        color: #F4A261;
+    }
+
+    /* Emoji Grid */
     .emoji-grid {
         display: flex;
         flex-wrap: wrap;
@@ -637,7 +741,7 @@
 
     .emoji-option.selected {
         border-color: var(--primary);
-        background: rgba(88, 101, 242, 0.1);
+        background: rgba(255, 107, 107, 0.1);
     }
 
     /* Vote Choice in Modal */
@@ -660,12 +764,12 @@
 
     .vote-choice-btn.option-a.selected {
         border-color: var(--primary);
-        background: rgba(88, 101, 242, 0.1);
+        background: rgba(255, 107, 107, 0.1);
     }
 
     .vote-choice-btn.option-b.selected {
         border-color: var(--secondary);
-        background: rgba(235, 69, 158, 0.1);
+        background: rgba(78, 205, 196, 0.1);
     }
 
     .vote-choice-icon {
@@ -678,7 +782,7 @@
         font-size: 1rem;
     }
 
-    /* Toast Notification */
+    /* Toast */
     .toast {
         position: fixed;
         bottom: 80px;
@@ -745,17 +849,9 @@
         font-size: 0.95rem;
     }
 
-    /* Pull to Refresh Indicator */
-    .pull-indicator {
-        text-align: center;
-        padding: 16px;
-        color: var(--text-muted);
-        font-size: 0.85rem;
-    }
-
     /* Responsive */
     @media (min-width: 481px) {
-        .header, .tab-bar {
+        .header, .tab-bar, .category-filter {
             max-width: 480px;
             left: 50%;
             transform: translateX(-50%);
@@ -770,7 +866,7 @@
         <!-- Header -->
         <header class="header">
             <div class="header-left">
-                <span class="header-logo">VoteGram</span>
+                <span class="header-logo">LifeVote</span>
             </div>
             <div class="header-icons">
                 <div class="header-icon">❤️</div>
@@ -782,6 +878,14 @@
         </header>
 
 ```
+    <!-- Category Filter -->
+    <div class="category-filter">
+        <div class="category-chip active" data-category="all">🌟 전체</div>
+        <div class="category-chip" data-category="lifestyle">🍔 라이프스타일</div>
+        <div class="category-chip" data-category="hobby">⚽ 취미/관심사</div>
+        <div class="category-chip" data-category="custom">💡 커스텀</div>
+    </div>
+
     <!-- Feed -->
     <main class="feed" id="feed">
         <!-- Polls will be rendered here -->
@@ -821,6 +925,20 @@
         </div>
         <div class="modal-body">
             <div class="form-group">
+                <label class="form-label">카테고리 선택</label>
+                <div class="category-selection">
+                    <div class="category-select-btn lifestyle selected" data-cat="lifestyle">
+                        🍔<br>라이프스타일
+                    </div>
+                    <div class="category-select-btn hobby" data-cat="hobby">
+                        ⚽<br>취미
+                    </div>
+                    <div class="category-select-btn custom" data-cat="custom">
+                        💡<br>커스텀
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="form-label">질문</label>
                 <input type="text" class="form-input" id="poll-question" placeholder="무엇이 더 좋을까요?">
             </div>
@@ -838,20 +956,20 @@
                 <label class="form-label">이모지 선택</label>
                 <div class="form-row">
                     <div class="emoji-grid" id="emoji-a">
-                        <div class="emoji-option selected" data-emoji="🍜">🍜</div>
-                        <div class="emoji-option" data-emoji="🏖️">🏖️</div>
+                        <div class="emoji-option selected" data-emoji="🍕">🍕</div>
                         <div class="emoji-option" data-emoji="☕">☕</div>
-                        <div class="emoji-option" data-emoji="🐶">🐶</div>
-                        <div class="emoji-option" data-emoji="🍕">🍕</div>
-                        <div class="emoji-option" data-emoji="🎮">🎮</div>
+                        <div class="emoji-option" data-emoji="🏖️">🏖️</div>
+                        <div class="emoji-option" data-emoji="🎬">🎬</div>
+                        <div class="emoji-option" data-emoji="👕">👕</div>
+                        <div class="emoji-option" data-emoji="🏃">🏃</div>
                     </div>
                     <div class="emoji-grid" id="emoji-b">
-                        <div class="emoji-option selected" data-emoji="🍲">🍲</div>
-                        <div class="emoji-option" data-emoji="⛰️">⛰️</div>
+                        <div class="emoji-option selected" data-emoji="🍔">🍔</div>
                         <div class="emoji-option" data-emoji="🍵">🍵</div>
-                        <div class="emoji-option" data-emoji="🐱">🐱</div>
-                        <div class="emoji-option" data-emoji="🍔">🍔</div>
+                        <div class="emoji-option" data-emoji="⛰️">⛰️</div>
                         <div class="emoji-option" data-emoji="📚">📚</div>
+                        <div class="emoji-option" data-emoji="👟">👟</div>
+                        <div class="emoji-option" data-emoji="🧘">🧘</div>
                     </div>
                 </div>
             </div>
@@ -887,17 +1005,15 @@
 <div class="toast" id="toast"></div>
 
 <script>
-    // ============================================
-    // VoteGram - SNS Style Voting App
-    // ============================================
-    class VoteGram {
+    class LifeVote {
         constructor() {
             this.polls = [];
             this.currentPollId = null;
             this.selectedOption = null;
-            this.selectedAvatar = '😀';
-            this.selectedEmojiA = '🍜';
-            this.selectedEmojiB = '🍲';
+            this.selectedCategory = 'lifestyle';
+            this.selectedEmojiA = '🍕';
+            this.selectedEmojiB = '🍔';
+            this.currentFilter = 'all';
             this.avatarOptions = ['😀', '😎', '🤓', '😊', '🥳', '🤗', '🧑‍💻', '🦊', '🐻', '🐰', '🦁', '🐸', '🐼', '🦄'];
             
             this.loadData();
@@ -913,30 +1029,82 @@
             this.polls = [
                 {
                     id: Date.now(),
-                    question: '짜장면 vs 짬뽕, 당신의 선택은?',
-                    optionA: { name: '짜장면', icon: '🍜' },
-                    optionB: { name: '짬뽕', icon: '🍲' },
-                    author: 'VoteGram',
-                    authorAvatar: '🗳️',
+                    question: '주말 브런치는 어디서?',
+                    category: 'lifestyle',
+                    optionA: { name: '카페', icon: '☕' },
+                    optionB: { name: '레스토랑', icon: '🍽️' },
+                    author: 'FoodLover',
+                    authorAvatar: '🍔',
                     votes: [
-                        { id: 1, option: 'a', name: '맛집탐험가', avatar: '😎', comment: '역시 짜장면이 최고!', timestamp: Date.now() - 3600000, likes: 12, liked: false, ratings: [5, 4, 5] },
-                        { id: 2, option: 'b', name: '매운맛러버', avatar: '🔥', comment: '얼큰한 짬뽕이 진리죠', timestamp: Date.now() - 7200000, likes: 8, liked: false, ratings: [5, 5] },
-                        { id: 3, option: 'a', name: '검정콩파', avatar: '🐻', comment: '춘장의 깊은 맛~', timestamp: Date.now() - 10800000, likes: 5, liked: false, ratings: [4, 5] }
+                        { id: 1, option: 'a', name: '카페마니아', avatar: '😎', comment: '분위기가 최고예요!', timestamp: Date.now() - 3600000, likes: 12, liked: false, ratings: [5, 4, 5] },
+                        { id: 2, option: 'b', name: '맛집탐험', avatar: '🍴', comment: '제대로 된 식사가 좋죠', timestamp: Date.now() - 7200000, likes: 8, liked: false, ratings: [5, 5] }
                     ],
                     createdAt: Date.now() - 86400000
                 },
                 {
                     id: Date.now() + 1,
-                    question: '휴가지로 어디가 좋을까요?',
+                    question: '휴가지 선택!',
+                    category: 'lifestyle',
                     optionA: { name: '바다', icon: '🏖️' },
                     optionB: { name: '산', icon: '⛰️' },
-                    author: 'TravelLover',
+                    author: 'TravelBug',
                     authorAvatar: '✈️',
                     votes: [
-                        { id: 4, option: 'a', name: '서퍼보이', avatar: '🏄', comment: '파도소리 최고!', timestamp: Date.now() - 1800000, likes: 7, liked: false, ratings: [5] },
-                        { id: 5, option: 'b', name: '등산러', avatar: '🥾', comment: '정상에서 보는 풍경이란...', timestamp: Date.now() - 3600000, likes: 9, liked: false, ratings: [5, 4] }
+                        { id: 3, option: 'a', name: '서퍼걸', avatar: '🏄', comment: '파도 타기 최고!', timestamp: Date.now() - 1800000, likes: 7, liked: false, ratings: [5] }
                     ],
                     createdAt: Date.now() - 43200000
+                },
+                {
+                    id: Date.now() + 2,
+                    question: '저녁 운동으로 뭐가 좋을까?',
+                    category: 'hobby',
+                    optionA: { name: '헬스', icon: '💪' },
+                    optionB: { name: '요가', icon: '🧘' },
+                    author: 'HealthFirst',
+                    authorAvatar: '🏃',
+                    votes: [
+                        { id: 4, option: 'a', name: '근육왕', avatar: '💪', comment: '무게감 있는 운동이 좋아요', timestamp: Date.now() - 5400000, likes: 15, liked: false, ratings: [5, 5, 4] },
+                        { id: 5, option: 'b', name: '힐링러버', avatar: '🧘', comment: '마음의 평화를 찾아요', timestamp: Date.now() - 9000000, likes: 11, liked: false, ratings: [5, 4] }
+                    ],
+                    createdAt: Date.now() - 172800000
+                },
+                {
+                    id: Date.now() + 3,
+                    question: '주말 취미로 추천해주세요',
+                    category: 'hobby',
+                    optionA: { name: '독서', icon: '📚' },
+                    optionB: { name: '게임', icon: '🎮' },
+                    author: 'WeekendVibes',
+                    authorAvatar: '🌟',
+                    votes: [
+                        { id: 6, option: 'a', name: '책벌레', avatar: '🤓', comment: '책 속에서 세상을 만나요', timestamp: Date.now() - 14400000, likes: 6, liked: false, ratings: [4, 5] }
+                    ],
+                    createdAt: Date.now() - 259200000
+                },
+                {
+                    id: Date.now() + 4,
+                    question: '나만의 아침 루틴은?',
+                    category: 'custom',
+                    optionA: { name: '명상', icon: '🧘‍♂️' },
+                    optionB: { name: '조깅', icon: '🏃‍♀️' },
+                    author: 'MorningPerson',
+                    authorAvatar: '🌅',
+                    votes: [
+                        { id: 7, option: 'a', name: '마인드풀', avatar: '🧠', comment: '하루를 평온하게 시작', timestamp: Date.now() - 21600000, likes: 9, liked: false, ratings: [5, 5] },
+                        { id: 8, option: 'b', name: '러너', avatar: '👟', comment: '상쾌하게 땀 흘리기', timestamp: Date.now() - 28800000, likes: 10, liked: false, ratings: [4, 5, 5] }
+                    ],
+                    createdAt: Date.now() - 345600000
+                },
+                {
+                    id: Date.now() + 5,
+                    question: '집에서 영화 볼 때 필수템?',
+                    category: 'custom',
+                    optionA: { name: '팝콘', icon: '🍿' },
+                    optionB: { name: '피자', icon: '🍕' },
+                    author: 'MovieNight',
+                    authorAvatar: '🎬',
+                    votes: [],
+                    createdAt: Date.now() - 432000000
                 }
             ];
             this.saveData();
@@ -945,7 +1113,7 @@
 
         loadData() {
             try {
-                const saved = localStorage.getItem('voteGramData');
+                const saved = localStorage.getItem('lifeVoteData');
                 if (saved) {
                     this.polls = JSON.parse(saved);
                 }
@@ -956,19 +1124,17 @@
 
         saveData() {
             try {
-                localStorage.setItem('voteGramData', JSON.stringify(this.polls));
+                localStorage.setItem('lifeVoteData', JSON.stringify(this.polls));
             } catch (e) {
                 console.error('Save error:', e);
             }
         }
 
         bindEvents() {
-            // Create button
             document.getElementById('btn-create').addEventListener('click', () => {
                 this.openCreateModal();
             });
 
-            // Create modal
             document.getElementById('create-close').addEventListener('click', () => {
                 this.closeModal('create-modal');
             });
@@ -981,7 +1147,14 @@
                 if (e.target.id === 'create-modal') this.closeModal('create-modal');
             });
 
-            // Emoji selection
+            document.querySelectorAll('.category-select-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.category-select-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    this.selectedCategory = btn.dataset.cat;
+                });
+            });
+
             document.getElementById('emoji-a').addEventListener('click', (e) => {
                 if (e.target.classList.contains('emoji-option')) {
                     document.querySelectorAll('#emoji-a .emoji-option').forEach(el => el.classList.remove('selected'));
@@ -998,7 +1171,6 @@
                 }
             });
 
-            // Vote modal
             document.getElementById('vote-close').addEventListener('click', () => {
                 this.closeModal('vote-modal');
             });
@@ -1011,9 +1183,15 @@
                 if (e.target.id === 'vote-modal') this.closeModal('vote-modal');
             });
 
+            document.querySelectorAll('.category-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    this.currentFilter = chip.dataset.category;
+                    this.render();
+                });
+            });
 
-
-            // Tab bar
             document.querySelectorAll('.tab-item:not([data-tab="create"])').forEach(tab => {
                 tab.addEventListener('click', () => {
                     document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
@@ -1028,7 +1206,11 @@
         render() {
             const feed = document.getElementById('feed');
             
-            if (this.polls.length === 0) {
+            let filteredPolls = this.currentFilter === 'all' 
+                ? this.polls 
+                : this.polls.filter(p => p.category === this.currentFilter);
+
+            if (filteredPolls.length === 0) {
                 feed.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">🗳️</div>
@@ -1039,7 +1221,7 @@
                 return;
             }
 
-            feed.innerHTML = this.polls.map(poll => this.renderPollCard(poll)).join('');
+            feed.innerHTML = filteredPolls.map(poll => this.renderPollCard(poll)).join('');
             this.bindPollEvents();
         }
 
@@ -1050,13 +1232,22 @@
             const percentA = total > 0 ? Math.round((votesA.length / total) * 100) : 50;
             const percentB = total > 0 ? 100 - percentA : 50;
 
+            const categoryLabel = {
+                'lifestyle': '라이프스타일',
+                'hobby': '취미/관심사',
+                'custom': '커스텀'
+            }[poll.category] || '일반';
+
             return `
                 <article class="poll-card" data-poll-id="${poll.id}">
                     <div class="poll-header">
                         <div class="poll-avatar">${poll.authorAvatar || '🗳️'}</div>
                         <div class="poll-author-info">
-                            <div class="poll-author">${this.escapeHtml(poll.author || 'VoteGram')}</div>
-                            <div class="poll-time">${this.formatTime(poll.createdAt)}</div>
+                            <div class="poll-author">${this.escapeHtml(poll.author || 'LifeVote')}</div>
+                            <div class="poll-meta">
+                                <span class="poll-category-badge ${poll.category}">${categoryLabel}</span>
+                                <span>${this.formatTime(poll.createdAt)}</span>
+                            </div>
                         </div>
                         <div class="poll-menu" data-action="menu" data-poll-id="${poll.id}">⋯</div>
                     </div>
@@ -1149,14 +1340,12 @@
         }
 
         bindPollEvents() {
-            // Vote options click
             document.querySelectorAll('.vote-option').forEach(opt => {
                 opt.addEventListener('click', () => {
                     this.openVoteModal(parseInt(opt.dataset.pollId), opt.dataset.option);
                 });
             });
 
-            // Action buttons
             document.querySelectorAll('.action-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const action = btn.dataset.action;
@@ -1170,7 +1359,6 @@
                 });
             });
 
-            // Comments toggle
             document.querySelectorAll('.comments-toggle').forEach(toggle => {
                 toggle.addEventListener('click', () => {
                     const pollId = toggle.dataset.pollId;
@@ -1180,21 +1368,18 @@
                 });
             });
 
-            // Like buttons
             document.querySelectorAll('.comment-action[data-action="like"]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     this.toggleLike(parseInt(btn.dataset.voteId));
                 });
             });
 
-            // Star ratings
             document.querySelectorAll('.star').forEach(star => {
                 star.addEventListener('click', () => {
                     this.addRating(parseInt(star.dataset.voteId), parseInt(star.dataset.star));
                 });
             });
 
-            // Poll menu
             document.querySelectorAll('[data-action="menu"]').forEach(menu => {
                 menu.addEventListener('click', () => {
                     if (confirm('이 투표를 삭제하시겠습니까?')) {
@@ -1260,6 +1445,7 @@
             const newPoll = {
                 id: Date.now(),
                 question,
+                category: this.selectedCategory,
                 optionA: { name: optionA, icon: this.selectedEmojiA },
                 optionB: { name: optionB, icon: this.selectedEmojiB },
                 author: 'You',
@@ -1292,7 +1478,6 @@
             const poll = this.polls.find(p => p.id === this.currentPollId);
             if (!poll) return;
 
-            // 랜덤 아바타 선택
             const randomAvatar = this.avatarOptions[Math.floor(Math.random() * this.avatarOptions.length)];
 
             poll.votes.unshift({
@@ -1354,7 +1539,7 @@
             const poll = this.polls.find(p => p.id === pollId);
             if (poll && navigator.share) {
                 navigator.share({
-                    title: 'VoteGram',
+                    title: 'LifeVote',
                     text: poll.question,
                     url: window.location.href
                 });
@@ -1401,9 +1586,8 @@
         }
     }
 
-    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-        window.voteGram = new VoteGram();
+        window.lifeVote = new LifeVote();
     });
 </script>
 ```
