@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>VoteSphere - 모두의 투표 SNS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+```
+    :root {
+        --primary: #FF1493;
+        --primary-dark: #C71585;
+        --secondary: #00CED1;
+        --secondary-dark: #00A0A3;
+        --accent: #FF6B6B;
+        --accent-light: #FF8E8E;
+        --bg-primary: #FFFFFF;
+        --bg-secondary: #F8F9FA;
+        --bg-tertiary: #F0F2F5;
+        --card-bg: #FFFFFF;
+        --text-primary: #1A1A1A;
+        --text-secondary: #4A4A4A;
+        --text-muted: #8B8B8B;
+        --border-light: #E5E5E5;
+        --border-medium: #D0D0D0;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+        --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+        --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+        --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    body {
+        font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #F0F2F5;
+        color: var(--text-primary);
+        min-height: 100vh;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .app {
+        max-width: 480px;
+        margin: 0 auto;
+        min-height: 100vh;
+        position: relative;
+    }
+
+    /* Header */
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: #FFFFFF;
+        border-bottom: 2px solid var(--border-light);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        z-index: 100;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .header-logo {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        background-size: 200% 200%;
+        animation: gradientShift 3s ease infinite;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -1px;
+    }
+
+    .header-icons {
+        display: flex;
+        gap: 16px;
+    }
+
+    .header-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        position: relative;
+        border-radius: 50%;
+        background: #F8F9FA;
+        transition: all 0.3s ease;
+    }
+
+    .header-icon:active {
+        transform: scale(0.95);
+        background: #E5E5E5;
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 10px;
+        height: 10px;
+        background: var(--accent);
+        border-radius: 50%;
+        border: 2px solid #FFFFFF;
+        animation: pulse 2s ease infinite;
+    }
+
+    /* Category Filter */
+    .category-filter {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: #FFFFFF;
+        border-bottom: 1px solid var(--border-light);
+        padding: 12px 16px;
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        z-index: 99;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .category-filter::-webkit-scrollbar {
+        display: none;
+    }
+
+    .category-chip {
+        flex-shrink: 0;
+        padding: 10px 20px;
+        border-radius: 25px;
+        background: #F8F9FA;
+        border: 2px solid var(--border-medium);
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        color: var(--text-secondary);
+    }
+
+    .category-chip:active {
+        transform: scale(0.95);
+    }
+
+    .category-chip.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        box-shadow: var(--shadow-md);
+    }
+
+    /* Trending Banner */
+    .trending-banner {
+        margin: 120px 16px 20px;
+        padding: 20px;
+        background: #FFFFFF;
+        border: 2px solid var(--primary);
+        border-radius: 20px;
+        box-shadow: var(--shadow-md);
+    }
+
+    .trending-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--text-primary);
+    }
+
+    .trending-icon {
+        font-size: 1.4rem;
+    }
+
+    .trending-text {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+    }
+
+    /* Feed */
+    .feed {
+        padding-top: 0;
+        padding-bottom: calc(80px + var(--safe-bottom));
+        min-height: 100vh;
+    }
+
+    /* Poll Card */
+    .poll-card {
+        background: #FFFFFF;
+        margin: 0 16px 16px;
+        border-radius: 20px;
+        border: 2px solid var(--border-light);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-md);
+    }
+
+    .poll-card:active {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .poll-header {
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        gap: 12px;
+        border-bottom: 1px solid var(--border-light);
+        background: #F8F9FA;
+    }
+
+    .poll-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+        border: 3px solid #FFFFFF;
+    }
+
+    .poll-author-info {
+        flex: 1;
+    }
+
+    .poll-author {
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--text-primary);
+    }
+
+    .poll-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 4px;
+    }
+
+    .poll-category-badge {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .poll-category-badge.lifestyle {
+        background: var(--accent);
+        color: white;
+    }
+
+    .poll-category-badge.hobby {
+        background: var(--secondary);
+        color: white;
+    }
+
+    .poll-category-badge.custom {
+        background: #FFB347;
+        color: white;
+    }
+
+    .poll-menu {
+        font-size: 1.5rem;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+
+    .poll-menu:active {
+        background: var(--bg-tertiary);
+        transform: rotate(90deg);
+    }
+
+    .poll-question {
+        padding: 20px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        line-height: 1.5;
+        color: var(--text-primary);
+    }
+
+    /* Vote Options */
+    .vote-options {
+        display: flex;
+        gap: 12px;
+        padding: 0 20px 20px;
+    }
+
+    .vote-option {
+        flex: 1;
+        background: #F8F9FA;
+        border-radius: 20px;
+        padding: 24px 16px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 3px solid var(--border-medium);
+        position: relative;
+    }
+
+    .vote-option:active {
+        transform: scale(0.98);
+    }
+
+    .vote-option.option-a:active {
+        border-color: var(--primary);
+        background: rgba(255, 20, 147, 0.1);
+    }
+
+    .vote-option.option-b:active {
+        border-color: var(--secondary);
+        background: rgba(0, 206, 209, 0.1);
+    }
+
+    .vote-option-icon {
+        font-size: 3rem;
+        margin-bottom: 12px;
+    }
+
+    .vote-option-name {
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+    }
+
+    .vote-option.option-a .vote-option-name {
+        color: var(--primary);
+    }
+
+    .vote-option.option-b .vote-option-name {
+        color: var(--secondary);
+    }
+
+    .vote-option-stats {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .vote-count {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--text-primary);
+    }
+
+    .vote-percent {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+
+    /* Progress Bar */
+    .poll-progress {
+        padding: 0 20px 20px;
+    }
+
+    .progress-bar {
+        height: 8px;
+        background: #F0F2F5;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+    }
+
+    .progress-a {
+        height: 100%;
+        background: var(--primary);
+        transition: width 0.5s ease;
+    }
+
+    .progress-b {
+        height: 100%;
+        background: var(--secondary);
+        transition: width 0.5s ease;
+    }
+
+    .poll-total {
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        padding: 12px 0;
+        font-weight: 600;
+    }
+
+    /* Action Buttons */
+    .poll-actions {
+        display: flex;
+        padding: 0 12px 12px;
+        gap: 8px;
+    }
+
+    .action-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 14px;
+        background: #F8F9FA;
+        border: 2px solid var(--border-medium);
+        border-radius: 16px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .action-btn:active {
+        transform: scale(0.98);
+        background: #E5E5E5;
+    }
+
+    .action-btn .icon {
+        font-size: 1.4rem;
+    }
+
+    /* Reaction Bar */
+    .reaction-bar {
+        display: flex;
+        gap: 8px;
+        padding: 0 20px 16px;
+        align-items: center;
+    }
+
+    .reaction-btn {
+        padding: 8px 16px;
+        border-radius: 20px;
+        background: #F8F9FA;
+        border: 2px solid var(--border-medium);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .reaction-btn:active {
+        transform: scale(0.95);
+        background: #E5E5E5;
+    }
+
+    .reaction-btn.active {
+        background: rgba(255, 20, 147, 0.15);
+        border-color: var(--primary);
+    }
+
+    .reaction-icon {
+        font-size: 1.2rem;
+    }
+
+    .reaction-count {
+        font-weight: 600;
+        color: var(--text-secondary);
+    }
+
+    /* Comments Section */
+    .comments-section {
+        padding: 0 20px 20px;
+    }
+
+    .comments-toggle {
+        font-size: 0.95rem;
+        color: var(--primary);
+        padding: 12px 0;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .comments-toggle:active {
+        color: var(--primary-dark);
+    }
+
+    .comments-list {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .comments-list.expanded {
+        max-height: 2000px;
+    }
+
+    .comment {
+        display: flex;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-light);
+    }
+
+    .comment:last-child {
+        border-bottom: none;
+    }
+
+    .comment-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+        border: 2px solid #FFFFFF;
+    }
+
+    .comment.option-a .comment-avatar {
+        background: var(--primary);
+    }
+
+    .comment.option-b .comment-avatar {
+        background: var(--secondary);
+    }
+
+    .comment-content {
+        flex: 1;
+    }
+
+    .comment-bubble {
+        background: #F8F9FA;
+        border-radius: 20px;
+        padding: 12px 16px;
+        display: inline-block;
+        max-width: 100%;
+        border: 1px solid var(--border-light);
+    }
+
+    .comment-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+        flex-wrap: wrap;
+    }
+
+    .comment-name {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+    }
+
+    .comment-badge {
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.7rem;
+        font-weight: 700;
+    }
+
+    .comment-badge.option-a {
+        background: rgba(255, 20, 147, 0.15);
+        color: var(--primary);
+    }
+
+    .comment-badge.option-b {
+        background: rgba(0, 206, 209, 0.15);
+        color: var(--secondary);
+    }
+
+    .comment-time {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    .comment-text {
+        font-size: 0.95rem;
+        color: var(--text-primary);
+        word-break: break-word;
+        margin-bottom: 8px;
+        line-height: 1.5;
+    }
+
+    .comment-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+
+    .comment-action {
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .comment-action:active {
+        color: var(--primary);
+    }
+
+    /* Comment Input */
+    .comment-input-section {
+        padding: 16px 20px;
+        border-top: 1px solid var(--border-light);
+        background: #F8F9FA;
+        display: none;
+    }
+
+    .comment-input-section.active {
+        display: block;
+    }
+
+    .comment-input-wrapper {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .comment-input {
+        flex: 1;
+        padding: 12px 16px;
+        background: #FFFFFF;
+        border: 2px solid var(--border-medium);
+        border-radius: 20px;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .comment-input:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    .comment-submit {
+        padding: 12px 20px;
+        background: var(--primary);
+        border: none;
+        border-radius: 20px;
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .comment-submit:active {
+        transform: scale(0.95);
+        background: var(--primary-dark);
+    }
+
+    /* Bottom Tab Bar */
+    .tab-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: calc(70px + var(--safe-bottom));
+        padding-bottom: var(--safe-bottom);
+        background: #FFFFFF;
+        border-top: 2px solid var(--border-light);
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        z-index: 100;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    }
+
+    .tab-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 0;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: all 0.3s ease;
+    }
+
+    .tab-item.active {
+        color: var(--primary);
+    }
+
+    .tab-item:active {
+        transform: scale(0.95);
+    }
+
+    .tab-item .icon {
+        font-size: 1.6rem;
+        margin-bottom: 4px;
+    }
+
+    .tab-item .label {
+        font-size: 0.7rem;
+        font-weight: 700;
+    }
+
+    .tab-create {
+        width: 56px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.8rem;
+        font-weight: 700;
+        box-shadow: var(--shadow-md);
+    }
+
+    /* Modal */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.75);
+        z-index: 200;
+        align-items: flex-end;
+        justify-content: center;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+    .modal {
+        width: 100%;
+        max-width: 480px;
+        max-height: 90vh;
+        background: #FFFFFF;
+        border-radius: 28px 28px 0 0;
+        border: 2px solid var(--border-light);
+        animation: slideUp 0.3s ease;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+        border-bottom: 2px solid var(--border-light);
+        background: #F8F9FA;
+    }
+
+    .modal-close {
+        font-size: 1.6rem;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+
+    .modal-close:active {
+        background: #E5E5E5;
+        transform: rotate(90deg);
+    }
+
+    .modal-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--text-primary);
+    }
+
+    .modal-submit {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-md);
+    }
+
+    .modal-submit:active {
+        transform: scale(0.95);
+        background: var(--primary-dark);
+    }
+
+    .modal-submit:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Vote Modal Bottom Button */
+    .vote-bottom-btn {
+        padding: 20px;
+        background: #F8F9FA;
+        border-top: 2px solid var(--border-light);
+    }
+
+    .vote-submit-main {
+        width: 100%;
+        padding: 16px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 16px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-md);
+    }
+
+    .vote-submit-main:active {
+        transform: scale(0.98);
+        background: var(--primary-dark);
+    }
+
+    .vote-submit-main:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .modal-body {
+        padding: 24px;
+        overflow-y: auto;
+        flex: 1;
+        background: #FFFFFF;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--text-primary);
+        margin-bottom: 10px;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 16px 18px;
+        border: 2px solid var(--border-medium);
+        border-radius: 16px;
+        font-size: 1rem;
+        background: #FFFFFF;
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+    }
+
+    .form-input::placeholder {
+        color: var(--text-muted);
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: #FFFFFF;
+    }
+
+    textarea.form-input {
+        resize: none;
+        min-height: 100px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 16px;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+    }
+
+    .category-selection {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    .category-select-btn {
+        flex: 1;
+        padding: 16px;
+        border-radius: 16px;
+        border: 2px solid var(--border-medium);
+        background: #F8F9FA;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text-secondary);
+    }
+
+    .category-select-btn:active {
+        transform: scale(0.98);
+    }
+
+    .category-select-btn.selected.lifestyle {
+        border-color: var(--accent);
+        background: rgba(255, 107, 107, 0.15);
+        color: var(--accent);
+    }
+
+    .category-select-btn.selected.hobby {
+        border-color: var(--secondary);
+        background: rgba(0, 206, 209, 0.15);
+        color: var(--secondary);
+    }
+
+    .category-select-btn.selected.custom {
+        border-color: #FFB347;
+        background: rgba(255, 179, 71, 0.15);
+        color: #FF9800;
+    }
+
+    .emoji-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .emoji-option {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        border: 2px solid var(--border-medium);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #F8F9FA;
+    }
+
+    .emoji-option:active {
+        transform: scale(0.95);
+    }
+
+    .emoji-option.selected {
+        border-color: var(--primary);
+        background: rgba(255, 20, 147, 0.15);
+    }
+
+    .vote-choice-section {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .vote-choice-btn {
+        flex: 1;
+        padding: 24px;
+        border-radius: 20px;
+        border: 3px solid var(--border-medium);
+        background: #F8F9FA;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .vote-choice-btn:active {
+        transform: scale(0.98);
+    }
+
+    .vote-choice-btn.option-a.selected {
+        border-color: var(--primary);
+        background: rgba(255, 20, 147, 0.15);
+    }
+
+    .vote-choice-btn.option-b.selected {
+        border-color: var(--secondary);
+        background: rgba(0, 206, 209, 0.15);
+    }
+
+    .vote-choice-icon {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+    }
+
+    .vote-choice-name {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--text-primary);
+    }
+
+    .toast {
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: var(--text-primary);
+        color: white;
+        padding: 16px 32px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        z-index: 300;
+        opacity: 0;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+
+    .like-animation {
+        position: fixed;
+        pointer-events: none;
+        z-index: 1000;
+        font-size: 100px;
+        animation: likePopUp 0.8s ease forwards;
+    }
+
+    @keyframes likePopUp {
+        0% { transform: scale(0) rotate(0deg); opacity: 1; }
+        50% { transform: scale(1.3) rotate(15deg); opacity: 1; }
+        100% { transform: scale(1) rotate(0deg); opacity: 0; }
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+    }
+
+    .empty-icon {
+        font-size: 5rem;
+        margin-bottom: 20px;
+    }
+
+    .empty-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--text-primary);
+    }
+
+    .empty-text {
+        color: var(--text-muted);
+        font-size: 1rem;
+    }
+
+    @media (min-width: 481px) {
+        .header, .tab-bar, .category-filter {
+            max-width: 480px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="header-left">
+                <span class="header-logo">VoteSphere</span>
+            </div>
+            <div class="header-icons">
+                <div class="header-icon">🔥</div>
+                <div class="header-icon">
+                    💬
+                    <span class="notification-badge"></span>
+                </div>
+            </div>
+        </header>
+
+```
+    <div class="category-filter">
+        <div class="category-chip active" data-category="all">🌟 전체</div>
+        <div class="category-chip" data-category="trending">🔥 인기</div>
+        <div class="category-chip" data-category="lifestyle">🍔 라이프스타일</div>
+        <div class="category-chip" data-category="hobby">⚽ 취미/관심사</div>
+        <div class="category-chip" data-category="custom">💡 자유주제</div>
+    </div>
+
+    <main class="feed" id="feed"></main>
+
+    <nav class="tab-bar">
+        <div class="tab-item active" data-tab="home">
+            <span class="icon">🏠</span>
+            <span class="label">홈</span>
+        </div>
+        <div class="tab-item" data-tab="explore">
+            <span class="icon">🌍</span>
+            <span class="label">탐색</span>
+        </div>
+        <div class="tab-item" data-tab="create" id="btn-create">
+            <div class="tab-create">+</div>
+        </div>
+        <div class="tab-item" data-tab="trending">
+            <span class="icon">🔥</span>
+            <span class="label">인기</span>
+        </div>
+        <div class="tab-item" data-tab="profile">
+            <span class="icon">👤</span>
+            <span class="label">프로필</span>
+        </div>
+    </nav>
+</div>
+
+<div class="modal-overlay" id="create-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="modal-close" id="create-close">✕</span>
+            <span class="modal-title">새 투표 만들기</span>
+            <span style="width: 80px;"></span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">카테고리 선택</label>
+                <div class="category-selection">
+                    <div class="category-select-btn lifestyle selected" data-cat="lifestyle">
+                        🍔<br>라이프스타일
+                    </div>
+                    <div class="category-select-btn hobby" data-cat="hobby">
+                        ⚽<br>취미
+                    </div>
+                    <div class="category-select-btn custom" data-cat="custom">
+                        💡<br>자유주제
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">질문 * (모두가 흥미를 느낄 주제를 올려보세요!)</label>
+                <input type="text" class="form-input" id="poll-question" placeholder="예: 주말에 뭐하는게 더 좋을까요?">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">선택지 A *</label>
+                    <input type="text" class="form-input" id="poll-option-a" placeholder="첫 번째 옵션">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">선택지 B *</label>
+                    <input type="text" class="form-input" id="poll-option-b" placeholder="두 번째 옵션">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">이모지 선택</label>
+                <div class="form-row">
+                    <div class="emoji-grid" id="emoji-a">
+                        <div class="emoji-option selected" data-emoji="🍕">🍕</div>
+                        <div class="emoji-option" data-emoji="☕">☕</div>
+                        <div class="emoji-option" data-emoji="🏖️">🏖️</div>
+                        <div class="emoji-option" data-emoji="🎬">🎬</div>
+                        <div class="emoji-option" data-emoji="👕">👕</div>
+                        <div class="emoji-option" data-emoji="🏃">🏃</div>
+                    </div>
+                    <div class="emoji-grid" id="emoji-b">
+                        <div class="emoji-option selected" data-emoji="🍔">🍔</div>
+                        <div class="emoji-option" data-emoji="🍵">🍵</div>
+                        <div class="emoji-option" data-emoji="⛰️">⛰️</div>
+                        <div class="emoji-option" data-emoji="📚">📚</div>
+                        <div class="emoji-option" data-emoji="👟">👟</div>
+                        <div class="emoji-option" data-emoji="🧘">🧘</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">작성자 이름 *</label>
+                <input type="text" class="form-input" id="poll-author" placeholder="당신의 닉네임을 입력하세요">
+            </div>
+        </div>
+        <div class="vote-bottom-btn">
+            <button class="vote-submit-main" id="create-submit-main">투표 생성하기 🎉</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="vote-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="modal-close" id="vote-close">✕</span>
+            <span class="modal-title">투표하기</span>
+            <span style="width: 80px;"></span>
+        </div>
+        <div class="modal-body">
+            <div class="vote-choice-section" id="vote-choices"></div>
+            <div class="form-group">
+                <label class="form-label">닉네임 *</label>
+                <input type="text" class="form-input" id="voter-name" placeholder="이름을 입력하세요 (필수)">
+            </div>
+            <div class="form-group">
+                <label class="form-label">이 선택을 한 이유는? (선택)</label>
+                <textarea class="form-input" id="voter-comment" placeholder="다른 사람들과 생각을 공유해보세요!"></textarea>
+            </div>
+        </div>
+        <div class="vote-bottom-btn">
+            <button class="vote-submit-main" id="vote-submit-main">투표 완료하기 ✨</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    // JavaScript code remains the same as before
+    class VoteSphere {
+        constructor() {
+            this.polls = [];
+            this.currentPollId = null;
+            this.selectedOption = null;
+            this.selectedCategory = 'lifestyle';
+            this.selectedEmojiA = '🍕';
+            this.selectedEmojiB = '🍔';
+            this.currentFilter = 'all';
+            this.avatarOptions = ['😀', '😎', '🤓', '😊', '🥳', '🤗', '🧑‍💻', '🦊', '🐻', '🐰', '🦁', '🐸', '🐼', '🦄', '🎨', '🎭', '🎪', '🎯', '🎲', '🎸'];
+            
+            this.loadData();
+            this.bindEvents();
+            this.render();
+            
+            if (this.polls.length === 0) {
+                this.createSamplePolls();
+            }
+        }
+
+        createSamplePolls() {
+            this.polls = [
+                {
+                    id: Date.now(),
+                    question: '주말 브런치는 어디서 먹을까요?',
+                    category: 'lifestyle',
+                    optionA: { name: '감성 카페', icon: '☕' },
+                    optionB: { name: '맛집 레스토랑', icon: '🍽️' },
+                    author: 'FoodieKim',
+                    authorAvatar: '🍔',
+                    votes: [
+                        { id: 1, option: 'a', name: '카페러버', avatar: '😎', comment: '분위기가 너무 좋아요! 사진도 예쁘게 나오고 힐링되는 느낌', timestamp: Date.now() - 3600000, likes: 24, reactions: {fire: 5, heart: 8} },
+                        { id: 2, option: 'b', name: '맛집헌터', avatar: '🍴', comment: '제대로 된 식사가 최고죠. 맛있는 음식이 답이에요', timestamp: Date.now() - 7200000, likes: 18, reactions: {fire: 3, heart: 6} },
+                        { id: 3, option: 'a', name: '인스타그래머', avatar: '📸', comment: '감성 카페는 사랑입니다', timestamp: Date.now() - 10800000, likes: 12, reactions: {fire: 2, heart: 4} }
+                    ],
+                    totalReactions: { fire: 15, heart: 20, wow: 8 },
+                    createdAt: Date.now() - 86400000
+                },
+                {
+                    id: Date.now() + 1,
+                    question: '여름 휴가 어디로 갈까?',
+                    category: 'lifestyle',
+                    optionA: { name: '시원한 바다', icon: '🏖️' },
+                    optionB: { name: '청량한 산', icon: '⛰️' },
+                    author: 'TravelJung',
+                    authorAvatar: '✈️',
+                    votes: [
+                        { id: 4, option: 'a', name: '서핑소년', avatar: '🏄', comment: '파도 타고 수영하고 최고의 여름!', timestamp: Date.now() - 1800000, likes: 31, reactions: {fire: 8, heart: 12} },
+                        { id: 5, option: 'b', name: '등산왕', avatar: '🥾', comment: '맑은 공기와 정상에서의 성취감!', timestamp: Date.now() - 3600000, likes: 27, reactions: {fire: 6, heart: 10} }
+                    ],
+                    totalReactions: { fire: 22, heart: 35, wow: 15 },
+                    createdAt: Date.now() - 43200000
+                },
+                {
+                    id: Date.now() + 2,
+                    question: '저녁 운동 뭐가 제일 좋아?',
+                    category: 'hobby',
+                    optionA: { name: '헬스장', icon: '💪' },
+                    optionB: { name: '요가', icon: '🧘' },
+                    author: 'HealthyLife',
+                    authorAvatar: '🏃',
+                    votes: [
+                        { id: 6, option: 'a', name: '근육맨', avatar: '💪', comment: '중량 올리는 맛이 있어요', timestamp: Date.now() - 5400000, likes: 35, reactions: {fire: 12, heart: 8} },
+                        { id: 7, option: 'b', name: '요가마스터', avatar: '🧘', comment: '마음의 평화와 몸의 유연성 둘 다!', timestamp: Date.now() - 9000000, likes: 29, reactions: {fire: 7, heart: 15} }
+                    ],
+                    totalReactions: { fire: 28, heart: 30, wow: 10 },
+                    createdAt: Date.now() - 172800000
+                }
+            ];
+            this.saveData();
+            this.render();
+        }
+
+        loadData() {
+            try {
+                const saved = localStorage.getItem('voteSphereData');
+                if (saved) {
+                    this.polls = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error('Load error:', e);
+            }
+        }
+
+        saveData() {
+            try {
+                localStorage.setItem('voteSphereData', JSON.stringify(this.polls));
+            } catch (e) {
+                console.error('Save error:', e);
+            }
+        }
+
+        bindEvents() {
+            document.getElementById('btn-create').addEventListener('click', () => {
+                this.openCreateModal();
+            });
+
+            document.getElementById('create-close').addEventListener('click', () => {
+                this.closeModal('create-modal');
+            });
+            
+            document.getElementById('create-submit-main').addEventListener('click', () => {
+                this.createPoll();
+            });
+
+            document.getElementById('create-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'create-modal') this.closeModal('create-modal');
+            });
+
+            document.querySelectorAll('.category-select-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.category-select-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    this.selectedCategory = btn.dataset.cat;
+                });
+            });
+
+            document.getElementById('emoji-a').addEventListener('click', (e) => {
+                if (e.target.classList.contains('emoji-option')) {
+                    document.querySelectorAll('#emoji-a .emoji-option').forEach(el => el.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                    this.selectedEmojiA = e.target.dataset.emoji;
+                }
+            });
+
+            document.getElementById('emoji-b').addEventListener('click', (e) => {
+                if (e.target.classList.contains('emoji-option')) {
+                    document.querySelectorAll('#emoji-b .emoji-option').forEach(el => el.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                    this.selectedEmojiB = e.target.dataset.emoji;
+                }
+            });
+
+            document.getElementById('vote-close').addEventListener('click', () => {
+                this.closeModal('vote-modal');
+            });
+
+            document.getElementById('vote-submit-main').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('투표 완료 버튼 클릭됨'); // 디버깅용
+                this.submitVote();
+            });
+
+            document.getElementById('vote-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'vote-modal') {
+                    this.closeModal('vote-modal');
+                }
+            });
+
+            document.querySelectorAll('.category-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    this.currentFilter = chip.dataset.category;
+                    this.render();
+                });
+            });
+
+            document.querySelectorAll('.tab-item:not([data-tab="create"])').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    if (tab.dataset.tab === 'home') {
+                        this.currentFilter = 'all';
+                        document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                        document.querySelector('.category-chip[data-category="all"]').classList.add('active');
+                        this.render();
+                    } else if (tab.dataset.tab === 'trending') {
+                        this.currentFilter = 'trending';
+                        document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                        document.querySelector('.category-chip[data-category="trending"]').classList.add('active');
+                        this.render();
+                    }
+                });
+            });
+        }
+
+        render() {
+            const feed = document.getElementById('feed');
+            
+            let filteredPolls = [...this.polls];
+            
+            if (this.currentFilter === 'trending') {
+                filteredPolls = filteredPolls
+                    .sort((a, b) => {
+                        const aTotal = a.votes.length + (a.totalReactions?.fire || 0) * 2;
+                        const bTotal = b.votes.length + (b.totalReactions?.fire || 0) * 2;
+                        return bTotal - aTotal;
+                    })
+                    .slice(0, 10);
+            } else if (this.currentFilter !== 'all') {
+                filteredPolls = filteredPolls.filter(p => p.category === this.currentFilter);
+            }
+
+            if (filteredPolls.length === 0) {
+                feed.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🗳️</div>
+                        <div class="empty-title">아직 투표가 없어요</div>
+                        <div class="empty-text">첫 번째 투표를 만들어서 사람들과 소통해보세요!</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            
+            if (this.currentFilter === 'all') {
+                html += `
+                    <div class="trending-banner">
+                        <div class="trending-title">
+                            <span class="trending-icon">🔥</span>
+                            <span>지금 가장 뜨거운 투표</span>
+                        </div>
+                        <div class="trending-text">
+                            ${filteredPolls[0]?.votes.length || 0}명이 참여한 "${filteredPolls[0]?.question}" 
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += filteredPolls.map(poll => this.renderPollCard(poll)).join('');
+            feed.innerHTML = html;
+            this.bindPollEvents();
+        }
+
+        renderPollCard(poll) {
+            const votesA = poll.votes.filter(v => v.option === 'a');
+            const votesB = poll.votes.filter(v => v.option === 'b');
+            const total = votesA.length + votesB.length;
+            const percentA = total > 0 ? Math.round((votesA.length / total) * 100) : 50;
+            const percentB = total > 0 ? 100 - percentA : 50;
+
+            const categoryLabel = {
+                'lifestyle': '라이프스타일',
+                'hobby': '취미/관심사',
+                'custom': '자유주제'
+            }[poll.category] || '일반';
+
+            const reactions = poll.totalReactions || { fire: 0, heart: 0, wow: 0 };
+
+            return `
+                <article class="poll-card" data-poll-id="${poll.id}">
+                    <div class="poll-header">
+                        <div class="poll-avatar">${poll.authorAvatar || '👤'}</div>
+                        <div class="poll-author-info">
+                            <div class="poll-author">${this.escapeHtml(poll.author || 'Anonymous')}</div>
+                            <div class="poll-meta">
+                                <span class="poll-category-badge ${poll.category}">${categoryLabel}</span>
+                                <span>${this.formatTime(poll.createdAt)}</span>
+                            </div>
+                        </div>
+                        <div class="poll-menu" data-action="menu" data-poll-id="${poll.id}">⋯</div>
+                    </div>
+
+                    <div class="poll-question">${this.escapeHtml(poll.question)}</div>
+
+                    <div class="vote-options">
+                        <div class="vote-option option-a" data-poll-id="${poll.id}" data-option="a">
+                            <div class="vote-option-icon">${poll.optionA.icon}</div>
+                            <div class="vote-option-name">${this.escapeHtml(poll.optionA.name)}</div>
+                            <div class="vote-option-stats">
+                                <div class="vote-count">${votesA.length}</div>
+                                <div class="vote-percent">${percentA}%</div>
+                            </div>
+                        </div>
+                        <div class="vote-option option-b" data-poll-id="${poll.id}" data-option="b">
+                            <div class="vote-option-icon">${poll.optionB.icon}</div>
+                            <div class="vote-option-name">${this.escapeHtml(poll.optionB.name)}</div>
+                            <div class="vote-option-stats">
+                                <div class="vote-count">${votesB.length}</div>
+                                <div class="vote-percent">${percentB}%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="poll-progress">
+                        <div class="progress-bar">
+                            <div class="progress-a" style="width: ${percentA}%"></div>
+                            <div class="progress-b" style="width: ${percentB}%"></div>
+                        </div>
+                        <div class="poll-total">총 ${total}명 참여</div>
+                    </div>
+
+                    <div class="reaction-bar">
+                        <div class="reaction-btn" data-poll-id="${poll.id}" data-reaction="fire">
+                            <span class="reaction-icon">🔥</span>
+                            <span class="reaction-count">${reactions.fire}</span>
+                        </div>
+                        <div class="reaction-btn" data-poll-id="${poll.id}" data-reaction="heart">
+                            <span class="reaction-icon">❤️</span>
+                            <span class="reaction-count">${reactions.heart}</span>
+                        </div>
+                        <div class="reaction-btn" data-poll-id="${poll.id}" data-reaction="wow">
+                            <span class="reaction-icon">😮</span>
+                            <span class="reaction-count">${reactions.wow}</span>
+                        </div>
+                    </div>
+
+                    <div class="poll-actions">
+                        <button class="action-btn" data-action="vote" data-poll-id="${poll.id}">
+                            <span class="icon">🗳️</span>
+                            <span>투표하기</span>
+                        </button>
+                        <button class="action-btn" data-action="comment" data-poll-id="${poll.id}">
+                            <span class="icon">💬</span>
+                            <span>댓글 ${poll.votes.length}</span>
+                        </button>
+                        <button class="action-btn" data-action="share" data-poll-id="${poll.id}">
+                            <span class="icon">📤</span>
+                            <span>공유</span>
+                        </button>
+                    </div>
+
+                    <div class="comments-section">
+                        <div class="comments-toggle" data-poll-id="${poll.id}">
+                            ${poll.votes.length > 0 ? `댓글 ${poll.votes.length}개 모두 보기` : '댓글을 남겨보세요!'}
+                        </div>
+                        <div class="comments-list" id="comments-${poll.id}">
+                            ${this.renderComments(poll.votes)}
+                        </div>
+                    </div>
+
+                    <div class="comment-input-section" id="comment-input-${poll.id}">
+                        <div class="comment-input-wrapper">
+                            <input type="text" class="comment-input" placeholder="댓글을 입력하세요..." data-poll-id="${poll.id}">
+                            <button class="comment-submit" data-poll-id="${poll.id}">등록</button>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        renderComments(votes) {
+            if (votes.length === 0) return '';
+            
+            return votes.map(v => `
+                <div class="comment option-${v.option}">
+                    <div class="comment-avatar">${v.avatar}</div>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <span class="comment-name">${this.escapeHtml(v.name)}</span>
+                            <span class="comment-badge option-${v.option}">${v.option === 'a' ? 'A 선택' : 'B 선택'}</span>
+                            <span class="comment-time">${this.formatTime(v.timestamp)}</span>
+                        </div>
+                        <div class="comment-text">${this.escapeHtml(v.comment || '')}</div>
+                        <div class="comment-actions">
+                            <span class="comment-action" data-vote-id="${v.id}">
+                                ❤️ 좋아요 ${v.likes || 0}
+                            </span>
+                            <span class="comment-action">답글</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        bindPollEvents() {
+            document.querySelectorAll('.vote-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    this.openVoteModal(parseInt(opt.dataset.pollId), opt.dataset.option);
+                });
+            });
+
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const action = btn.dataset.action;
+                    const pollId = parseInt(btn.dataset.pollId);
+                    
+                    if (action === 'vote') {
+                        this.openVoteModal(pollId);
+                    } else if (action === 'comment') {
+                        const inputSection = document.getElementById(`comment-input-${pollId}`);
+                        inputSection.classList.toggle('active');
+                    } else if (action === 'share') {
+                        this.sharePoll(pollId);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.reaction-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    this.addReaction(parseInt(btn.dataset.pollId), btn.dataset.reaction);
+                });
+            });
+
+            document.querySelectorAll('.comments-toggle').forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const pollId = toggle.dataset.pollId;
+                    const list = document.getElementById(`comments-${pollId}`);
+                    list.classList.toggle('expanded');
+                    const poll = this.polls.find(p => p.id == pollId);
+                    toggle.textContent = list.classList.contains('expanded') ? '댓글 숨기기' : `댓글 ${poll?.votes.length || 0}개 모두 보기`;
+                });
+            });
+
+            document.querySelectorAll('.comment-action').forEach(action => {
+                action.addEventListener('click', () => {
+                    const voteId = action.dataset.voteId;
+                    if (voteId) {
+                        this.toggleLike(parseInt(voteId));
+                    }
+                });
+            });
+
+            document.querySelectorAll('[data-action="menu"]').forEach(menu => {
+                menu.addEventListener('click', () => {
+                    if (confirm('이 투표를 삭제하시겠습니까?')) {
+                        this.deletePoll(parseInt(menu.dataset.pollId));
+                    }
+                });
+            });
+
+            document.querySelectorAll('.comment-submit').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    this.addQuickComment(parseInt(btn.dataset.pollId));
+                });
+            });
+
+            document.querySelectorAll('.comment-input').forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.addQuickComment(parseInt(input.dataset.pollId));
+                    }
+                });
+            });
+        }
+
+        addQuickComment(pollId) {
+            const input = document.querySelector(`.comment-input[data-poll-id="${pollId}"]`);
+            const comment = input.value.trim();
+            
+            if (!comment) {
+                this.showToast('댓글을 입력해주세요');
+                return;
+            }
+
+            const poll = this.polls.find(p => p.id === pollId);
+            if (!poll) return;
+
+            const randomAvatar = this.avatarOptions[Math.floor(Math.random() * this.avatarOptions.length)];
+
+            poll.votes.unshift({
+                id: Date.now(),
+                option: 'a',
+                name: '익명',
+                avatar: randomAvatar,
+                comment,
+                timestamp: Date.now(),
+                likes: 0,
+                reactions: {}
+            });
+
+            this.saveData();
+            input.value = '';
+            this.render();
+            this.showToast('댓글이 등록되었습니다! 💬');
+        }
+
+        addReaction(pollId, reaction) {
+            const poll = this.polls.find(p => p.id === pollId);
+            if (!poll) return;
+
+            if (!poll.totalReactions) {
+                poll.totalReactions = { fire: 0, heart: 0, wow: 0 };
+            }
+
+            poll.totalReactions[reaction] = (poll.totalReactions[reaction] || 0) + 1;
+            
+            this.saveData();
+            this.render();
+            
+            const emoji = { fire: '🔥', heart: '❤️', wow: '😮' }[reaction];
+            this.showToast(`${emoji} 리액션을 남겼습니다!`);
+        }
+
+        openCreateModal() {
+            document.getElementById('poll-question').value = '';
+            document.getElementById('poll-option-a').value = '';
+            document.getElementById('poll-option-b').value = '';
+            document.getElementById('poll-author').value = '';
+            document.getElementById('create-modal').classList.add('active');
+        }
+
+        openVoteModal(pollId, option = null) {
+            // 상태 초기화
+            this.currentPollId = pollId;
+            this.selectedOption = option;
+            
+            const poll = this.polls.find(p => p.id === pollId);
+            if (!poll) return;
+
+            // 투표 선택지 렌더링
+            const choices = document.getElementById('vote-choices');
+            choices.innerHTML = `
+                <div class="vote-choice-btn option-a ${option === 'a' ? 'selected' : ''}" data-option="a">
+                    <div class="vote-choice-icon">${poll.optionA.icon}</div>
+                    <div class="vote-choice-name">${this.escapeHtml(poll.optionA.name)}</div>
+                </div>
+                <div class="vote-choice-btn option-b ${option === 'b' ? 'selected' : ''}" data-option="b">
+                    <div class="vote-choice-icon">${poll.optionB.icon}</div>
+                    <div class="vote-choice-name">${this.escapeHtml(poll.optionB.name)}</div>
+                </div>
+            `;
+
+            // 선택지 클릭 이벤트 바인딩
+            const choiceBtns = choices.querySelectorAll('.vote-choice-btn');
+            choiceBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    choiceBtns.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    this.selectedOption = btn.dataset.option;
+                    console.log('선택됨:', this.selectedOption); // 디버깅용
+                });
+            });
+
+            // 입력 필드 초기화
+            document.getElementById('voter-name').value = '';
+            document.getElementById('voter-comment').value = '';
+            
+            // 모달 열기
+            document.getElementById('vote-modal').classList.add('active');
+        }
+
+        closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            
+            // 투표 모달을 닫을 때 상태 초기화
+            if (id === 'vote-modal') {
+                this.currentPollId = null;
+                this.selectedOption = null;
+                document.getElementById('voter-name').value = '';
+                document.getElementById('voter-comment').value = '';
+            }
+            
+            // 생성 모달을 닫을 때 상태 초기화
+            if (id === 'create-modal') {
+                document.getElementById('poll-question').value = '';
+                document.getElementById('poll-option-a').value = '';
+                document.getElementById('poll-option-b').value = '';
+                document.getElementById('poll-author').value = '';
+            }
+        }
+
+        createPoll() {
+            const question = document.getElementById('poll-question').value.trim();
+            const optionA = document.getElementById('poll-option-a').value.trim();
+            const optionB = document.getElementById('poll-option-b').value.trim();
+            const author = document.getElementById('poll-author').value.trim();
+
+            if (!question) {
+                this.showToast('⚠️ 질문을 입력해주세요!');
+                return;
+            }
+
+            if (!optionA || !optionB) {
+                this.showToast('⚠️ 두 가지 선택지를 모두 입력해주세요!');
+                return;
+            }
+
+            if (!author) {
+                this.showToast('⚠️ 작성자 이름을 입력해주세요!');
+                return;
+            }
+
+            const randomAvatar = this.avatarOptions[Math.floor(Math.random() * this.avatarOptions.length)];
+
+            const newPoll = {
+                id: Date.now(),
+                question,
+                category: this.selectedCategory,
+                optionA: { name: optionA, icon: this.selectedEmojiA },
+                optionB: { name: optionB, icon: this.selectedEmojiB },
+                author,
+                authorAvatar: randomAvatar,
+                votes: [],
+                totalReactions: { fire: 0, heart: 0, wow: 0 },
+                createdAt: Date.now()
+            };
+
+            this.polls.unshift(newPoll);
+            this.saveData();
+            this.closeModal('create-modal');
+            this.render();
+            this.showToast('🎉 투표가 생성되었습니다! 사람들의 참여를 기다려보세요!');
+        }
+
+        submitVote() {
+            console.log('submitVote 호출됨'); // 디버깅용
+            console.log('선택된 옵션:', this.selectedOption); // 디버깅용
+            
+            const name = document.getElementById('voter-name').value.trim();
+            const comment = document.getElementById('voter-comment').value.trim();
+
+            if (!this.selectedOption) {
+                this.showToast('⚠️ 선택지를 먼저 선택해주세요!');
+                return;
+            }
+
+            if (!name) {
+                this.showToast('⚠️ 닉네임을 입력해주세요!');
+                return;
+            }
+
+            const poll = this.polls.find(p => p.id === this.currentPollId);
+            if (!poll) {
+                console.error('투표를 찾을 수 없습니다:', this.currentPollId);
+                return;
+            }
+
+            const randomAvatar = this.avatarOptions[Math.floor(Math.random() * this.avatarOptions.length)];
+
+            poll.votes.unshift({
+                id: Date.now(),
+                option: this.selectedOption,
+                name,
+                avatar: randomAvatar,
+                comment: comment || '투표했습니다!',
+                timestamp: Date.now(),
+                likes: 0,
+                reactions: {}
+            });
+
+            console.log('투표 저장됨:', poll.votes[0]); // 디버깅용
+
+            this.saveData();
+            this.closeModal('vote-modal');
+            this.render();
+            this.showToast('✨ 투표가 완료되었습니다! 다른 사람들의 의견도 확인해보세요!');
+        }
+
+        toggleLike(voteId) {
+            for (const poll of this.polls) {
+                const vote = poll.votes.find(v => v.id === voteId);
+                if (vote) {
+                    vote.likes = (vote.likes || 0) + 1;
+                    this.saveData();
+                    this.render();
+                    this.showLikeAnimation();
+                    break;
+                }
+            }
+        }
+
+        deletePoll(pollId) {
+            this.polls = this.polls.filter(p => p.id !== pollId);
+            this.saveData();
+            this.render();
+            this.showToast('투표가 삭제되었습니다');
+        }
+
+        sharePoll(pollId) {
+            const poll = this.polls.find(p => p.id === pollId);
+            if (poll && navigator.share) {
+                navigator.share({
+                    title: 'VoteSphere',
+                    text: poll.question,
+                    url: window.location.href
+                });
+            } else {
+                this.showToast('🔗 링크가 복사되었습니다!');
+            }
+        }
+
+        showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        showLikeAnimation() {
+            const heart = document.createElement('div');
+            heart.className = 'like-animation';
+            heart.textContent = '❤️';
+            heart.style.left = '50%';
+            heart.style.top = '50%';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 800);
+        }
+
+        formatTime(timestamp) {
+            const diff = Date.now() - timestamp;
+            const mins = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (mins < 1) return '방금 전';
+            if (mins < 60) return `${mins}분 전`;
+            if (hours < 24) return `${hours}시간 전`;
+            if (days < 7) return `${days}일 전`;
+            return new Date(timestamp).toLocaleDateString('ko-KR');
+        }
+
+        escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        window.voteSphere = new VoteSphere();
+    });
+</script>
+```
+
+</body>
+</html>
