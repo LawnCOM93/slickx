@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Syntax Cheatsheet</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <style>
+        :root {
+            --bg-primary: #e8f5e9;
+            --bg-secondary: #c8e6c9;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f1f8e9;
+            --text-primary: #1b5e20;
+            --text-secondary: #33691e;
+            --text-muted: #689f38;
+            --accent-green: #2e7d32;
+            --accent-dark-green: #1b5e20;
+            --accent-lime: #7cb342;
+            --accent-teal: #00897b;
+            --accent-orange: #ef6c00;
+            --accent-blue: #1976d2;
+            --accent-purple: #7b1fa2;
+            --accent-red: #c62828;
+            --border-color: rgba(46, 125, 50, 0.15);
+            --shadow-soft: rgba(46, 125, 50, 0.08);
+            --shadow-medium: rgba(46, 125, 50, 0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .bg-pattern {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(129, 199, 132, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(165, 214, 167, 0.3) 0%, transparent 50%);
+        }
+
+        header { position: relative; z-index: 10; padding: 70px 40px 50px; text-align: center; }
+        .logo { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 24px; opacity: 0; animation: fadeInUp 0.8s ease forwards; }
+        .logo-icon {
+                width: 105px; height: 52px;
+                background: #ffffff;
+                border-radius: 14px; display: flex; align-items: center; justify-content: center;
+                font-weight: 800; font-size: 26px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+
+        .logo-icon .slick {
+            color: #4CAF50; /* 밝은 녹색 */
+        }
+
+        .logo-icon .x {
+            color: #9C27B0; /* 보라색 */
+        }
+        .logo-text { font-size: 16px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--accent-green); }
+        h1 { font-size: clamp(42px, 7vw, 80px); font-weight: 800; line-height: 1.15; letter-spacing: -2px; margin-bottom: 16px; opacity: 0; animation: fadeInUp 0.8s ease 0.1s forwards; }
+        h1 span { display: block; }
+        .title-gradient {
+            background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-teal) 50%, var(--accent-lime) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .subtitle { font-size: 17px; color: var(--text-secondary); max-width: 480px; margin: 0 auto; opacity: 0; animation: fadeInUp 0.8s ease 0.2s forwards; }
+
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(232, 245, 233, 0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color); padding: 0 40px;
+            opacity: 0; animation: fadeIn 0.8s ease 0.3s forwards;
+        }
+        .nav-container { display: flex; gap: 8px; overflow-x: auto; padding: 14px 0; scrollbar-width: none; }
+        .nav-container::-webkit-scrollbar { display: none; }
+        .nav-btn {
+            padding: 10px 20px; background: transparent;
+            border: 1.5px solid var(--border-color); border-radius: 100px;
+            color: var(--text-secondary); font-family: inherit; font-size: 14px; font-weight: 600;
+            cursor: pointer; white-space: nowrap; transition: all 0.3s ease;
+        }
+        .nav-btn:hover { background: var(--bg-card); color: var(--accent-green); border-color: var(--accent-lime); }
+        .nav-btn.active { background: var(--accent-green); color: #fff; border-color: var(--accent-green); box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3); }
+
+        main { position: relative; z-index: 10; max-width: 1400px; margin: 0 auto; padding: 50px 40px 100px; }
+        .section { margin-bottom: 70px; opacity: 0; transform: translateY(30px); transition: all 0.6s ease; }
+        .section.visible { opacity: 1; transform: translateY(0); }
+        .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+        .section-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 12px var(--shadow-medium); }
+        .section-icon.basic { background: linear-gradient(135deg, var(--accent-green), var(--accent-teal)); }
+        .section-icon.extended { background: linear-gradient(135deg, var(--accent-orange), #ff8a65); }
+        .section-title { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+        .section-badge { padding: 6px 14px; background: var(--bg-secondary); border-radius: 100px; font-size: 11px; font-weight: 700; color: var(--accent-green); text-transform: uppercase; letter-spacing: 1px; }
+
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 18px;
+            padding: 24px; transition: all 0.3s ease; position: relative; overflow: hidden;
+            box-shadow: 0 2px 8px var(--shadow-soft);
+        }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--card-accent, var(--accent-green)), transparent); opacity: 0; transition: opacity 0.3s ease; }
+        .card:hover { background: var(--bg-card-hover); transform: translateY(-3px); box-shadow: 0 8px 25px var(--shadow-medium); }
+        .card:hover::before { opacity: 1; }
+        .card[data-type="heading"] { --card-accent: var(--accent-blue); }
+        .card[data-type="text"] { --card-accent: var(--accent-purple); }
+        .card[data-type="list"] { --card-accent: var(--accent-orange); }
+        .card[data-type="code"] { --card-accent: var(--accent-teal); }
+        .card[data-type="link"] { --card-accent: var(--accent-green); }
+
+        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .card-title { display: flex; align-items: center; gap: 10px; }
+        .card-emoji { font-size: 22px; }
+        .card-name { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+        .card-copy {
+            width: 36px; height: 36px; background: var(--bg-primary);
+            border: 1.5px solid var(--border-color); border-radius: 10px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s ease; color: var(--text-muted);
+        }
+        .card-copy:hover { background: var(--accent-green); border-color: var(--accent-green); color: #fff; }
+        .card-copy.copied { background: var(--accent-teal); border-color: var(--accent-teal); color: #fff; }
+        .card-copy svg { width: 18px; height: 18px; }
+
+        .code-block {
+            background: #f1f8e9; border: 1px solid rgba(46, 125, 50, 0.12); border-radius: 10px;
+            padding: 14px 18px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 13px; color: var(--accent-dark-green); overflow-x: auto;
+        }
+        .code-block code { display: block; white-space: pre-wrap; word-break: break-all; }
+
+        .card-preview { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-color); }
+        .preview-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 10px; }
+        .preview-content { color: var(--text-secondary); font-size: 15px; }
+        .preview-content h1 { font-size: 26px; color: var(--text-primary); margin: 4px 0; }
+        .preview-content h2 { font-size: 21px; color: var(--text-primary); margin: 4px 0; }
+        .preview-content h3 { font-size: 17px; color: var(--text-primary); margin: 4px 0; }
+        .preview-content strong { color: var(--text-primary); font-weight: 700; }
+        .preview-content em { font-style: italic; color: var(--accent-purple); }
+        .preview-content del { text-decoration: line-through; color: var(--text-muted); }
+        .preview-content mark { background: #fff59d; color: var(--text-primary); padding: 2px 6px; border-radius: 4px; }
+        .preview-content code { background: #e8f5e9; padding: 3px 8px; border-radius: 6px; font-family: 'SF Mono', monospace; font-size: 13px; color: var(--accent-teal); border: 1px solid rgba(46, 125, 50, 0.1); }
+        .preview-content blockquote { border-left: 3px solid var(--accent-green); padding: 8px 14px; color: var(--text-secondary); font-style: italic; background: rgba(46, 125, 50, 0.05); border-radius: 0 8px 8px 0; }
+        .preview-content a { color: var(--accent-blue); text-decoration: none; font-weight: 500; }
+        .preview-content sub { vertical-align: sub; font-size: 0.8em; }
+        .preview-content sup { vertical-align: super; font-size: 0.8em; }
+
+        .preview-list { list-style: none; padding-left: 0; }
+        .preview-list li { position: relative; padding-left: 22px; margin: 5px 0; }
+        .preview-list li::before { content: ''; position: absolute; left: 0; top: 9px; width: 7px; height: 7px; background: var(--accent-green); border-radius: 50%; }
+        .preview-list.ordered { counter-reset: item; }
+        .preview-list.ordered li::before { content: counter(item); counter-increment: item; width: auto; height: auto; background: transparent; font-size: 13px; font-weight: 700; color: var(--accent-orange); top: 0; }
+
+        .preview-checkbox { width: 18px; height: 18px; border: 2px solid var(--accent-green); border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px; background: #fff; }
+        .preview-checkbox.checked { background: var(--accent-green); }
+        .preview-checkbox.checked::after { content: '✓'; color: #fff; font-size: 12px; font-weight: bold; }
+        .preview-hr { height: 2px; background: linear-gradient(90deg, var(--accent-green), var(--accent-teal), var(--accent-lime)); border: none; border-radius: 2px; margin: 8px 0; }
+        .preview-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .preview-table th, .preview-table td { padding: 8px 12px; text-align: left; border: 1px solid var(--border-color); }
+        .preview-table th { background: var(--bg-secondary); font-weight: 700; color: var(--accent-dark-green); }
+        .preview-table td { background: #fff; }
+        .preview-code-block { background: #e8f5e9; border-radius: 8px; padding: 12px 16px; font-family: 'SF Mono', monospace; font-size: 13px; color: var(--accent-dark-green); border: 1px solid rgba(46, 125, 50, 0.12); }
+        .footnote-ref { color: var(--accent-blue); font-size: 12px; vertical-align: super; font-weight: 600; }
+        .footnote-content { font-size: 13px; color: var(--text-muted); padding-left: 16px; border-left: 2px solid var(--accent-purple); margin-top: 8px; }
+        .emoji-preview { font-size: 24px; }
+
+        .toast {
+            position: fixed; bottom: 40px; left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--accent-green); color: #fff;
+            padding: 14px 28px; border-radius: 100px; font-weight: 600; font-size: 14px;
+            box-shadow: 0 8px 30px rgba(46, 125, 50, 0.35);
+            z-index: 1000; opacity: 0; transition: all 0.4s ease;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast svg { width: 18px; height: 18px; }
+
+        footer { position: relative; z-index: 10; text-align: center; padding: 50px 40px; border-top: 1px solid var(--border-color); background: rgba(200, 230, 201, 0.3); }
+        .footer-text { font-size: 14px; color: var(--text-muted); font-weight: 500; }
+        .footer-text span { color: var(--accent-red); font-weight: 700; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            header { padding: 50px 20px 40px; }
+            nav { padding: 0 20px; }
+            main { padding: 40px 20px 80px; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .section-header { flex-wrap: wrap; }
+        }
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-lime); border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-green); }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <span class="slick">Slick</span><span class="x">X</span>
+            </div>
+            <div class="logo-text">Cheatsheet</div>
+        </div>
+        <h1>
+            <span>Markdown</span>
+            <span class="title-gradient">Syntax Guide</span>
+        </h1>
+        <p class="subtitle">마크다운 문법의 모든 것을 한눈에. 클릭하면 바로 복사됩니다.</p>
+    </header>
+
+    <nav>
+        <div class="nav-container">
+            <button class="nav-btn active" data-filter="all">전체</button>
+            <button class="nav-btn" data-filter="basic">기본 문법</button>
+            <button class="nav-btn" data-filter="extended">확장 문법</button>
+            <button class="nav-btn" data-filter="heading">제목</button>
+            <button class="nav-btn" data-filter="text">텍스트</button>
+            <button class="nav-btn" data-filter="list">목록</button>
+            <button class="nav-btn" data-filter="code">코드</button>
+            <button class="nav-btn" data-filter="link">링크/미디어</button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section" id="basic" data-category="basic">
+            <div class="section-header">
+                <div class="section-icon basic">📝</div>
+                <h2 class="section-title">기본 문법</h2>
+                <span class="section-badge">Basic</span>
+            </div>
+            <div class="cards-grid">
+                <article class="card" data-type="heading" data-category="basic heading">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">📌</span><span class="card-name">제목 (Heading)</span></div>
+                        <button class="card-copy" data-code="# H1 제목&#10;## H2 제목&#10;### H3 제목"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code># H1 제목
+## H2 제목
+### H3 제목</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><h1>H1 제목</h1><h2>H2 제목</h2><h3>H3 제목</h3></div></div>
+                </article>
+
+                <article class="card" data-type="text" data-category="basic text">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">✨</span><span class="card-name">굵게 (Bold)</span></div>
+                        <button class="card-copy" data-code="**굵은 텍스트**"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>**굵은 텍스트**</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><strong>굵은 텍스트</strong></div></div>
+                </article>
+
+                <article class="card" data-type="text" data-category="basic text">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">💫</span><span class="card-name">기울임 (Italic)</span></div>
+                        <button class="card-copy" data-code="*기울임 텍스트*"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>*기울임 텍스트*</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><em>기울임 텍스트</em></div></div>
+                </article>
+
+                <article class="card" data-type="text" data-category="basic text">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">💬</span><span class="card-name">인용 (Blockquote)</span></div>
+                        <button class="card-copy" data-code="> 인용문입니다"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>> 인용문입니다</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><blockquote>인용문입니다</blockquote></div></div>
+                </article>
+
+                <article class="card" data-type="list" data-category="basic list">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">📋</span><span class="card-name">순서 있는 목록</span></div>
+                        <button class="card-copy" data-code="1. 첫 번째&#10;2. 두 번째&#10;3. 세 번째"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>1. 첫 번째
+2. 두 번째
+3. 세 번째</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><ol class="preview-list ordered"><li>첫 번째</li><li>두 번째</li><li>세 번째</li></ol></div></div>
+                </article>
+
+                <article class="card" data-type="list" data-category="basic list">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">📝</span><span class="card-name">순서 없는 목록</span></div>
+                        <button class="card-copy" data-code="- 항목 1&#10;- 항목 2&#10;- 항목 3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>- 항목 1
+- 항목 2
+- 항목 3</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><ul class="preview-list"><li>항목 1</li><li>항목 2</li><li>항목 3</li></ul></div></div>
+                </article>
+
+                <article class="card" data-type="code" data-category="basic code">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">💻</span><span class="card-name">인라인 코드</span></div>
+                        <button class="card-copy" data-code="`code`"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>`code`</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><code>code</code></div></div>
+                </article>
+
+                <article class="card" data-type="text" data-category="basic text">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">➖</span><span class="card-name">구분선</span></div>
+                        <button class="card-copy" data-code="---"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>---</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><hr class="preview-hr"></div></div>
+                </article>
+
+                <article class="card" data-type="link" data-category="basic link">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">🔗</span><span class="card-name">링크</span></div>
+                        <button class="card-copy" data-code="[제목](https://example.com)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>[제목](https://example.com)</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><a href="#">제목</a></div></div>
+                </article>
+
+                <article class="card" data-type="link" data-category="basic link">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">🖼️</span><span class="card-name">이미지</span></div>
+                        <button class="card-copy" data-code="![대체 텍스트](image.jpg)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>![대체 텍스트](image.jpg)</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><span style="color: var(--text-muted);">🖼️ [이미지: 대체 텍스트]</span></div></div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" id="extended" data-category="extended">
+            <div class="section-header">
+                <div class="section-icon extended">🚀</div>
+                <h2 class="section-title">확장 문법</h2>
+                <span class="section-badge">Extended</span>
+            </div>
+            <div class="cards-grid">
+                <article class="card" data-type="code" data-category="extended code">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">📊</span><span class="card-name">표 (Table)</span></div>
+                        <button class="card-copy" data-code="| 헤더1 | 헤더2 |&#10;|-------|-------|&#10;| 셀1   | 셀2   |"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>| 헤더1 | 헤더2 |
+|-------|-------|
+| 셀1   | 셀2   |</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><table class="preview-table"><thead><tr><th>헤더1</th><th>헤더2</th></tr></thead><tbody><tr><td>셀1</td><td>셀2</td></tr></tbody></table></div></div>
+                </article>
+
+                <article class="card" data-type="code" data-category="extended code">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">📦</span><span class="card-name">코드 블록</span></div>
+                        <button class="card-copy" data-code="```javascript&#10;const hello = 'world';&#10;```"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>```javascript
+const hello = 'world';
+```</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><div class="preview-code-block">const hello = 'world';</div></div></div>
+                </article>
+
+                <article class="card" data-type="text" data-category="extended text">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">📎</span><span class="card-name">각주 (Footnote)</span></div>
+                        <button class="card-copy" data-code="텍스트[^1]&#10;&#10;[^1]: 각주 내용"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>텍스트[^1]
+
+[^1]: 각주 내용</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><p>텍스트<span class="footnote-ref">[1]</span></p><p class="footnote-content">1. 각주 내용</p></div></div>
+                </article>
+
+                <article class="card" data-type="heading" data-category="extended heading">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">🏷️</span><span class="card-name">제목 ID</span></div>
+                        <button class="card-copy" data-code="### Heading {#custom-id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>### Heading {#custom-id}</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><h3>Heading <span style="color: var(--accent-teal); font-size: 12px;">#custom-id</span></h3></div></div>
+                </article>
+
+                <article class="card" data-type="list" data-category="extended list">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">📖</span><span class="card-name">정의 목록</span></div>
+                        <button class="card-copy" data-code="용어&#10;: 정의 내용"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>용어
+: 정의 내용</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><dl><dt style="font-weight: 700;">용어</dt><dd style="margin-left: 20px;">정의 내용</dd></dl></div></div>
+                </article>
+
+                <article class="card" data-type="text" data-category="extended text">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">✂️</span><span class="card-name">취소선</span></div>
+                        <button class="card-copy" data-code="~~취소된 텍스트~~"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>~~취소된 텍스트~~</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><del>취소된 텍스트</del></div></div>
+                </article>
+
+                <article class="card" data-type="list" data-category="extended list">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">✅</span><span class="card-name">체크리스트</span></div>
+                        <button class="card-copy" data-code="- [x] 완료된 항목&#10;- [ ] 미완료 항목"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>- [x] 완료된 항목
+- [ ] 미완료 항목</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><div style="display: flex; align-items: center; margin: 4px 0;"><span class="preview-checkbox checked"></span><span>완료된 항목</span></div><div style="display: flex; align-items: center; margin: 4px 0;"><span class="preview-checkbox"></span><span>미완료 항목</span></div></div></div>
+                </article>
+
+                <article class="card" data-type="text" data-category="extended text">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">😀</span><span class="card-name">이모지</span></div>
+                        <button class="card-copy" data-code=":joy: :heart: :rocket:"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>:joy: :heart: :rocket:</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content emoji-preview">😂 ❤️ 🚀</div></div>
+                </article>
+
+                <article class="card" data-type="text" data-category="extended text">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">🖍️</span><span class="card-name">하이라이트</span></div>
+                        <button class="card-copy" data-code="==하이라이트 텍스트=="><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>==하이라이트 텍스트==</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content"><mark>하이라이트 텍스트</mark></div></div>
+                </article>
+
+                <article class="card" data-type="text" data-category="extended text">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">⬇️</span><span class="card-name">아래첨자</span></div>
+                        <button class="card-copy" data-code="H~2~O"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>H~2~O</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content">H<sub>2</sub>O</div></div>
+                </article>
+
+                <article class="card" data-type="text" data-category="extended text">
+                    <div class="card-header">
+                        <div class="card-title"><span class="card-emoji">⬆️</span><span class="card-name">위첨자</span></div>
+                        <button class="card-copy" data-code="X^2^"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                    <div class="code-block"><code>X^2^</code></div>
+                    <div class="card-preview"><div class="preview-label">미리보기</div><div class="preview-content">X<sup>2</sup></div></div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p class="footer-text">LEE KYU SAM : lawncom@outlook.com</p>
+    </footer>
+
+    <div class="toast" id="toast">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>
+        <span>클립보드에 복사되었습니다!</span>
+    </div>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.section').forEach(section => observer.observe(section));
+
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const cards = document.querySelectorAll('.card');
+        const sections = document.querySelectorAll('.section');
+
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.dataset.filter;
+                navBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if (filter === 'all') {
+                    cards.forEach(card => card.style.display = 'block');
+                    sections.forEach(section => section.style.display = 'block');
+                } else if (filter === 'basic' || filter === 'extended') {
+                    sections.forEach(section => section.style.display = section.dataset.category === filter ? 'block' : 'none');
+                    cards.forEach(card => card.style.display = 'block');
+                } else {
+                    sections.forEach(section => section.style.display = 'block');
+                    cards.forEach(card => card.style.display = card.dataset.category.includes(filter) ? 'block' : 'none');
+                }
+            });
+        });
+
+        const toast = document.getElementById('toast');
+        let toastTimeout;
+        function showToast() {
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        document.querySelectorAll('.card-copy').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const code = btn.dataset.code;
+                try {
+                    await navigator.clipboard.writeText(code);
+                } catch (err) {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = code;
+                    textArea.style.cssText = 'position:fixed;left:-9999px';
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                }
+                btn.classList.add('copied');
+                showToast();
+                setTimeout(() => btn.classList.remove('copied'), 2000);
+            });
+        });
+    </script>
+</body>
+</html>
